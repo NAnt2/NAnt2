@@ -7,9 +7,12 @@ branches:
     - master
     - develop
 
+shallow_clone: true
+clone_depth: 1
+
 environment:
   # Visual Studio 10 2010
-  VS_VERSION: 100
+  VSVER: 10
 
   matrix:
     - TARGET: net-2.0
@@ -21,18 +24,20 @@ environment:
 matrix:
   allow_failures:
     - branch: master
+    - configuration: x64
   fast_finish: true
 
 platform:
-  - x64
-  - x86
+  - X64
+  - X86
 
 configuration:
   - Debug
 
 
 build_script:
-  - echo build_script
-  - if "%VS_VERSION%" == "100" if "%platform%" == "x86" set path="%path%;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\"
-  - if "%VS_VERSION%" == "100" if "%platform%" == "x64" set path="%path%;C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\"
+  - ps: $env:VSCOMNTOOLS=(Get-Content ("env:VS" + "$env:VSVER" + "0COMNTOOLS"))
+  - if "%VS_VERSION%" == "100" if "%platform%" == "x86" call "%VSCOMNTOOLS%\..\..\VC\vcvarsall.bat"
+  - if "%VS_VERSION%" == "100" if "%platform%" == "x64" "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
+  - if "%VS_VERSION%" == "100" if "%platform%" == "x64" call "%VSCOMNTOOLS%\..\..\VC\vcvarsall.bat" x86_amd64
   - nmake -f Makefile.nmake install prefix="c:\Program Files" TARGET=%TARGET%
