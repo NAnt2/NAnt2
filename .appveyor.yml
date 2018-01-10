@@ -1,0 +1,39 @@
+version: 0.95.{build}
+
+image: Visual Studio 2015
+
+branches:
+  only:
+    - master
+    - develop
+
+environment:
+  # Visual Studio 10 2010
+  VS_VERSION: 100
+
+  matrix:
+    - TARGET: net-2.0
+    - TARGET: net-3.5
+    - TARGET: net-3.5
+    - TARGET: net-4.0
+    - TARGET: net-4.5
+
+matrix:
+  allow_failures:
+    - branch: master
+  fast_finish: true
+
+platform:
+  - x64
+  - x86
+
+configuration:
+  - Debug
+
+
+build_script:
+  - echo build_script
+  - if "%VS_VERSION%" == "100" if "%platform%" == "x86" call "%VS100COMNTOOLS%\..\..\VC\vcvarsall.bat"
+  - if "%VS_VERSION%" == "100" if "%platform%" == "x64" "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
+  - if "%VS_VERSION%" == "100" if "%platform%" == "x64" call "%VS100COMNTOOLS%\..\..\VC\vcvarsall.bat" x86_amd64
+  - nmake -f Makefile.nmake install prefix="c:\Program Files" TARGET=%TARGET%
