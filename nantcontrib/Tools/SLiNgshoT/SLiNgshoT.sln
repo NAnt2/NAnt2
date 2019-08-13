@@ -1,0 +1,25 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLiNgshoT", "SLiNgshoT\SLiNgshoT.csproj", "{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLiNgshoT.Core", "SLiNgshoT.Core\SLiNgshoT.Core.csproj", "{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

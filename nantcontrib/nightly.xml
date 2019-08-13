@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<project name="nantcontrib" default="nightly-self">
+    <property name="project.release.type" value="nightly" />
+    <property name="sf.net.ssh.server" value="shell.sourceforge.net" />
+    <property name="sf.net.ssh.user" value="${environment::get-user-name()}" unless="${property::exists('sf.net.ssh.user')}" />
+    <property name="sf.net.web.path" value="/home/groups/n/na/nantcontrib/htdocs" />
+    <!-- include master build file -->
+    <include buildfile="nantcontrib.build" />
+    <!-- determine path for nightly build dist packages on sf.net relative to web path -->
+    <property name="nightly.builds.path" value="nightly/${build.date}-${project.version}" />
+    <!-- setup property that holds partial path to be used by scp -->
+    <property name="serverpart" value="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}:${sf.net.web.path}" />
+
+    <target name="nightly" depends="set-net-1.0-framework-configuration,check-nant-dir">
+        <exec program="${nant.exe}">
+            <arg value="-buildfile:nightly.xml" />
+            <arg value="-D:nant.dir=${nant.dir}" />
+            <arg value="-t:${framework::get-target-framework()}" />
+        </exec>
+    </target>
+    <target name="nightly-self" depends="set-net-1.0-framework-configuration, package, deploy-sf" />
+    <!-- deploy content to sourceforge -->
+    <target name="deploy-sf" depends="deploy-distributions-sf,deploy-doc-sf,deploy-web-sf">
+        <!-- remove existing symlink, if it exists -->
+        <exec program="ssh" failonerror="false">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="rm --force ${sf.net.web.path}/nightly/latest" />
+        </exec>
+        <!-- finally, create symlink to the just uploaded nightly build -->
+        <exec program="ssh">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="ln -s ${sf.net.web.path}/${nightly.builds.path} ${sf.net.web.path}/nightly/latest" />
+        </exec>
+    </target>
+    <!-- copy the zipped nighly build to sourceforge -->
+    <target name="deploy-distributions-sf" depends="set-net-1.0-framework-configuration,package,create-shell" description="Updates SF.Net site with new release build of tasks">
+        <!-- determine filename of source distribution package on sf.net -->
+        <property name="deploy.zip.src" value="${project.name}-src.zip" />
+        <!-- determine filename of binary distribution package on sf.net -->
+        <property name="deploy.zip.bin" value="${project.name}-bin.zip" />
+        <!-- make sure the directory tree exists -->
+        <exec program="ssh">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="mkdir --mode=775 --parents ${sf.net.web.path}/${nightly.builds.path}" />
+        </exec>
+        <!-- copy the source distribution to sourceforge -->
+        <exec program="scp" workingdir="${path::get-directory-name(project.zip-path.src)}">
+            <arg value="${path::get-file-name(project.zip-path.src)}" />
+            <arg value="${serverpart}/${nightly.builds.path}/${deploy.zip.src}" />
+        </exec>
+        <!-- copy the binary distribution to sourceforge -->
+        <exec workingdir="${path::get-directory-name(project.zip-path.bin)}" program="scp">
+            <arg value="${path::get-file-name(project.zip-path.bin)}" />
+            <arg value="${serverpart}/${nightly.builds.path}/${deploy.zip.bin}" />
+        </exec>
+        <echo message="Copied nightly build over to SF.Net" />
+        <!-- make sure permissions are set right -->
+        <exec program="ssh">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="chmod -R 775 ${sf.net.web.path}/${nightly.builds.path}" />
+        </exec>
+        <!-- make sure group is set right -->
+        <exec program="ssh">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="chgrp -R nantcontrib ${sf.net.web.path}/${nightly.builds.path}" />
+        </exec>
+    </target>
+    <!-- copy online docs (manual) to sourceforge -->
+    <target name="deploy-doc-sf" depends="set-net-1.0-framework-configuration,package-doc,create-shell">
+        <!-- make sure the directory tree exists -->
+        <exec program="ssh">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="mkdir --mode=775 --parents ${sf.net.web.path}/${nightly.builds.path}" />
+        </exec>
+        <!-- copy the gzipped tar doc distribution to sourceforge -->
+        <exec workingdir="${path::get-directory-name(project.gzip-path.doc)}" program="scp">
+            <arg value="${path::get-file-name(project.gzip-path.doc)}" />
+            <arg value="${serverpart}/${nightly.builds.path}/doc.tar.gz" />
+        </exec>
+        <!-- extract the doc distribution on sourceforge -->
+        <exec program="ssh">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="cd ${sf.net.web.path}/${nightly.builds.path} &amp;&amp; tar -xzf doc.tar.gz &amp;&amp; rm --force doc.tar.gz" />
+        </exec>
+        <echo message="Copied online docs over to SF.Net" />
+        <!-- make sure permissions are set right -->
+        <exec program="ssh" failonerror="false">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="chmod -R 775 ${sf.net.web.path}/${nightly.builds.path}/help" />
+        </exec>
+        <!-- make sure group is set right -->
+        <exec program="ssh">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="chgrp -R nantcontrib ${sf.net.web.path}/${nightly.builds.path}/help" />
+        </exec>
+    </target>
+    <!-- copy website to sourceforge -->
+    <target name="deploy-web-sf" depends="set-net-1.0-framework-configuration,package,create-shell">
+        <!-- make sure the directory tree exists -->
+        <exec program="ssh">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="mkdir --mode=775 --parents ${sf.net.web.path}" />
+        </exec>
+        <!-- try to remove existing files -->
+        <exec program="ssh" failonerror="false">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="find ${sf.net.web.path} -maxdepth 1 -type f -exec rm --force {} \;" />
+        </exec>
+        <!-- copy images and html files for website to sourceforge (using compression) -->
+        <exec workingdir="${build.dir}/web" program="scp">
+            <arg value="-C" />
+            <arg value="*" />
+            <arg value="${serverpart}" />
+        </exec>
+        <!-- make sure permissions are set right -->
+        <exec program="ssh" failonerror="false">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="find ${sf.net.web.path} -maxdepth 1 -type f -exec chmod 775 {} \;" />
+        </exec>
+        <!-- make sure group is set right -->
+        <exec program="ssh">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="find ${sf.net.web.path} -maxdepth 1 -type f -exec chgrp nantcontrib {} \;" />
+        </exec>
+    </target>
+    <target name="create-shell">
+        <exec program="ssh">
+            <arg line="${sf.net.ssh.user},${project::get-name()}@${sf.net.ssh.server}" />
+            <arg value="create" />
+        </exec>
+    </target>
+</project>

@@ -1,0 +1,601 @@
+<?xml version="1.0"?>
+<!--*****************************************************************-->
+<!--* @(#)NAntContribInstall.include                                *-->
+<!--*                                                               *-->  
+<!--* Builds the MSI or MSM of the NAntContrib project              *-->
+<!--*****************************************************************-->
+<project name="NAntContribInstall" >
+
+    <!--*****************************************************************-->
+    <!--* Preparation for creating install packages                     *-->
+    <!--*****************************************************************-->
+    <target name="install.prepare" description="Preparation for creating install packages" depends="package">
+        <!-- load NAntContrib extensions -->
+        <loadtasks assembly="${build.dir}/bin/NAnt.Contrib.Tasks.dll" />
+        <!-- Properties that the user *could* specify via the command-line -->
+        <property name="nant.bin.dir" value="${nant.dir}/bin/" />
+        <property name="nant.doc.dir" value="${nant.dir}/doc/" />
+        <property name="nant.etc.dir" value="${nant.dir}/etc/" />
+        <property name="nant.examples.dir" value="${nant.dir}/examples/" />
+        <property name="nant.schema.dir" value="${nant.dir}/schema/" />
+        <property name="nant.src.dir" value="${nant.dir}/src/" />
+        <property name="nant.tests.dir" value="${nant.dir}/tests/" />
+        
+        <!-- NAnt specific properties -->
+        <property name="nant.keyfile" value="NAnt.build" />
+        <property name="nant.bin.keyfile" value="NAnt.exe.config" />
+
+        <property name="nant.doc.keyfile" value="license.html" />
+        <property name="nant.doc.help.dir" value="${nant.doc.dir}/help/" />
+        <property name="nant.doc.help.keyfile" value="index.html" />
+        <property name="nant.doc.sdk.dir" value="${nant.doc.dir}/sdk/" />
+        <property name="nant.doc.sdk.keyfile" value="NAnt-SDK.chm" />
+
+        <property name="nant.etc.keyfile" value="changelog.xsl" />
+        <property name="nant.examples.keyfile" value="examples.build" />
+
+        <property name="nant.schema.keyfile" value="nant.xsd" />
+        <property name="nant.src.keyfile" value="CommonAssemblyInfo.cs" />
+        <property name="nant.tests.keyfile" value="NAnt.Tests.csproj" />
+
+
+        <property name="nantcontrib.dir" value="${build.dir}" />
+        <property name="nantcontrib.keyfile" value="NAntContrib.build" />
+        <property name="nantcontrib.bin.dir" value="${nantcontrib.dir}/bin/" />
+        <property name="nantcontrib.bin.keyfile" value="NAnt.Contrib.Tasks.dll" />
+
+        <property name="nantcontrib.doc.dir" value="${nantcontrib.dir}/doc/" />
+        <property name="nantcontrib.doc.keyfile" value="license.html" />
+        <property name="nantcontrib.doc.help.dir" value="${nantcontrib.doc.dir}/help/" />
+        <property name="nantcontrib.doc.help.keyfile" value="index.html" />
+        <property name="nantcontrib.doc.sdk.dir" value="${nantcontrib.doc.dir}/sdk/" />
+        <property name="nantcontrib.doc.sdk.keyfile" value="NAntContrib-SDK.chm" />
+
+        <property name="nantcontrib.src.dir" value="${nantcontrib.dir}/src/" />
+        <property name="nantcontrib.src.keyfile" value="NAntContrib.csproj" />
+        <property name="nantcontrib.src.Tasks.dir" value="${nantcontrib.src.dir}/Tasks/" />
+        <property name="nantcontrib.src.Tasks.keyfile" value="SchemaValidatedTask.cs" />
+
+        <property name="nantcontrib.tests.dir" value="${nantcontrib.dir}/tests/" />
+        <property name="nantcontrib.tests.keyfile" value="NAntContrib.Tests.csproj" />
+
+        <property name="nantcontrib.Tools.dir" value="${nantcontrib.dir}/Tools/" />
+        <property name="nantcontrib.Tools.keyfile" value="vsconvert.xsl" />
+
+        <property name="nantcontrib.Tools.InstallRequirements.dir" value="${nantcontrib.Tools.dir}/InstallRequirements/" />
+        <property name="nantcontrib.Tools.InstallRequirements.keyfile" value="license.rtf" />
+
+        <script language="C#" prefix="script" >
+            <code>
+                <![CDATA[
+                    [Function("CreateRegistryGuid")]
+                    public string CreateRegistryGuid() {
+                        return "{"+Guid.NewGuid().ToString().ToUpper()+"}";
+                    }
+                 
+                    [Function("CreateIdGuid")]
+                    public string CreateIdGuid() {
+                        return Guid.NewGuid().ToString().ToUpper().Replace("-","");
+                    }
+                ]]>
+            </code>
+        </script>
+
+        <property name="install.dir" value="${build.dir}/Install" />
+        <mkdir dir="${install.dir}" />
+
+        <if test="${not directory::exists(nant.doc.help.dir)}">
+            <fail message="The NAnt help documents are required by the install but do not exist (${nant.doc.help.dir}).  Please run the nant 'package' task to generate them or specify their location with the 'nant.doc.dir' property." />
+        </if>
+        <if test="${not directory::exists(nant.doc.sdk.dir)}">
+            <fail message="The NAnt help documents are required by the install but do not exist (${nant.doc.sdk.dir}).  Please run the nant 'package' task to generate them or specify their location with the 'nant.doc.dir' property." />
+        </if>
+        <if test="${not directory::exists(nant.examples.dir)}">
+            <fail message="The NAnt examples are required by the install but do not exist (${nant.examples.dir}).  Please run the nant 'package' task to generate them or specify their location with the 'nant.examples.dir' property." />
+        </if>
+        <if test="${not directory::exists(nant.schema.dir)}">
+            <fail message="The NAnt schema file(s) are required by the install but do not exist (${nant.schema.dir}).  Please run the nant 'package' task to generate them or specify their location with the 'nant.schema.dir' property." />
+        </if>
+        <if test="${not directory::exists(nant.src.dir)}">
+            <fail message="The NAnt source files are required by the install but do not exist (${nant.src.dir}).  Please run the nant 'package' task to generate them or specify their location with the 'nant.src.dir' property." />
+        </if>
+        <if test="${not directory::exists(nant.tests.dir)}">
+            <fail message="The NAnt tests are required by the install but do not exist (${nant.tests.dir}).  Please run the nant 'package' task to generate them or specify their location with the 'nant.tests.dir' property." />
+        </if>
+    </target>
+
+    <!--*****************************************************************-->
+    <!--* Create the .msi Windows Installer setup file of NAnt          *-->
+    <!--*****************************************************************-->
+    <target name="msi" description="Build MSI install for NAnt.  It should contain merge modules representing NAntContrib" depends="install.prepare nant.mergemodules nantcontrib.mergemodules">      
+        <msi
+            output="NAnt.msi" 
+            sourcedir="${install.dir}" 
+            banner="${nantcontrib.Tools.InstallRequirements.dir}/installlogo.bmp" 
+            background="${nantcontrib.Tools.InstallRequirements.dir}/installbg.bmp" 
+            license="${nantcontrib.Tools.InstallRequirements.dir}/license.rtf" 
+            debug="true" 
+        >
+            <properties>
+                <property name="ProductName" value="NAnt ${project.version}.${build.number}" />
+                <property name="ProductVersion" value="${project.version}.${build.number}" />
+                <property name="Manufacturer" value="The NAnt SourceForge Project"/>
+                <property name="ProductCode" value="${script::CreateRegistryGuid()}" />
+                <property name="UpgradeCode" value="{B989702A-035F-44F1-B40D-192BA25DECB7}" />
+            </properties>
+            
+            <directories>
+                <directory name="D__NANT" foldername="NAnt" root="ProgramFilesFolder" >
+                    <directory name="D__NANT_SCHEMA" foldername="schema" />
+<!-- TODO                
+                    <directory name="D__NANT_ETC" foldername="etc" />
+-->                    
+                </directory>
+            </directories>
+            
+            <components>
+                <component name="C__NAnt_Schema" id="{62F4F96C-E92B-420e-B6E5-E236C64A78AF}" attr="2" directory="D__NANT_SCHEMA" feature="F__Schema_NAnt">
+                    <key file="${nant.schema.keyfile}" />
+                    <fileset basedir="${nant.schema.dir}">
+                        <include name="*" />
+                    </fileset>
+                </component>
+<!-- TODO
+                <component name="C__NAnt_Etc" id="{32F1BC49-D390-4f70-8779-876CD5830C19}" attr="2" directory="D__NANT_ETC" feature="F__Etc_NAnt">
+                    <key file="${nant.etc.keyfile}" />
+                    <fileset basedir="${nant.etc.dir}">
+                        <include name="*" />
+                    </fileset>
+                </component>
+-->
+            </components>
+    
+            <features>
+                <feature name="F__Bin" title="Assemblies and Executables" display="1" typical="true" directory="D__NANT">
+                    <description>The core assemblies and executables.</description>
+                    <feature name="F__Bin_NAnt" title="NAnt Assemblies and Executables" display="1" typical="true" directory="D__NANT">
+                        <description>The core NAnt assemblies and executables.</description>
+                    </feature>
+                    <feature name="F__Bin_NAntContrib" title="NAntContrib Assemblies and Executables" display="1" typical="true" directory="D__NANT">
+                        <description>The core NAntContrib assemblies and executables.</description>
+                    </feature>
+                </feature>
+                <feature name="F__Doc" title="Documentation" display="1" typical="true" directory="D__NANT">
+                    <description>Documentation</description>
+                    <feature name="F__Doc_NAnt" title="NAnt Documentation" display="1" typical="true" directory="D__NANT">
+                        <description>NAnt Documentation</description>
+                    </feature>
+                    <feature name="F__Doc_NAntContrib" title="NAntContrib Documentation" display="1" typical="true" directory="D__NANT">
+                        <description>NAntContrib Documentation</description>
+                    </feature>
+                </feature>
+<!-- TODO                               
+                <feature name="F__Etc" title="Task Schema(s)" display="1" typical="true" directory="D__NANT_ETC">
+                    <description>Etc for tasks</description>
+                    <feature name="F__Etc_NAnt" title="NAnt Etc" display="1" typical="true" >
+                        <description>Etc for NAnt tasks</description>
+                    </feature>
+                </feature>
+-->                
+                <feature name="F__Examples" title="Examples" display="1" typical="true" directory="D__NANT">
+                    <description>Example build files and projects.</description>
+                    <feature name="F__Examples_NAnt" title="NAnt Examples" display="1" typical="true" directory="D__NANT">
+                        <description>NAnt Examples</description>
+                    </feature>
+                </feature>
+                <feature name="F__Schema" title="Task Schema(s)" display="1" typical="true" directory="D__NANT_SCHEMA">
+                    <description>Xml schema for tasks</description>
+                    <feature name="F__Schema_NAnt" title="NAnt Schema" display="1" typical="true" >
+                        <description>Xml schema for NAnt tasks</description>
+                    </feature>
+                </feature>
+                <feature name="F__Source" title="Source and Tests" display="1" typical="true" directory="D__NANT_SRC">
+                    <description>Source code and unit tests</description>
+                    <feature name="F__Source_NAnt" title="NAnt Source and Tests" display="1" typical="true" directory="D__NANT">
+                        <description>NAnt source code and unit tests</description>
+                    </feature>
+                    <feature name="F__Source_NAntContrib" title="NAntContrib Source and Tests" display="1" typical="true" directory="D__NANT">
+                        <description>NAntContrib source code and unit tests</description>
+                    </feature>
+                </feature>              
+            </features>
+            
+            <mergemodules>
+                <merge feature="F__Bin_NAnt">
+                    <modules>
+                        <include name="${install.dir}/nant.bin.msm" />
+                    </modules>
+                </merge>
+                <merge feature="F__Doc_NAnt">
+                    <modules>
+                        <include name="${install.dir}/nant.doc.msm" />
+                    </modules>
+                </merge>
+                <merge feature="F__Examples_NAnt">
+                    <modules>
+                        <include name="${install.dir}/nant.examples.msm" />
+                    </modules>
+                </merge>
+                <merge feature="F__Source_NAnt">
+                    <modules>
+                        <include name="${install.dir}/nant.src.msm" />
+                    </modules>
+                </merge>
+
+                <merge feature="F__Bin_NAntContrib">
+                    <modules>
+                        <include name="${install.dir}/nantcontrib.bin.msm" />
+                    </modules>
+                </merge>
+                <merge feature="F__Doc_NAntContrib">
+                    <modules>
+                        <include name="${install.dir}/nantcontrib.doc.msm" />
+                    </modules>
+                </merge>
+                <merge feature="F__Source_NAntContrib">
+                    <modules>
+                        <include name="${install.dir}/nantcontrib.src.msm" />
+                    </modules>
+                </merge>
+            </mergemodules>
+        </msi>
+    </target>
+
+    <target name="nant.mergemodules" depends="install.prepare nant.bin.msm nant.doc.msm nant.examples.msm nant.src.msm" />
+
+    <target name="nant.bin.msm">
+        <property name="msm.id" value="${script::CreateIdGuid()}" />
+        
+        <msm
+            output="nant.bin.msm"
+            sourcedir="${install.dir}"
+            id="NAnt_Bin_Msm_${msm.id}"
+            version="${project.version}.${build.number}"
+            debug="true"
+        >
+            <properties>
+                <property name="Manufacturer" value="The NAnt SourceForge Project"/>
+            </properties>
+
+            <directories>
+                <directory name="D__NANT" foldername="NAnt" root="TARGETDIR">
+                    <directory name="D__NANT_BIN" foldername="bin" />
+                </directory>
+            </directories>
+
+            <environment>
+                <variable name="PATH" append="[D__NANT_BIN]" component="C__NAnt_Bin" />
+            </environment>
+            
+            <components>
+                <component name="C__NAnt_Bin" id="{692BAFB3-49F3-4d41-9AAB-177D672886E0}" attr="2" directory="D__NANT_BIN" keepsubdirs="true">
+                    <key file="${nant.bin.keyfile}" />
+                    <fileset basedir="${nant.bin.dir}">
+                        <include name="**/*" />
+                    </fileset>
+                </component>
+            </components>
+        </msm>
+    </target>
+
+    <target name="nant.doc.msm">
+        <property name="msm.id" value="${script::CreateIdGuid()}" />
+        
+        <msm
+            output="nant.doc.msm"
+            sourcedir="${install.dir}"
+            id="NAnt_Doc_Msm_${msm.id}"
+            version="${project.version}.${build.number}"
+            debug="true"
+        >
+            <properties>
+                <property name="Manufacturer" value="The NAnt SourceForge Project"/>
+            </properties>
+
+            <directories>
+                <directory name="D__NANT" foldername="NAnt" root="TARGETDIR">
+                    <directory name="D__NANT_DOC" foldername="doc" >
+                        <directory name="D__NANT_DOC_NANT" foldername="NAnt" >
+                            <directory name="D__NANT_DOC_NANT_HELP" foldername="help" />
+                            <directory name="D__NANT_DOC_NANT_SDK" foldername="sdk" />
+                        </directory>
+                    </directory>
+                </directory>
+                <directory name="D__NANTMENUFOLDER" foldername="NAnt" root="ProgramMenuFolder" >
+                    <directory name="D__NANTMENUFOLDER_HELP" foldername="Help" />
+                </directory>                
+            </directories>
+
+            <components>
+                <component name="C__NAnt_Doc" id="{228F97D7-1C6C-45ae-85CF-A0FF3599AB1A}" attr="2" directory="D__NANT_DOC_NANT" >
+                    <key file="${nant.doc.keyfile}" />
+                    <fileset basedir="${nant.doc.dir}">
+                        <include name="*" />
+                    </fileset>
+                </component>
+                <component name="C__NAnt_Doc_Help" id="{CE6712C4-1876-481e-9A45-4B88D081F4B1}" attr="2" directory="D__NANT_DOC_NANT_HELP" keepsubdirs="true">
+                    <key file="${nant.doc.help.keyfile}" />
+                    <fileset basedir="${nant.doc.help.dir}">
+                        <include name="**/*" />
+                    </fileset>
+                </component>
+                <component name="C__NAnt_Doc_Sdk" id="{0BAD7D5C-DB3F-4ca4-A994-C7308C7F8897}" attr="2" directory="D__NANT_DOC_NANT_SDK" >
+                    <key file="${nant.doc.sdk.keyfile}" />
+                    <fileset basedir="${nant.doc.sdk.dir}">
+                        <include name="NAnt-SDK.chm" />
+                    </fileset>
+                </component>
+            </components>
+
+            <shortcuts>
+                <shortcut name="S__Help_NAnt_UserDocs" directory="D__NANTMENUFOLDER_HELP" filename="NAnt User Documentation" 
+                            component="C__NAnt_Doc_Help" target="[$C__NAnt_Doc_Help]\index.html" showcmd="3" >
+                        <description>NAnt User Documentation</description>
+                </shortcut>
+                <shortcut name="S__Help_NAnt_SdkDocs" directory="D__NANTMENUFOLDER_HELP" filename="NAnt SDK Reference" 
+                            component="C__NAnt_Doc_Sdk" target="[$C__NAnt_Doc_Sdk]\NAnt-SDK.chm" showcmd="3" >
+                        <description>NAnt SDK Reference</description>
+                </shortcut>
+            </shortcuts>
+        </msm>
+    </target>
+        
+    <target name="nant.examples.msm">
+        <property name="msm.id" value="${script::CreateIdGuid()}" />
+        
+        <msm
+            output="nant.examples.msm"
+            sourcedir="${install.dir}"
+            id="NAnt_Examples_Msm_${msm.id}"
+            version="${project.version}.${build.number}"
+            debug="true"
+        >
+            <properties>
+                <property name="Manufacturer" value="The NAnt SourceForge Project"/>
+            </properties>
+
+            <directories>
+                <directory name="D__NANT" foldername="NAnt" root="TARGETDIR">
+                    <directory name="D__NANT_EXAMPLES" foldername="examples" />
+                </directory>
+                <directory name="D__NANTMENUFOLDER" foldername="NAnt" root="ProgramMenuFolder" >
+                    <directory name="D__NANTMENUFOLDER_EXAMPLES" foldername="Examples" />
+                </directory>
+            </directories>
+
+            <components>
+                <component name="C__NAnt_Examples" id="{CDEFCE03-37F9-4b2f-98C0-F7F2684DDB4D}" attr="2" directory="D__NANT_EXAMPLES" keepsubdirs="true">
+                    <key file="${nant.examples.keyfile}" />
+                    <fileset basedir="${nant.examples.dir}">
+                        <include name="**/*" />
+                    </fileset>
+                </component>
+            </components>
+            
+            <shortcuts>
+                <shortcut name="S__Examples_NAnt_Filters" directory="D__NANTMENUFOLDER_EXAMPLES" filename="Filters" 
+                            component="C__NAnt_Examples" target="[D__NANT_EXAMPLES_FILTERS]" showcmd="3" >
+                        <description>NAnt Example: Filters</description>
+                </shortcut>                
+                <shortcut name="S__Examples_NAnt_HelloWindowsForms" directory="D__NANTMENUFOLDER_EXAMPLES" filename="HelloWindowsForms" 
+                            component="C__NAnt_Examples" target="[D__NANT_EXAMPLES_HELLOWINDOWSFORMS]" showcmd="3" >
+                        <description>NAnt Example: HelloWindowsForms</description>
+                </shortcut>
+                <shortcut name="S__Examples_NAnt_HelloWorld" directory="D__NANTMENUFOLDER_EXAMPLES" filename="HelloWorld" 
+                            component="C__NAnt_Examples" target="[D__NANT_EXAMPLES_HELLOWORLD]" showcmd="3" >
+                        <description>NAnt Example: HelloWorld</description>
+                </shortcut>
+                <shortcut name="S__Examples_NAnt_ScriptTask" directory="D__NANTMENUFOLDER_EXAMPLES" filename="ScriptTask" 
+                            component="C__NAnt_Examples" target="[D__NANT_EXAMPLES_SCRIPTTASK]" showcmd="3" >
+                        <description>NAnt Example: ScriptTask</description>
+                </shortcut>
+                <shortcut name="S__Examples_NAnt_Simple" directory="D__NANTMENUFOLDER_EXAMPLES" filename="Simple" 
+                            component="C__NAnt_Examples" target="[D__NANT_EXAMPLES_SIMPLE]" showcmd="3" >
+                        <description>NAnt Example: Simple</description>
+                </shortcut>
+                <shortcut name="S__Examples_NAnt_Solution" directory="D__NANTMENUFOLDER_EXAMPLES" filename="Solution" 
+                            component="C__NAnt_Examples" target="[D__NANT_EXAMPLES_SOLUTION]" showcmd="3" >
+                        <description>NAnt Example: Solution</description>
+                </shortcut>                
+                <shortcut name="S__Examples_NAnt_UserTask" directory="D__NANTMENUFOLDER_EXAMPLES" filename="UserTask" 
+                            component="C__NAnt_Examples" target="[D__NANT_EXAMPLES_USERTASK]" showcmd="3" >
+                        <description>NAnt Example: UserTask</description>
+                </shortcut>
+            </shortcuts>
+        </msm>
+    </target>
+    
+    <target name="nant.src.msm">
+        <property name="msm.id" value="${script::CreateIdGuid()}" />
+        
+        <msm
+            output="nant.src.msm"
+            sourcedir="${install.dir}"
+            id="NAnt_Src_Msm_${msm.id}"
+            version="${project.version}.${build.number}"
+            debug="true"
+        >
+            <properties>
+                <property name="Manufacturer" value="The NAnt SourceForge Project"/>
+            </properties>
+
+            <directories>
+                <directory name="D__NANT" foldername="NAnt" root="TARGETDIR">
+                    <directory name="D__NANT_SRC" foldername="src" />
+                    <directory name="D__NANT_TESTS" foldername="tests" />
+                </directory>
+            </directories>
+
+            <components>
+                <component name="C__NAnt" id="{43D9E722-FF93-4a50-A6A8-D81EE66D2B0D}" attr="2" directory="D__NANT">
+                    <key file="${nant.keyfile}" />
+                    <fileset basedir="${nant.dir}">
+                        <include name="*" />
+                    </fileset>
+                </component>
+
+                <component name="C__NAnt_Src" id="{B3008ABA-2001-4f5c-A40D-859E4136E724}" attr="2" directory="D__NANT_SRC" keepsubdirs="true">
+                    <key file="${nant.src.keyfile}" />
+                    <fileset basedir="${nant.src.dir}">
+                        <include name="**/*" />
+                    </fileset>
+                </component>
+
+                <component name="C__NAnt_Tests" id="{377D8F16-5512-4f26-B0CE-43C1863BDEEA}" attr="2" directory="D__NANT_TESTS" keepsubdirs="true">
+                    <key file="${nant.tests.keyfile}" />
+                    <fileset basedir="${nant.tests.dir}">
+                        <include name="**/*" />
+                    </fileset>
+                </component>
+            </components>
+        </msm>
+    </target>
+
+    <target name="nantcontrib.mergemodules" depends="install.prepare nantcontrib.bin.msm nantcontrib.doc.msm nantcontrib.src.msm" />
+
+    <target name="nantcontrib.bin.msm">
+        <property name="msm.id" value="${script::CreateIdGuid()}" />
+        
+        <msm
+            output="nantcontrib.bin.msm"
+            sourcedir="${install.dir}"
+            id="NAntContrib_Bin_Msm_${msm.id}"
+            version="${project.version}.${build.number}"
+            debug="true"
+        >
+            <properties>
+                <property name="Manufacturer" value="The NAnt SourceForge Project"/>
+            </properties>
+
+            <directories>
+                <directory name="D__NANT" foldername="NAnt" root="TARGETDIR">
+                    <directory name="D__NANT_BIN" foldername="bin" />
+                </directory>
+            </directories>
+
+            <components>
+                <component name="C__NAntContrib_Bin" id="{0332B885-EA54-4714-8477-BD2D5C00D30A}" attr="2" directory="D__NANT_BIN" >
+                    <key file="${nantcontrib.bin.keyfile}" />
+                    <fileset basedir="${nantcontrib.bin.dir}">
+                        <include name="*" />
+                    </fileset>
+                </component>
+            </components>
+        </msm>
+    </target>
+    
+    <target name="nantcontrib.doc.msm">
+        <property name="msm.id" value="${script::CreateIdGuid()}" />
+        
+        <msm
+            output="nantcontrib.doc.msm"
+            sourcedir="${install.dir}"
+            id="NAntContrib_Doc_Msm_${msm.id}"
+            version="${project.version}.${build.number}"
+            debug="true"
+        >
+            <properties>
+                <property name="Manufacturer" value="The NAnt SourceForge Project"/>
+            </properties>
+
+            <directories>
+                <directory name="D__NANT" foldername="NAnt" root="TARGETDIR">
+                    <directory name="D__NANT_DOC" foldername="doc" >
+                        <directory name="D__NANT_DOC_NANTCONTRIB" foldername="NAntContrib" >
+                            <directory name="D__NANT_DOC_NANTCONTRIB_HELP" foldername="help" />
+                            <directory name="D__NANT_DOC_NANTCONTRIB_SDK" foldername="sdk" />
+                        </directory>
+                    </directory>
+                </directory>
+                <directory name="D__NANTMENUFOLDER" foldername="NAnt" root="ProgramMenuFolder" >
+                    <directory name="D__NANTMENUFOLDER_HELP" foldername="Help" />
+                </directory>
+            </directories>
+
+            <components>
+                <component name="C__NAntContrib_Doc" id="{6F57A6DD-7445-431b-BB50-7E7C822A2B9E}" attr="2" directory="D__NANT_DOC_NANTCONTRIB" >
+                    <key file="${nantcontrib.doc.keyfile}" />
+                    <fileset basedir="${nantcontrib.doc.dir}">
+                        <include name="*" />
+                    </fileset>
+                </component>
+                <component name="C__NAntContrib_Doc_Help" id="{D1737D81-6D40-4f2f-A9C9-26D045E12414}" attr="2" directory="D__NANT_DOC_NANTCONTRIB_HELP" keepsubdirs="true">
+                    <key file="${nantcontrib.doc.help.keyfile}" />
+                    <fileset basedir="${nantcontrib.doc.help.dir}">
+                        <include name="**/*" />
+                    </fileset>
+                </component>
+                <component name="C__NAntContrib_Doc_Sdk" id="{FB6EFAED-D966-4909-8EB5-B0F5702D364A}" attr="2" directory="D__NANT_DOC_NANTCONTRIB_SDK" >
+                    <key file="${nantcontrib.doc.sdk.keyfile}" />
+                    <fileset basedir="${nantcontrib.doc.sdk.dir}">
+                        <include name="NAntContrib-SDK.chm" />
+                    </fileset>
+                </component>
+            </components>
+
+            <shortcuts>
+                <shortcut name="S__Help_NAntContrib_UserDocs" directory="D__NANTMENUFOLDER_HELP" filename="NAntContrib User Documentation" 
+                            component="C__NAntContrib_Doc_Help" target="[$C__NAntContrib_Doc_Help]\index.html" showcmd="3" >
+                        <description>NAntContrib User Documentation</description>
+                </shortcut>
+                <shortcut name="S__Help_NAntContrib_SdkDocs" directory="D__NANTMENUFOLDER_HELP" filename="NAntContrib SDK Reference" 
+                            component="C__NAntContrib_Doc_Sdk" target="[$C__NAntContrib_Doc_Sdk]\NAntContrib-SDK.chm" showcmd="3" >
+                        <description>NAntContrib SDK Reference</description>
+                </shortcut>
+            </shortcuts>
+        </msm>
+    </target>
+    
+    <target name="nantcontrib.src.msm">
+        <property name="msm.id" value="${script::CreateIdGuid()}" />
+        
+        <msm
+            output="nantcontrib.src.msm"
+            sourcedir="${install.dir}"
+            id="NAntContrib_Src_Msm_${msm.id}"
+            version="${project.version}.${build.number}"
+            debug="true"
+        >
+            <properties>
+                <property name="Manufacturer" value="The NAnt SourceForge Project"/>
+            </properties>
+
+            <directories>
+                <directory name="D__NANT" foldername="NAnt" root="TARGETDIR">
+                    <directory name="D__NANT_SRC" foldername="src" />
+                    <directory name="D__NANT_TESTS" foldername="tests" />
+                    <directory name="D__NANT_TOOLS" foldername="Tools" />
+                </directory>
+            </directories>
+
+            <components>
+                <component name="C__NAntContrib" id="{A892565E-BA43-43ed-AE0D-03E114C99043}" attr="2" directory="D__NANT" >
+                    <key file="${nantcontrib.keyfile}" />
+                    <fileset basedir="${nantcontrib.dir}">
+                        <include name="*" />
+                    </fileset>
+                </component>
+                <component name="C__NAntContrib_Src" id="{9459351A-EE7E-4ee0-9F44-76B361AAB660}" attr="2" directory="D__NANT_SRC" keepsubdirs="true">
+                    <key file="${nantcontrib.src.keyfile}" />
+                    <fileset basedir="${nantcontrib.src.dir}">
+                        <include name="**/*" />
+                    </fileset>
+                </component>
+
+                <component name="C__NAntContrib_Tests" id="{F754C239-B447-4273-8EA9-F9E4F40FE8D1}" attr="2" directory="D__NANT_TESTS" keepsubdirs="true">
+                    <key file="${nantcontrib.tests.keyfile}" />
+                    <fileset basedir="${nantcontrib.tests.dir}">
+                        <include name="**/*" />
+                    </fileset>
+                </component>
+                
+                <component name="C__NAntContrib_Tools" id="{DD5EB4C0-C2C9-4a33-8787-178E9749DCD8}" attr="2" directory="D__NANT_TOOLS" keepsubdirs="true">
+                    <key file="${nantcontrib.Tools.keyfile}" />
+                    <fileset basedir="${nantcontrib.Tools.dir}">
+                        <include name="**/*" />
+                    </fileset>
+                </component>
+            </components>
+        </msm>
+    </target>
+</project>

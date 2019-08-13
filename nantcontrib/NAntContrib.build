@@ -1,0 +1,647 @@
+<?xml version="1.0"?>
+<project name="NAntContrib" default="test">
+    <include buildfile="../properties.xml" if="${file::exists('../properties.xml')}" />
+    <!-- set build.date property to current date in format yyyy-MM-dd -->
+    <tstamp property="build.date" pattern="yyyy-MM-dd" />
+    <property name="build.warnaserror" value="false" />
+    <!-- global project settings -->
+    <property name="project.name" value="nantcontrib" />
+    <property name="project.FormalName" value="NAnt.Contrib" />
+    <property name="project.version" value="0.93" unless="${property::exists('project.version')}" />
+    <property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" /> <!-- nightly / dev / alpha / beta# / rc# / release -->
+    <if test="${project.release.type == 'nightly'}">
+        <property name="project.version.full" value="${project.version + '-nightly-' + build.date}" />
+    </if>
+    <if test="${project.release.type != 'nightly'}">
+        <property name="project.version.full" value="${project.version + if(project.release.type == 'release', '', '-' + project.release.type)}" dynamic="true" />    
+    </if>
+    <if test="${project.release.type == 'dev' or project.release.type == 'nightly'}">
+        <property name="build.warnaserror" value="true" />
+    </if>
+
+    <!-- 
+        specifies whether the CommonAssemblyInfo.cs file should be created.
+        we do not want this for releases (whether they're beta or release) as
+        this would cause the build number to be updated
+    -->
+    <property name="create.assemblyinfo" value="true" />
+
+    <!-- default configuration -->
+    <property name="project.config" value="debug" /> <!-- debug|release -->
+    <property name="build.defines" value="" />
+    <property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01-01-2000'))))}" />
+    <property name="src.dir" value="src" />
+    <property name="tests.dir" value="tests" />
+    <property name="tools.dir" value="Tools" />
+
+    <!-- named project configurations (used by self-test and self-doc tasks) -->
+    <target name="debug" description="Perform a 'debug' build">
+        <property name="project.config" value="debug" />
+        <property name="build.debug" value="true" />
+        <property name="build.dir" value="${project::get-base-directory()}/build/${project.name}-${project.config}" />
+    </target>
+    <target name="release" description="Perform a 'release' build">
+        <property name="project.config" value="release" />
+        <property name="build.debug" value="false" />
+        <property name="build.dir" value="${project::get-base-directory()}/build/${project.name}" />
+    </target>
+    
+    <!-- build tasks -->
+    <target name="check-nant-dir">
+        <!-- check if location of nant was explicitly set -->
+        <if test="${not property::exists('nant.dir')}">
+            <!-- 
+                if NAnt location was not explicitly set, then assume that the
+                the parent directory of the NAnt base directory is what we're
+                looking for 
+            -->
+            <echo message="NAnt base directory=${nant::get-base-directory()}" level="Verbose" />
+            <property name="nant.dir" value="${directory::get-parent-directory(nant::get-base-directory())}" />
+        </if>
+        <!-- ensure "nant.dir" directory exists -->
+        <if test="${not directory::exists(nant.dir)}">
+            <fail>The specified NAnt directory (${nant.dir}) does not exist.</fail>
+        </if>
+        <echo message="NAnt installation directory=${nant.dir}" level="Verbose" />
+        <!-- path of NAnt executable -->
+        <property name="nant.exe" value="${path::combine(nant.dir, 'bin/NAnt.exe')}" />
+        <!-- ensure "nant.dir" directory contains bin/NAnt.exe -->
+        <if test="${not file::exists(path::combine(nant.dir, 'bin/NAnt.exe'))}">
+            <fail>Please pass a valid NAnt installation directory on the commandline using a &quot;nant.dir&quot; property (eg. NAnt.exe -D:nant.dir=c:\nant-0.85).</fail>
+        </if>
+    </target>
+    
+    <target name="init" description="Initializes build properties" depends="check-nant-dir">
+        <call target="${project.config}" />
+        <call target="set-framework-configuration" />
+        <if test="${not property::exists('nant.dir')}">
+            <fail message="Please pass the folder containing the NAnt build on the commandline as a property (-D:nant.dir=???)." />
+        </if>
+        <if test="${not directory::exists(nant.dir)}">
+            <fail message="The specified folder containing the NAnt build (${nant.dir}) does not exist." />
+        </if>
+        <echo message="Using nant files from ${nant.dir}"/>
+    </target>
+    <target name="create-common-assemblyinfo" if="${create.assemblyinfo}">
+        <!-- ensure src/CommonAssemblyInfo.cs is writable if it already exists -->
+        <attrib file="src/CommonAssemblyInfo.cs" readonly="false" if="${file::exists('src/CommonAssemblyInfo.cs')}" />
+        <!-- generate the source file holding the common assembly-level attributes -->
+        <asminfo output="src/CommonAssemblyInfo.cs" language="CSharp">
+            <imports>
+                <import namespace="System.Reflection" />
+            </imports>
+            <attributes>
+                <attribute type="AssemblyConfigurationAttribute" value="${project.release.type}" />
+                <attribute type="AssemblyCompanyAttribute" value="http://nantcontrib.sourceforge.net" />
+                <attribute type="AssemblyProductAttribute" value="NAntContrib" />
+                <attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2001-${datetime::get-year(datetime::now())} Gerry Shaw" />
+                <attribute type="AssemblyTrademarkAttribute" value="" />
+                <attribute type="AssemblyCultureAttribute" value="" />
+                <attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}.0" />
+                <attribute type="AssemblyInformationalVersionAttribute" value="${project.version}" />
+            </attributes>
+        </asminfo>
+    </target>
+    
+    <include buildfile="NAntContribInstall.include" />
+    
+    <!-- Clean the output of the current build configuration -->
+    <target name="clean" depends="init" description="cleans up everything">
+        <delete dir="${build.dir}" if="${directory::exists(build.dir)}" />
+        <nant buildfile="${tools.dir}/SLiNgshoT/SLiNgshoT.build" target="ReleaseClean" />
+    </target>
+    
+    <!-- Clean the output of both the debug and release build configurations -->
+    <target name="cleanall" depends="" description="cleans up everything">
+        <foreach item="String" in="release debug" delim=" " property="target">
+            <call target="${target}" />
+            <call target="clean" />
+        </foreach>
+        <delete dir="build" />
+    </target>
+    
+    <!-- Prepare directories and build settings -->
+    <target name="prepare" depends="init">
+        <mkdir dir="${build.dir}/bin"/>
+        <copy todir="${build.dir}/bin">
+            <fileset basedir="bin">
+                <include name="CollectionGen.dll" />
+                <include name="SourceSafe.Interop.dll" />
+                <include name="Interop.StarTeam.dll" />
+                <include name="Interop.WindowsInstaller.dll" />
+                <include name="Interop.MsmMergeTypeLib.dll" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Bootstrap the Xsd Task -->
+    <target name="compile.schematask" depends="init" description="compiles the Xsd task">
+        <csc target="library" warnaserror="true" debug="${build.debug}" define="${current.build.defines}" output="${build.dir}/bin/NAnt.Xsd.Tasks.dll">
+            <sources basedir="${src.dir}">
+                <include name="Tasks/XsdTask.cs" />
+            </sources>
+            <references>
+                <include name="System.Data.dll" />
+                <include name="${nant.dir}/bin/NAnt.Core.dll" />
+                <include name="${nant.dir}/bin/NAnt.DotNetTasks.dll" />
+            </references>
+        </csc>
+    </target>
+
+    <!-- Bootstrap XML Schemas into assemblies for task validation -->
+    <target name="compile.schemas" depends="compile.schematask" description="compiles Task XML Schemas into assemblies">
+        <uptodate property="schema.uptodate">
+            <sourcefiles>
+                <include name="${src.dir}/Tasks/Msi/MsiTask.xsd" />
+            </sourcefiles>
+            <targetfiles basedir="${build.dir}/schema/Msi">
+                <include name="MsiTask.cs" />
+            </targetfiles>
+        </uptodate>
+        <if test="${not schema.uptodate}">
+            <mkdir dir="${build.dir}/schema/Msi" unless="${directory::exists(build.dir + '/schema/Msi')}" />
+            <loadtasks assembly="${build.dir}/bin/NAnt.Xsd.Tasks.dll" />
+            <xsd 
+                schema="${src.dir}/Tasks/Msi/MsiTask.xsd"
+                language="CS"
+                namespace="NAnt.Contrib.Schemas.Msi"
+                outputdir="${build.dir}/schema/Msi"
+                uri="NAnt.Contrib.Tasks.Msi.MsiTask" />
+        </if>
+    </target>
+
+    <!-- Build the NAnt.Contrib.Tasks.dll library -->
+    <target name="build" depends="prepare, prepare.slingshot, compile.schemas, create-common-assemblyinfo" description="compiles the source code">
+        <!--
+            The copying of the xsd would not have been necessary if <resourcefileset>
+            supported a <resource> child element that allowed the manifest resource 
+            name to be explicitly specified.
+            
+            TO-DO : remove this "hack" once support for explicit manifest resource
+            names is in place.
+        -->
+        <copy file="${src.dir}/Tasks/Msi/MsiTask.xsd" tofile="${build.dir}/schema/Msi/NAnt.Contrib.Schemas.Msi" />
+        <csc target="library" warnaserror="${build.warnaserror}" debug="${build.debug}"
+             define="${current.build.defines}"
+             output="${build.dir}/bin/${project.FormalName}.Tasks.dll"
+             doc="${build.dir}/bin/${project.FormalName}.Tasks.xml">
+            <nowarn>
+                <!-- do not report compiler warnings for ambiguous crefs until fixed in mono -->
+                <warning number="0419" if="${framework::get-family(framework::get-target-framework()) == 'mono'}" />
+                <!-- do not report warnings for missing XML comments -->
+                <warning number="1591" />
+                <!-- do not report deprecation warnings -->
+                <warning number="0612" />
+                <warning number="0618" />
+            </nowarn>
+            <sources>
+                <include name="${src.dir}/**/*.cs" />
+                <include name="${build.dir}/schema/**/*.cs" />
+
+                <!-- Requires MS SharePoint -->
+                <exclude name="${src.dir}/Tasks/SharePoint/*.cs" />
+                <exclude name="${src.dir}/Tasks/SourceSafe/*.cs" if="${framework::get-family(framework::get-target-framework()) == 'mono'}" />
+                <exclude name="${src.dir}/Tasks/Msi/*.cs" if="${framework::get-family(framework::get-target-framework()) == 'mono'}" />
+            </sources>
+            <references>
+                <include name="${nant.dir}/bin/NAnt.Core.dll" />
+                <include name="${nant.dir}/bin/NAnt.DotNetTasks.dll" />
+                <include name="${nant.dir}/bin/NAnt.SourceControlTasks.dll" />
+                <include name="${build.dir}/bin/CollectionGen.dll" />
+                <include name="${build.dir}/bin/SourceSafe.Interop.dll" />
+                <include name="${build.dir}/bin/Interop.StarTeam.dll" />
+                <include name="${build.dir}/bin/Interop.WindowsInstaller.dll" />
+                <include name="${build.dir}/bin/Interop.MsmMergeTypeLib.dll" />
+                <include name="${build.dir}/bin/SLiNgshoT.Core.dll" />
+                <include name="${build.dir}/bin/NAnt.Contrib.Schemas.dll" />
+                <include name="System.Data.dll" />
+                <include name="System.DirectoryServices.dll" />
+                <include name="System.Management.dll" />
+                <include name="System.ServiceProcess.dll" />
+                <include name="System.Web.dll" />
+            </references>
+            <resources>
+                <include name="${src.dir}/xsl/**" />
+                <include name="${build.dir}/schema/Msi/NAnt.Contrib.Schemas.Msi" />
+            </resources>
+            <resources basedir="${src.dir}/Tasks/NUnit2Report/xsl" prefix="xslt.">
+                <include name="**/*.xsl" />
+            </resources>
+            <resources basedir="etc">
+                <include name="MSITaskErrors.mst" />
+                <include name="MSITaskTemplate.msi" />
+                <include name="MSMTaskErrors.mst" />
+                <include name="MSMTaskTemplate.msm" />
+            </resources>
+        </csc>
+    </target>
+    
+    <!-- Build the SLiNgshoT.Core.dll assemblies -->
+    <target name="prepare.slingshot" depends="init" description="Compiles and copies the SLiNgshoT assemblies">
+        <nant buildfile="${tools.dir}/SLiNgshoT/SLiNgshoT.build" target="Release"/>
+        <copy file="${tools.dir}/SLiNgshoT/build/Release/SLiNgshoT.Core.dll" tofile="${build.dir}/bin/SLiNgshoT.Core.dll"/>
+        <copy file="${tools.dir}/SLiNgshoT/build/Release/SLiNgshoT.exe" tofile="${build.dir}/bin/SLiNgshoT.exe"/>
+    </target>
+    
+    <!-- Build the unit tests library -->
+    <target name="buildtests" depends="build" description="Compiles the NUnit Tests">
+        <!-- copy NAnt assemblies needed for the tests to run -->
+        <copy todir="${build.dir}/bin" flatten="true">
+            <fileset basedir="${nant.dir}" failonempty="true">
+                <include name="bin/NAnt.Core.dll" />
+                <include name="bin/NAnt.DotNetTasks.dll" />
+                <include name="bin/NAnt.Win32Tasks.dll" />
+                <include name="bin/log4net.dll" />
+                <include name="${nant::scan-probing-paths('nunit.framework.dll')}" />
+            </fileset>
+        </copy>
+        <!-- compile the test assembly -->
+        <csc target="library" warnaserror="true" debug="${build.debug}" define="${current.build.defines}" output="${build.dir}/bin/${project.FormalName}.Tests.dll">
+            <nowarn>
+                <!-- do not report warnings for missing XML comments -->
+                <warning number="1591" />
+            </nowarn>
+            <sources>
+                <include name="${tests.dir}/**/*.cs" />
+                <!-- common assembly-level attributes -->
+                <include name="${src.dir}/CommonAssemblyInfo.cs" />
+
+                <!-- bug 80959 -->
+                <exclude name="${tests.dir}/Tasks/SourceSafe/*.cs" if="${framework::get-family(framework::get-target-framework())=='mono'}" />
+                <exclude name="${tests.dir}/Tasks/SharePoint/*.cs"/>
+            </sources>
+            <references>
+                <include name="${nant.dir}/bin/NAnt.Core.dll" />
+                <include name="${nant::scan-probing-paths('nunit.framework.dll')}" />
+                <include name="${build.dir}/bin/${project.FormalName}.Tasks.dll" />
+                <include name="${build.dir}/bin/SourceSafe.Interop.dll" />
+                <include name="System.Data.dll" />
+                <include name="System.DirectoryServices.dll" />
+                <include name="System.Management.dll" />
+                <include name="System.ServiceProcess.dll" />
+                <include name="System.Web.dll" />
+            </references>
+        </csc>
+    </target>
+
+    <!-- Perform unit tests. -->
+    <target name="test" depends="buildtests init" description="run unit tests">
+        <!-- make copy of NAnt configuration file -->
+        <copy 
+            file="${path::combine(nant::get-base-directory(), 'NAnt.exe.config')}"
+            tofile="${path::combine(nant::get-base-directory(), 'NAnt.tests.config')}" />
+
+        <!-- make sure the config file is writable -->
+        <attrib 
+            file="${path::combine(nant::get-base-directory(), 'NAnt.tests.config')}"
+            readonly="false" />
+
+        <!-- ensure the tests target the current framework -->
+        <xmlpoke 
+            file="${path::combine(nant::get-base-directory(), 'NAnt.tests.config')}"
+            xpath="//configuration/nant/frameworks/platform[@name='${platform::get-name()}']/@default"
+            value="${framework::get-target-framework()}" />
+
+        <!-- output the config file that will be used to run the tests -->
+        <echo message="testing with config '${path::combine(nant::get-base-directory(), 'NAnt.tests.config')}'" />
+        <!-- execute the unit tests -->
+        <nunit2>
+            <formatter type="Plain" />
+            <formatter type="Xml" usefile="true" extension=".xml" outputdir="${build.dir}/results" />
+            <test 
+                assemblyname="${build.dir}/bin/${project.FormalName}.Tests.dll" 
+                appconfig="${path::combine(nant::get-base-directory(), 'NAnt.tests.config')}" />
+        </nunit2>
+        
+        <!-- remove NAnt assemblies that were needed for the tests to run -->
+        <delete>
+            <fileset basedir="${build.dir}/bin">
+                <include name="NAnt.Core.dll" />
+                <include name="NAnt.DotNetTasks.dll" />
+                <include name="NAnt.Win32Tasks.dll" />
+                <include name="nunit.framework.dll" />
+                <include name="log4net.dll" />
+            </fileset>
+        </delete>
+    </target>
+
+    <!-- Build task and sdk documentation -->
+    <target name="doc" depends="build filter-copy-help-html" description="build documentation">
+        <!-- ensure NAnt documenter exists -->
+        <if test="${not file::exists(path::combine(nant.dir, 'bin/NDoc.Documenter.NAnt.dll'))}">
+            <fail message="NDoc.Documenter.NAnt.dll not found. Run the 'userdoc' target in your NAnt source tree" />
+        </if>
+
+        <!-- 
+            determine NAnt base uri for linking to NAnt docs :
+            
+            - for local development builds, just link to the help of the version of NAnt we're building against
+            - for nightly builds and releases, link to corresponding online docs
+        -->
+        <if test="${project.release.type == 'dev'}">
+            <property name="nant.base.uri" value="${nant.dir}/doc/help/" unless="${property::exists('nant.base.uri')}" />
+        </if>
+        <if test="${project.release.type == 'nightly'}">
+            <property name="nant.base.uri" value="http://nant.sourceforge.net/nightly/${build.date}-${project.version}/help/" unless="${property::exists('nant.base.uri')}" />
+        </if>
+        <if test="${project.release.type != 'nightly' and project.release.type != 'dev'}">
+            <property name="nant.base.uri" value="http://nant.sourceforge.net/release/${project.version.full}/help/" unless="${property::exists('nant.base.uri')}" />
+        </if>
+
+        <ndoc>
+            <assemblies basedir="${build.dir}/bin" failonempty="true">
+                <include name="NAnt.Contrib.Tasks.dll" />
+                <!-- 
+                    we need to add the NAnt.Core assembly too in order to provide
+                    doc summaries and add links to NAnt types and tasks
+                -->
+                <include name="${nant.dir}/bin/NAnt.Core.dll" />
+            </assemblies>
+            <documenters>
+                <documenter name="NAnt">
+                    <property name="OutputDirectory" value="${build.dir}/doc/help" />
+                    <property name="SdkDocVersion" value="${link.sdkdoc.version}" />
+                    <property name="SdkLinksOnWeb" value="${link.sdkdoc.web}" />
+                    <!-- set base uri used for linking to NAnt docs -->
+                    <property name="NAntBaseUri" value="${nant.base.uri}" />
+                    <!-- only document classes in NAnt.Contrib namespace -->
+                    <property name="NamespaceFilter" value="NAnt.Contrib" />
+                    <!-- set the name and version of the product for which docs are generated -->
+                    <property name="ProductName" value="NAntContrib" />
+                    <property name="ProductVersion" value="${project.version.full}" />
+                    <property name="Preliminary" value="${not(project.release.type=='release')}" />
+                    <property name="DocumentAttributes" value="True" />
+                    <property name="IncludeAssemblyVersion" value="True" />
+                    <property name="ShowMissingParams" value="True" />
+                    <property name="ShowMissingReturns" value="True" />
+                    <property name="ShowMissingValues" value="True" />
+                </documenter>
+                <documenter name="MSDN">
+                    <property name="OutputDirectory" value="${build.dir}/doc/sdk" />
+                    <property name="OutputTarget" value="HtmlHelpAndWeb" />
+                    <property name="HtmlHelpName" value="NAntContrib-SDK" />
+                    <property name="SdkDocVersion" value="${link.sdkdoc.version}" />
+                    <property name="SdkLinksOnWeb" value="${link.sdkdoc.web}" />
+                    <property name="IncludeFavorites" value="False" />
+                    <property name="Title" value="NAntContrib SDK Documentation - v${project.version.full}" />
+                    <property name="SplitTOCs" value="False" />
+                    <property name="DefaulTOC" value="" />
+                    <property name="ShowVisualBasic" value="True" />
+                    <property name="ShowMissingSummaries" value="${build.debug}" />
+                    <property name="ShowMissingRemarks" value="${build.debug}" />
+                    <property name="ShowMissingParams" value="${build.debug}" />
+                    <property name="ShowMissingReturns" value="${build.debug}" />
+                    <property name="ShowMissingValues" value="${build.debug}" />
+                    <property name="Preliminary" value="${not(project.release.type=='release')}" />
+                    <property name="DocumentAttributes" value="True" />
+                    <property name="ShowTypeIdInAttributes" value="False" />
+                    <property name="DocumentInternals" value="False" />
+                    <property name="DocumentProtected" value="True" />
+                    <property name="DocumentPrivates" value="False" />
+                    <property name="DocumentEmptyNamespaces" value="False" />
+                    <property name="IncludeAssemblyVersion" value="False" />
+                    <property name="CopyrightText" value="Copyright (C) 2001-${datetime::get-year(datetime::now())} Gerry Shaw" />
+                    <property name="CopyrightHref" value="http://nantcontrib.sourceforge.net" />
+                    <property name="EditorBrowsableFilter" value="Off" />
+                </documenter>
+            </documenters>
+        </ndoc>
+
+        <!-- copy images and stylesheet so we can preview userdoc and have it look right -->
+        <copy todir="${build.dir}/doc/help">
+            <fileset basedir="doc/help">
+                <include name="**/*" />
+                <!-- exclude static html pages as these will be filter-copied -->
+                <exclude name="**/*.html" />
+            </fileset>
+        </copy>
+
+        <echo message="Preview task references: file://${build.dir}/doc/help/tasks/index.html"/>
+    </target>
+
+    <target name="package-common" depends="test, doc">
+        <!-- remove non-release files -->
+        <delete>
+            <fileset basedir="${build.dir}">
+                <!-- remove test assemblies -->
+                <include name="bin/*.Tests.*" />
+                <!-- remove generated schema's -->
+                <include name="schema/**" />
+            </fileset>
+        </delete>
+
+        <!-- copy project files -->
+        <copy todir="${build.dir}">
+            <fileset>
+                <include name="*" />
+                <include name="${src.dir}/**" />
+                <include name="examples/**" />
+                <include name="${tests.dir}/**" />
+                <include name="${tools.dir}/**" />
+                <!-- website -->
+                <include name="web/**" />
+                <!-- docs -->
+                <include name="doc/**" />
+                <!-- exclude static html pages as these will be filter-copied -->
+                <exclude name="doc/**/*.html" />
+                <!-- exclude tools build directory -->
+                <exclude name="${tools.dir}/**/build/**" />
+                <!-- exclude nighlty build file -->
+                <exclude name="nightly.xml" />
+                <!-- exclude release build file -->
+                <exclude name="release.xml" />
+                <!--exclude VS.Net stuff -->
+                <exclude name="**/*.suo" />
+                <exclude name="**/*j.user" />
+                <exclude name="**/bin/**" />
+                <exclude name="**/obj/**" />
+            </fileset>
+        </copy>
+
+        <!-- determine the zip file prefix directory -->
+        <property name="project.zip.prefix" value="${project.name}-${project.version.full}" />
+    </target>
+    
+    <target name="filter-copy-help-html">
+        <!-- filter-copy static html pages -->
+        <copy todir="${build.dir}" overwrite="true">
+            <fileset>
+                <include name="doc/**/*.html" />
+            </fileset>
+            <filterchain>
+                <replacetokens>
+                    <token key="PRODUCT_VERSION" value="${project.version.full}" />
+                </replacetokens>
+                <!-- when NOT building a release package, add prelimary notice -->
+                <replacestring
+                    from="&lt;!-- @PRELIMINARY_NOTICE@ -->"
+                    to="&lt;p class=&quot;topicstatus&quot;>[This is preliminary documentation and subject to change.]&lt;/p>"
+                    unless="${project.release.type=='release'}" 
+                />
+                <!-- when building a release package, remove the placeholder -->
+                <replacestring
+                    from="&lt;!-- @PRELIMINARY_NOTICE@ -->"
+                    to=""
+                    if="${project.release.type=='release'}"
+                />
+            </filterchain>
+        </copy>
+    </target>
+    
+    <!-- creates tar for distributing the user manual and SDK to SourceForge -->
+    <target name="package-doc" depends="package-common">
+        <!-- determine name of temporary doc distribution -->
+        <property name="project.gzip-path.doc" value="${project::get-base-directory()}/build/${project.name}-${project.version.full}-doc.tar.gz" />
+        <!-- remove package gzip file if it already exists -->
+        <delete file="${project.gzip-path.doc}" if="${file::exists(project.gzip-path.doc)}" />
+        <!-- create package gzip file -->
+        <tar destfile="${project.gzip-path.doc}" compression="GZip">
+            <fileset basedir="${build.dir}/doc">
+                <include name="help/**/*" />
+            </fileset>
+        </tar>
+        <echo message="Created '${project.config}' doc package at file://${project::get-base-directory()}/build/" />
+    </target>
+
+    <target name="package-src" depends="package-common">
+        <!-- determine name of package zip file -->
+        <property name="project.zip-path.src" value="${project::get-base-directory()}/build/${project.name}-${project.version.full}-src.zip" />
+        <!-- remove package zip file if it already exists -->
+        <delete file="${project.zip-path.src}" if="${file::exists(project.zip-path.src)}" />
+        <!-- create package zip file -->
+        <zip zipfile="${project.zip-path.src}">
+            <fileset basedir="${build.dir}" prefix="${project.zip.prefix}">
+                <include name="license.txt" />
+                <include name="readme.txt" />
+                <!-- build files -->
+                <include name="NAntContrib.build" />
+                <include name="NAntContribInstall.include" />
+                <!-- referenced assemblies -->
+                <include name="bin/CollectionGen.dll" />
+                <include name="bin/Interop.MsmMergeTypeLib.dll" />
+                <include name="bin/Interop.StarTeam.dll" />
+                <include name="bin/Interop.WindowsInstaller.dll" />
+                <include name="bin/SourceSafe.Interop.dll" />
+                <!-- sources -->
+                <include name="src/**/*" />
+                <!-- varia -->
+                <include name="etc/**/*" />
+                <!-- unit tests -->
+                <include name="tests/**/*" />
+                <!-- tools -->
+                <include name="Tools/**/*" />
+                <!-- license & release notes -->
+                <include name="doc/*" />
+                <!-- user manual (no SDK) -->
+                <include name="doc/help/**" />
+                <!-- examples -->
+                <include name="examples/**/*" />
+            </fileset>
+        </zip>
+        <echo message="Created a '${project.config}' source package at file://${project.zip-path.src}" />
+    </target>
+
+    <target name="package-bin" depends="package-common">
+        <!-- determine name of package zip file -->
+        <property name="project.zip-path.bin" value="${project::get-base-directory()}/build/${project.name}-${project.version.full}-bin.zip" />
+        <!-- remove package zip file if it already exists -->
+        <delete file="${project.zip-path.bin}" if="${file::exists(project.zip-path.bin)}" />
+        <!-- create package zip file -->
+        <zip zipfile="${project.zip-path.bin}">
+            <fileset basedir="${build.dir}" prefix="${project.zip.prefix}">
+                <include name="license.txt" />
+                <include name="readme.txt" />
+                <include name="bin/**/*" />
+                <!-- license & release notes -->
+                <include name="doc/*" />
+                <!-- user manual -->
+                <include name="doc/help/**" />
+                <!-- SDK (in HTML Help format) -->
+                <include name="doc/sdk/NAnt-SDK.chm" />
+                <!-- examples -->
+                <include name="examples/**/*" />
+
+                <!-- do not include NAnt.Xsd.Tasks assembly -->
+                <exclude name="bin/NAnt.Xsd.Tasks.*" />
+            </fileset>
+        </zip>
+        <echo message="Created a '${project.config}' binary package at file://${project.zip-path.bin}" />
+    </target>
+    
+    <target name="package" depends="package-src, package-bin" description="Creates a binary and source distribution package." />
+
+    <target name="install" depends="build">
+        <!-- by default destdir is empty -->
+        <if test="${not property::exists('destdir')}">
+            <property name="destdir" value="" />
+        </if>
+
+        <!-- by default install to base directory of running NAnt -->
+        <if test="${not property::exists('prefix')}">
+            <property name="prefix" value="${nant::get-base-directory()}" />
+        </if>
+
+        <!-- install NAntContrib extension assembly -->
+        <copy todir="${destdir}${prefix}/extensions/common/neutral/NAntContrib" overwrite="true">
+            <fileset basedir="${build.dir}/bin">
+                <include name="NAnt.Contrib.Tasks.*" />
+            </fileset>
+        </copy>
+
+        <!-- install third-party & support assemblies -->
+        <copy todir="${destdir}${prefix}/lib/common/neutral/NAntContrib" overwrite="true">
+            <fileset basedir="${build.dir}/bin">
+                <include name="CollectionGen.dll" />
+                <include name="Interop.MsmMergeTypeLib.dll" />
+                <include name="Interop.StarTeam.dll" />
+                <include name="Interop.WindowsInstaller.dll" />
+                <include name="SLiNgshoT.Core.dll" />
+                <include name="SourceSafe.Interop.dll" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Framework support targets -->
+    <target name="set-framework-configuration">
+        <if test="${not(target::exists('set-'+framework::get-target-framework()+'-framework-configuration'))}">
+            <fail message="The '${framework::get-target-framework()}' framework is not supported by this version of NAntContrib." />
+        </if>
+        <call target="set-${framework::get-target-framework()}-framework-configuration" />
+    </target>
+    <target name="set-net-2.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="net-2.0" />
+        <property name="current.build.defines" value="${build.defines}NET,NET_1_0,NET_1_1,NET_2_0,ONLY_NET_2_0" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+    <target name="set-net-3.5-framework-configuration">
+        <property name="nant.settings.currentframework" value="net-3.5" />
+        <property name="current.build.defines" value="${build.defines}NET,NET_1_0,NET_1_1,NET_2_0,NET_3_5,ONLY_NET_3_5" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+    <target name="set-net-4.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="net-4.0" />
+        <property name="current.build.defines" value="${build.defines}NET,NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,ONLY_4_0" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+    <target name="set-mono-2.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="mono-2.0" />
+        <property name="current.build.defines" value="${build.defines}MONO,NET_1_0,NET_1_1,NET_2_0,ONLY_NET_2_0" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+    <target name="set-mono-3.5-framework-configuration">
+        <property name="nant.settings.currentframework" value="mono-3.5" />
+        <property name="current.build.defines" value="${build.defines}MONO,NET_1_0,NET_1_1,NET_2_0,NET_3_5,ONLY_NET_3_5" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+    <target name="set-mono-4.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="mono-4.0" />
+        <property name="current.build.defines" value="${build.defines}MONO,NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,ONLY_4_0" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+</project>
