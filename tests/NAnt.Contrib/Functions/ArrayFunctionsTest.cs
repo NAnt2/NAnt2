@@ -20,7 +20,7 @@
 using System;
 using NUnit.Framework;
 using NAnt.Core;
-using Tests.NAnt.Contrib;
+using Tests.NAnt.Core;
 
 namespace NAnt.Contrib.Tests.Functions
 {

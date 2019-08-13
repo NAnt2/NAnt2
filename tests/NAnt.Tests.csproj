@@ -71,6 +71,24 @@
     <Compile Include="NAnt.Compression\Tasks\ZipTaskTest.cs" />
     <None Include="NAnt.Console\NAnt.Console.build" />
     <Compile Include="NAnt.Console\NAntTest.cs" />
+    <Compile Include="Nant.Contrib\Functions\ArrayFunctionsTest.cs" />
+    <Compile Include="Nant.Contrib\Functions\FileFunctionsTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\ChangeDirectoryTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\CodeStatsTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SharePoint\AddListToSPSiteTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SharePoint\AddRoleToSPSiteTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SharePoint\AddUserToSPSiteTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SharePoint\CreateSPSiteTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SharePoint\DeleteListFromSPSiteTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SharePoint\DeleteSPSiteTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SharePoint\RemoveRoleFromSPSiteTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SharePoint\RemoveUserFromSPSiteTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SourceSafe\DeleteTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SourceSafe\GetTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SourceSafe\MockVssItem.cs" />
+    <Compile Include="Nant.Contrib\Tasks\SourceSafe\MockVssItems.cs" />
+    <Compile Include="Nant.Contrib\Tasks\VersionTaskTest.cs" />
+    <Compile Include="Nant.Contrib\Util\SqlStatementListTests.cs" />
     <Compile Include="NAnt.Core\BuildFilesInResourcesTest.cs" />
     <Compile Include="NAnt.Core\BuildTestBase.cs" />
     <Compile Include="NAnt.Core\ConcurrencyTest.cs" />
@@ -193,6 +211,10 @@
     <ProjectReference Include="..\src\NAnt.Compression\NAnt.Compression.csproj">
       <Project>{8F80C098-94A4-44DB-A25D-C9E455FC3120}</Project>
       <Name>NAnt.Compression</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\Nant.Contrib\NAntContrib.csproj">
+      <Project>{cfba0de3-2b01-4c75-b615-4acba502f71c}</Project>
+      <Name>NAntContrib</Name>
     </ProjectReference>
     <ProjectReference Include="..\src\NAnt.Core\NAnt.Core.csproj">
       <Project>{8F5F8375-4097-4952-B860-784EB9961ABE}</Project>

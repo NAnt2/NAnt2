@@ -23,6 +23,7 @@ using System.IO;
 using NUnit.Framework;
 
 using NAnt.Core;
+using Tests.NAnt.Core;
 
 namespace Tests.NAnt.Contrib.Functions {
     [TestFixture]

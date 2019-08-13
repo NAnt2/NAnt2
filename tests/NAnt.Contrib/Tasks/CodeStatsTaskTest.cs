@@ -24,7 +24,7 @@ using System.Xml.XPath;
 
 using NUnit.Framework;
 
-using Tests.NAnt.Contrib;
+using Tests.NAnt.Core;
 
 namespace NAnt.Contrib.Tests.Tasks {
     [TestFixture]

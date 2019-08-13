@@ -22,7 +22,7 @@ using System;
 
 using NUnit.Framework;
 
-using Tests.NAnt.Contrib;
+using Tests.NAnt.Core;
 
 namespace Tests.NAnt.Contrib.Tasks {
     /// <summary>

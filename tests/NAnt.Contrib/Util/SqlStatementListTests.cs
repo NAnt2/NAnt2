@@ -28,7 +28,6 @@ using NUnit.Framework;
 
 using NAnt.Core;
 using NAnt.Core.Attributes;
-
 using NAnt.Contrib.Util;
 
 namespace Tests.NAnt.Contrib.Util {
