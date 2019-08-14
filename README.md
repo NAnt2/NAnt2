@@ -31,6 +31,7 @@ Files
 |  Makefile       |  Makefile for compilation with GNU Make         |
 |  Makefile.nmake |  Makefile for compilation with Microsoft NMake  |
 
+
 Compilation and Installation
 ============================
 * Windows (net-2.0): [![TeamCity CodeBetter](https://img.shields.io/teamcity/codebetter/bt387.svg)](http://teamcity.codebetter.com/project.html?projectId=NAnt&guest=1)
@@ -125,38 +126,62 @@ Documentation is available in HTML format, in the `doc/` directory.
 
 
 License
--------
-Copyright (C) 2001-2012 Gerry Shaw
+========
+NAnt is provided under included GPL license.
+NAntContrib is provided under included LGPL license.
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+Contributors
+================
+NAnt (2001 - 2018)
+------
+**Lead Developers**
+* Gerry Shaw (gerry_shaw -at- yahoo.com)
+* Ian MacLean (ian_maclean -at- another.com)
+* Scott Hernandez (scotthernandez -at- hotmail.com)
+* Gert Driesen (gert.driesen -at- ardatis.com)
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+**Developers**
+* Eric V. Smith
+* Bernard Vander Beken (bvb -at- iname.com)
+* Jason Diamond (jason -at- injektilo.org)
+* Jay Turpin (jayturpin -at- hotmail.com)
+* Matthew Mastracci (matt -at- aclaro.com)
+* John Barstow (John_Barstow -at- gfsg.co.nz )
+* Clayton Harbour (claytonharbour -at- sporadicism.com)
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
-As a special exception, the copyright holders of this software give you
-permission to link the assemblies with independent modules to produce new
-assemblies, regardless of the license terms of these independent modules,
-and to copy and distribute the resulting assemblies under terms of your
-choice, provided that you also meet, for each linked independent module,
-the terms and conditions of the license of that module. An independent
-module is a module which is not derived from or based on these assemblies.
-If you modify this software, you may extend this exception to your version
-of the software, but you are not obligated to do so. If you do not wish to
-do so, delete this exception statement from your version. 
+**Contributors**
+* Aaron A. Anderson (aaron -at- skypoint.com)
+* Arjen Poutsma (Arjen -at- ZyLAB.COM)
+* Ari Hännikäinen
+* Ben Lowery (b3low -at- hotmail.com)
+* Bill Baker (bill.baker -at- epigraph.com)
+* Brad Wilson (dotnetguy -at- pobox.com)
+* Jason Reimer (jason.reimer -at- diversant.net)
+* Jeroen Witmond (jnw -at- paralax.nl)
+* Joe Jones (joejo -at- microsoft.com)
+* Justin Rudd
+* Mike Krueger (mike -at- icsharpcode.net)
+* Philippe Lavoie
+* Sergey Chaban (serge -at- wildwestsoftware.com)
+* Shawn Van Ness
+* Giuseppe Greco (giuseppe.greco -at- agamura.com)
+* John Lam (http://www.iunknown.com/) 
 
-A copy of the GNU General Public License is available in the COPYING.txt file 
-included with all NAnt distributions.
+...And more, please see list archives for additional contributors 
 
-For more licensing information refer to the GNU General Public License on the 
-GNU Project web site.
-http://www.gnu.org/copyleft/gpl.html
 
+NAntContrib (2003 - 2018)
+--------------------------
+**Lead Developers**
+* Gerry Shaw (gerry_shaw -at- yahoo.com)
+* Ian MacLean (ian_maclean -at- another.com)
+* Scott Hernandez (scotthernandez -at- hotmail.com)
+* Gert Driesen (gert.driesen -at- ardatis.com)
+
+**Contributors**
+* Dominik Guder 
+* Clayton Harbour
+* Richard Birkby
+* Nikhil Gupta 
+* Bryce
