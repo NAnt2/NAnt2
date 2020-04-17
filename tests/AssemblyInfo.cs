@@ -1,4 +1,4 @@
 using System.Reflection;
 
-[assembly: AssemblyTitleAttribute("NAnt.NUnit1Tasks")]
+[assembly: AssemblyTitle("NAnt.Tests")]
 [assembly: AssemblyDescriptionAttribute("")]

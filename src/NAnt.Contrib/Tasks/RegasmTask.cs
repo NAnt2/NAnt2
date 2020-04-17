@@ -45,7 +45,7 @@ namespace NAnt.Contrib.Tasks {
     ///   </para>
     ///   <code>
     ///     <![CDATA[
-    /// <regasm assembly="myAssembly.dll" />
+    /// <regasm2 assembly="myAssembly.dll" />
     ///     ]]>
     ///   </code>
     /// </example>
@@ -55,7 +55,7 @@ namespace NAnt.Contrib.Tasks {
     ///   </para>
     ///   <code>
     ///     <![CDATA[
-    /// <regasm assembly="myAssembly.dll" typelib="myAssembly.tlb" />
+    /// <regasm2 assembly="myAssembly.dll" typelib="myAssembly.tlb" />
     ///     ]]>
     ///   </code>
     /// </example>
@@ -65,18 +65,18 @@ namespace NAnt.Contrib.Tasks {
     ///   </para>
     ///   <code>
     ///     <![CDATA[
-    /// <regasm unregister="false" codebase="true">
+    /// <regasm2 unregister="false" codebase="true">
     ///     <fileset>
     ///         <include name="**/*.dll" />
       ///       <exclude name="notanassembly.dll" />
     ///     </fileset>
-    /// </regasm>
+    /// </regasm2>
     ///     ]]>
     ///   </code>
     /// </example>
-    [TaskName("regasm")]
+    [TaskName("regasm2")]
     [ProgramLocation(LocationType.FrameworkDir)]
-    public class RegasmTask : ExternalProgramBase {
+    public class Regasm2Task : ExternalProgramBase {
         #region Private Instance Fields
 
         private FileInfo _assemblyFile;

@@ -70,10 +70,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="AssemblyInfo.cs" />
     <None Include="NAnt.SourceControl.build" />
     <Compile Include="Tasks\AbstractCvsTask.cs" />
     <Compile Include="Tasks\AbstractSourceControlTask.cs" />

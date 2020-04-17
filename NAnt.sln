@@ -72,11 +72,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Makefile = Makefile
 		NAnt.build = NAnt.build
+		src\SolutionInfo.cs = src\SolutionInfo.cs
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAnt.Contrib", "src\Nant.Contrib\NAnt.Contrib.csproj", "{CFBA0DE3-2B01-4C75-B615-4ACBA502F71C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{204432A9-BA41-41AA-883D-78EA2D659448}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{F37ABB46-E8F7-476A-B33B-459C585096E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLiNgshoT.Core", "tools\SLiNgshoT\SLiNgshoT.Core\SLiNgshoT.Core.csproj", "{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLiNgshoT", "tools\SLiNgshoT\SLiNgshoT\SLiNgshoT.csproj", "{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -148,12 +156,22 @@ Global
 		{CFBA0DE3-2B01-4C75-B615-4ACBA502F71C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFBA0DE3-2B01-4C75-B615-4ACBA502F71C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFBA0DE3-2B01-4C75-B615-4ACBA502F71C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F77EA08E-9473-436A-BBA3-880139A341B1} = {204432A9-BA41-41AA-883D-78EA2D659448}
+		{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912} = {F37ABB46-E8F7-476A-B33B-459C585096E1}
+		{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13} = {F37ABB46-E8F7-476A-B33B-459C585096E1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A205CB46-074D-41AF-85A7-0B7C07AB8800}

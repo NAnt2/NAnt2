@@ -24,7 +24,8 @@ using NUnit.Framework;
 using NAnt.Core;
 using NAnt.Contrib.Tasks;
 
-namespace Tests.NAnt.Contrib.Tasks {
+namespace Tests.NAnt.Contrib.Tasks 
+{
     [TestFixture]
     public class VersionTaskTest {
         VersionTask _task;

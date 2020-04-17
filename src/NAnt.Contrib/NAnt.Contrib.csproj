@@ -69,40 +69,39 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tools\SLiNgshoT\SLiNgshoT.Core\SLiNgshoT.Core.csproj">
+    <ProjectReference Include="..\..\tools\SLiNgshoT\SLiNgshoT.Core\SLiNgshoT.Core.csproj">
+      <Project>{3f533cca-9c8f-4d84-8c1a-1f6d89cb5912}</Project>
       <Name>SLiNgshoT.Core</Name>
-      <Project>{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}</Project>
     </ProjectReference>
-    <Reference Include="CollectionGen">
-      <Name>CollectionGen</Name>
-      <HintPath>..\bin\CollectionGen.dll</HintPath>
+    <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj">
+      <Project>{8f5f8375-4097-4952-b860-784eb9961abe}</Project>
+      <Name>NAnt.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NAnt.DotNet\NAnt.DotNet.csproj">
+      <Project>{b50a1067-785b-4686-8ffc-5af424bef163}</Project>
+      <Name>NAnt.DotNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NAnt.SourceControl\NAnt.SourceControl.csproj">
+      <Project>{6b2ec648-8d69-4096-b4f9-6edc0b2f98ef}</Project>
+      <Name>NAnt.SourceControl</Name>
+    </ProjectReference>
+    <Reference Include="CollectionGen, Version=1.0.834.34691, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\lib\common\neutral\CollectionGen.dll</HintPath>
     </Reference>
-    <Reference Include="Interop.MsmMergeTypeLib">
-      <Name>Interop.MsmMergeTypeLib</Name>
-      <HintPath>..\bin\Interop.MsmMergeTypeLib.dll</HintPath>
+    <Reference Include="Interop.MsmMergeTypeLib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\lib\common\neutral\Interop.MsmMergeTypeLib.dll</HintPath>
     </Reference>
-    <Reference Include="Interop.StarTeam">
-      <Name>Interop.StarTeam</Name>
-      <HintPath>..\bin\Interop.StarTeam.dll</HintPath>
+    <Reference Include="Interop.StarTeam, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\lib\common\neutral\Interop.StarTeam.dll</HintPath>
     </Reference>
-    <Reference Include="Interop.WindowsInstaller">
-      <Name>Interop.WindowsInstaller</Name>
-      <HintPath>..\bin\Interop.WindowsInstaller.dll</HintPath>
+    <Reference Include="Interop.WindowsInstaller, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\lib\common\neutral\Interop.WindowsInstaller.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <Name>mscorlib</Name>
     </Reference>
-    <Reference Include="NAnt.Core">
-      <Name>NAnt.Core</Name>
-      <HintPath>..\..\build\Debug\NAnt.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="NAnt.DotNetTasks">
-      <Name>NAnt.DotNetTasks</Name>
-      <HintPath>..\NAntRelease\bin\NAnt.DotNetTasks.dll</HintPath>
-    </Reference>
-    <Reference Include="SourceSafe.Interop">
-      <Name>SourceSafe.Interop</Name>
-      <HintPath>..\bin\SourceSafe.Interop.dll</HintPath>
+    <Reference Include="SourceSafe.Interop, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\lib\common\neutral\SourceSafe.Interop.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -127,8 +126,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -322,6 +321,7 @@
     <Compile Include="Tasks\Msi\InstallerTaskBase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Tasks\Msi\Msi.cs" />
     <Compile Include="Tasks\Msi\MsiCreationCommand.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -475,6 +475,14 @@
     <Compile Include="Tasks\ScpTask.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Tasks\SharePoint\AddListToSPSiteTask.cs" />
+    <Compile Include="Tasks\SharePoint\AddRoleToSPSiteTask.cs" />
+    <Compile Include="Tasks\SharePoint\AddUserToSPSiteTask.cs" />
+    <Compile Include="Tasks\SharePoint\CreateSPSiteTask.cs" />
+    <Compile Include="Tasks\SharePoint\DeleteListFromSPSiteTask.cs" />
+    <Compile Include="Tasks\SharePoint\DeleteSPSiteTask.cs" />
+    <Compile Include="Tasks\SharePoint\RemoveRoleFromSPSiteTask.cs" />
+    <Compile Include="Tasks\SharePoint\RemoveUserFromSPSiteTask.cs" />
     <Compile Include="Tasks\SlingshotTask.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -682,6 +690,7 @@
     <Compile Include="Util\SqlStatementList.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="NAnt.Contrib.build" />
     <Content Include="Tasks\Msi\MsiTask.xsd" />
     <Content Include="Tasks\NAnt.xsd" />
     <Content Include="xsl\NUnitSummary.xsl" />
@@ -690,9 +699,6 @@
     <EmbeddedResource Include="Tasks\NUnit2Report\xsl\NUnit-Frame.xsl" />
     <EmbeddedResource Include="Tasks\NUnit2Report\xsl\NUnit-NoFrame.xsl" />
     <EmbeddedResource Include="Tasks\NUnit2Report\xsl\toolkit.xsl" />
-    <None Include="Tasks\Msi\MsiTask.xsx">
-      <DependentUpon>MsiTask.xsd</DependentUpon>
-    </None>
     <Compile Include="Functions\ArrayFunctions.cs" />
   </ItemGroup>
   <ItemGroup>

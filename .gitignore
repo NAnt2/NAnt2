@@ -6,6 +6,7 @@
 # Build and object folders
 build/
 bootstrap/
+install/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -20,7 +21,10 @@ bld/
 [Rr]eports/
 .sonarqube/
 generatedJUnitFiles/
-SolutionInfo.cs
+#SolutionInfo.cs
+
+#non-distributable files
+Microsoft.SharePoint.*
 
 # User specific files
 *.user
@@ -163,6 +167,7 @@ $tf/
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
+.idea/
 
 # JustCode is a .NET coding add-in
 .JustCode

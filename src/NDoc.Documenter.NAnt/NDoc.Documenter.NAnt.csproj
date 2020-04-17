@@ -64,10 +64,10 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="NAntDocumenter.cs" />
     <Compile Include="NAntDocumenterConfig.cs" />
     <Compile Include="NAntXsltUtilities.cs" />

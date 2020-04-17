@@ -29,9 +29,5 @@ using System.Reflection;
 // configuration file is changed.
 [assembly: log4net.Config.XmlConfigurator(Watch=true)]
 
-// This will not compile with Visual Studio.  If you want to build a signed
-// executable use the NAnt build file.  To build under Visual Studio just
-// exclude this file from the build.
-[assembly: AssemblyDelaySign(false)]
-//[assembly: AssemblyKeyFile(@"..\NAnt.key")]
-[assembly: AssemblyKeyName("")]
+[assembly: AssemblyTitleAttribute("NAnt")]
+[assembly: AssemblyDescriptionAttribute("A .NET Build Tool")]

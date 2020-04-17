@@ -16,6 +16,9 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
+
+#if INC_SHAREPOINT
+
 using System;
 using System.DirectoryServices;
 using System.Globalization;
@@ -31,7 +34,7 @@ using Tests.NAnt.Core;
 using Tests.NAnt.Core.Util;
 
 
-namespace NAnt.SharePoint.Tasks
+namespace Tests.NAnt.Contrib.Tasks.SharePoint
 {
 	/// <summary>
 	/// Summary description for AddListToSPSiteTaskTest.
@@ -294,3 +297,5 @@ namespace NAnt.SharePoint.Tasks
 		}
 	}
 }
+
+#endif

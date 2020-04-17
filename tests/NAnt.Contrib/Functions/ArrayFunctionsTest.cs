@@ -19,10 +19,9 @@
 
 using System;
 using NUnit.Framework;
-using NAnt.Core;
 using Tests.NAnt.Core;
 
-namespace NAnt.Contrib.Tests.Functions
+namespace Tests.NAnt.Contrib.Functions
 {
     [TestFixture]
     public class ArrayFunctionsTest : BuildTestBase

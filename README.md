@@ -1,13 +1,25 @@
-NAnt
+NAnt2
 ====
 
 What is it? 
 -----------
-NAnt is a .NET-based build tool. In theory it is kind of like `make` without
-`make`'s wrinkles. In practice it's a lot like Ant. 
-  
-If you are not familiar with Jakarta Ant you can get more information at the
-Ant project web site (http://ant.apache.org/).
+NAnt2 is an updated and enhanced fork of [NAnt](https://github.com/nant/nant) - a .NET-based build tool and [NAnt.Contrib](https://github.com/nant/nantcontrib) - NAnt extension. 
+
+It is intended as a drop-in replacement of NAnt, and it is licensed as free and open-source software under the GNU General Public License.
+
+Why NAnt2?
+---------
+Because people still use it and because it still works great, even if the last release was long time ago (on 9th June 2012).
+
+
+
+NAnt and NAnt.Contrib
+=====================
+
+What is NAnt?
+-------------
+In theory it is kind of like `make` without `make`'s wrinkles. In practice it's a lot like Ant.
+If you are not familiar with Jakarta Ant you can get more information at the [Ant project web site](http://ant.apache.org/).
 
 
 Why NAnt?
@@ -19,8 +31,8 @@ Because Ant needed the Java runtime. NAnt only needs the .NET or Mono runtime.
 
 The Latest Version
 ------------------
-Details of the latest version can be found on the NAnt project web site
-http://nant.sourceforge.net/
+* NAnt - Details of the latest version can be found on the [NAnt sourceforge web site](http://nant.sourceforge.net/)
+* Nant.Contrib - Details of the latest version can be found on the [NAnt sourceforge web site](http://nantcontrib.sourceforge.net/)
 
 
 Files
@@ -126,7 +138,9 @@ Documentation is available in HTML format, in the `doc/` directory.
 
 License
 -------
-Copyright (C) 2001-2012 Gerry Shaw
+NAnt2 Copyright (C) 2019- Simona Avornicesei
+NAnt Copyright (C) 2001-2012 Gerry Shaw
+NAntContrib Copyright (C) 2002 Tomas Restrepo (tomasr@mvps.org)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

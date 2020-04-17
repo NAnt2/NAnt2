@@ -26,7 +26,7 @@ using NUnit.Framework;
 
 using Tests.NAnt.Core;
 
-namespace NAnt.Contrib.Tests.Tasks {
+namespace Tests.NAnt.Contrib.Tasks {
     [TestFixture]
     public class CodeStatsTaskTest : BuildTestBase {
         [Test]

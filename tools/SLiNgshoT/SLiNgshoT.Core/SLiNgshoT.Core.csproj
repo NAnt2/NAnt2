@@ -80,9 +80,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\src\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
-      <SubType>Code</SubType>
+    <Compile Include="..\..\..\src\SolutionInfo.cs">
+      <Link>SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>

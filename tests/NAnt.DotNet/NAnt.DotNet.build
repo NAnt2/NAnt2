@@ -19,7 +19,7 @@
             <sources>
                 <include name="**/*.cs"/>
                 <!-- common assembly-level attributes -->
-                <include name="../../src/CommonAssemblyInfo.cs" />
+                <include name="${path::combine(src.dir, 'SolutionInfo.cs')}" />
 
                 <!-- exclude these tests if no j# or jsc compilers present -->
                 <exclude name="Tasks/VjcTaskTest.cs" unless="${file::exists(vjc.location)}" />
