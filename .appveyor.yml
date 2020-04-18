@@ -3,7 +3,7 @@
 #---------------------------------#
 image: Visual Studio 2017
 
-version: '0.95'
+version: '0.95.{build}'
 
 platform:
   - Any CPU
