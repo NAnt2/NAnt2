@@ -1,7 +1,7 @@
 #---------------------------------#
 #    environment configuration    #
 #---------------------------------#
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 version: '0.95.{build}'
 
@@ -20,7 +20,7 @@ install:
   - choco install -y sonarscanner-msbuild-net46
 
 before_build:
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsamd64_x86.bat"
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"
   - where resgen
 
 #---------------------------------#
