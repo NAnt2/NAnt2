@@ -38,7 +38,7 @@
     <property name="project.config" value="debug" /> <!-- debug | release -->
     <property name="nant.console.name" value="NAnt" />
     <property name="build.defines" value="" />
-    <property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" />
+    <property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" unless="${property::exists('build.number')}" /> />
 
     <!-- platform specific properties. These are the defaults -->
     <property name="current.build.defines" value="${build.defines}" />

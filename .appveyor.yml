@@ -1,0 +1,63 @@
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+image: Visual Studio 2017
+
+platform:
+  - Any CPU
+configuration: 
+  - Release
+
+matrix:
+  fast_finish: true
+
+init:
+  - git config --global core.autocrlf true
+
+install:
+  - choco install -y sonarscanner-msbuild-net46
+
+before_build:
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsamd64_x86.bat"
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+build_script:
+  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER) { MSBuild.SonarQube.Runner.exe begin /k:"nant2" /d:"sonar.organization=savornicesei-github" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=$env:SQTOKEN" /d:"sonar.analysis.mode=preview" /d:"sonar.github.pullRequest=$env:APPVEYOR_PULL_REQUEST_NUMBER" /d:"sonar.github.repository=https://github.com/savornicesei/NAnt2" /d:"sonar.branch.target=$env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH" }
+  - ps: if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { MSBuild.SonarQube.Runner.exe begin /k:"nant2" /d:"sonar.organization=savornicesei-github" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=$env:SQTOKEN" /d:"sonar.github.repository=https://github.com/savornicesei/NAnt2" /d:"sonar.branch.name=$env:APPVEYOR_REPO_BRANCH" }
+  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER%
+  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-3.5 build=%APPVEYOR_BUILD_NUMBER%
+  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER%
+  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER%
+  - MSBuild.SonarQube.Runner.exe end /d:"sonar.login=%SQTOKEN%"
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+test_script:
+  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER%
+  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-3.5 build=%APPVEYOR_BUILD_NUMBER%
+  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER%
+  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER%
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+#---------------------------------#
+#        global handlers          #
+#---------------------------------#
+on_success:
+  - ps: |    
+      if($true)
+      {
+        Write-Host 'Succesfuly build'
+      }
+
+on_failure:
+  - ps: |    
+      if($true)
+      {
+        Write-Host "Build failed with exit code $LASTEXITCODE! " -ForegroundColor Red -NoNewline
+      } 
