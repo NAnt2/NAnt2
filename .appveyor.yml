@@ -30,7 +30,7 @@ before_build:
 build_script:
   - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"nant2" /o:"savornicesei-github" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=$env:SQTOKEN" /d:"sonar.analysis.mode=preview" /d:"sonar.github.pullRequest=$env:APPVEYOR_PULL_REQUEST_NUMBER" /d:"sonar.github.repository=https://github.com/savornicesei/NAnt2" /d:"sonar.branch.target=$env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH" }
   - ps: if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"nant2" /o:"savornicesei-github" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=$env:SQTOKEN" /d:"sonar.github.repository=https://github.com/savornicesei/NAnt2" /d:"sonar.branch.name=$env:APPVEYOR_REPO_BRANCH" }
-  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-2.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
   - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-3.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
   - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
   - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
@@ -40,7 +40,7 @@ build_script:
 #       tests configuration       #
 #---------------------------------#
 test_script:
-  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-2.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
   - nmake -f Makefile.nmake run-test prefix="" TARGET=net-3.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
   - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
   - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
