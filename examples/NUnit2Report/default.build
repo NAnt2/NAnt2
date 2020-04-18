@@ -13,7 +13,7 @@
         </delete>
     </target>
     <target name="build">
-        <loadtasks assembly="../../bin/NAnt.Contrib.Tasks.dll" />
+        <loadtasks assembly="../../bin/NAnt.ContribTasks.dll" />
 
         <!-- By default the report is in english and format is NoFrames-->
         <nunit2report todir="Compagny-Argos-NoFrame-Report">
