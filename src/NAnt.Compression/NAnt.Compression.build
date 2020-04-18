@@ -13,7 +13,7 @@
             <sources>
                 <include name="**/*.cs" />
                 <!-- common assembly-level attributes -->
-                <include name="../CommonAssemblyInfo.cs" />
+                <include name="${path::combine(src.dir, 'SolutionInfo.cs')}" />
             </sources>
             <references basedir="${build.dir}/bin">
                 <include name="NAnt.Core.dll" />

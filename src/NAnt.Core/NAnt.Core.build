@@ -21,7 +21,7 @@
             <sources failonempty="true">
                 <include name="**/*.cs" />
                 <!-- common assembly-level attributes -->
-                <include name="../CommonAssemblyInfo.cs" />
+                <include name="${path::combine(src.dir, 'SolutionInfo.cs')}" />
             </sources>
             <resources prefix="NAnt.Core" dynamicprefix="true">
                 <include name="Resources/**/*" />

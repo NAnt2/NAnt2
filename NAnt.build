@@ -6,8 +6,14 @@
 
     <!-- global project settings -->
     <property name="project.name" value="nant" />
-    <property name="project.version" value="0.93" unless="${property::exists('project.version')}" />
+    <property name="project.version" value="0.95" unless="${property::exists('project.version')}" />
     <property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" /> <!-- nightly | dev | alpha | beta# | rc# | release -->
+
+    <property name="root.dir" value="${project::get-base-directory()}" />
+    <property name="src.dir" value="${path::combine(root.dir, 'src')}" />
+    <property name="tests.dir" value="${path::combine(root.dir, 'tests')}" />
+    <property name="tools.dir" value="${path::combine(root.dir, 'tools')}" />
+    <property name="etc.dir" value="${path::combine(root.dir, 'etc')}" />
 
     <if test="${project.release.type == 'nightly'}">
         <property name="project.version.full" value="${project.version + '-nightly-' + build.date}" />
@@ -22,11 +28,11 @@
     </if>
 
     <!--
-        specifies whether the CommonAssemblyInfo.cs file should be created.
+        specifies whether the SolutionInfo.cs file should be created.
         we do not want this for releases (whether they're beta or release) as
         this would cause the build number to be updated
     -->
-    <property name="create.assemblyinfo" value="true" />
+    <property name="create.solutioninfo" value="true" />
 
     <!-- default configuration -->
     <property name="project.config" value="debug" /> <!-- debug | release -->
@@ -46,6 +52,7 @@
         <include name="NAnt.Win32/NAnt.Win32.build" />
         <include name="NAnt.VisualCpp/NAnt.VisualCpp.build" />
         <include name="NAnt.VSNet/NAnt.VSNet.build" />
+        <include name="NAnt.Contrib/NAnt.Contrib.build" />
     </fileset>
 
     <fileset id="ext.core.tests" basedir="tests">
@@ -56,6 +63,7 @@
         <include name="NAnt.Win32/NAnt.Win32.build" />
         <include name="NAnt.VisualCpp/NAnt.VisualCpp.build" />
         <include name="NAnt.VSNet/NAnt.VSNet.build" />
+        <include name="NAnt.Contrib/NAnt.Contrib.build" />
     </fileset>
 
     <!-- build in help manual -->
@@ -89,11 +97,11 @@
         <call target="${project.config}" />
         <call target="set-framework-configuration" />
     </target>
-    <target name="create-common-assemblyinfo" if="${create.assemblyinfo}">
-        <!-- ensure src/CommonAssemblyInfo.cs is writable if it already exists -->
-        <attrib file="src/CommonAssemblyInfo.cs" readonly="false" if="${file::exists('src/CommonAssemblyInfo.cs')}" />
+    <target name="create-solutioninfo" if="${create.solutioninfo}">
+        <!-- ensure src/SolutionInfo.cs is writable if it already exists -->
+        <attrib file="src/SolutionInfo.cs" readonly="false" if="${file::exists('src/SolutionInfo.cs')}" />
         <!-- generate the source file holding the common assembly-level attributes -->
-        <asminfo output="src/CommonAssemblyInfo.cs" language="CSharp">
+        <asminfo output="src/SolutionInfo.cs" language="CSharp">
             <imports>
                 <import namespace="System" />
                 <import namespace="System.Reflection" />
@@ -102,16 +110,24 @@
             <attributes>
                 <attribute type="ComVisibleAttribute" value="false" />
                 <attribute type="CLSCompliantAttribute" value="true" />
-                <attribute type="AssemblyTitleAttribute" value="NAnt" />
-                <attribute type="AssemblyDescriptionAttribute" value="A .NET Build Tool" />
+                <!--<attribute type="AssemblyTitleAttribute" value="NAnt" />
+                <attribute type="AssemblyDescriptionAttribute" value="A .NET Build Tool" /> -->
                 <attribute type="AssemblyConfigurationAttribute" value="${project.release.type}" />
-                <attribute type="AssemblyCompanyAttribute" value="http://nant.sourceforge.net" />
+                <attribute type="AssemblyCompanyAttribute" value="" />
                 <attribute type="AssemblyProductAttribute" value="NAnt" />
-                <attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2001-${datetime::get-year(datetime::now())} Gerry Shaw" />
+                <attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2001-2012 Gerry Shaw, 2019-${datetime::get-year(datetime::now())} Simona Avornicesei" />
                 <attribute type="AssemblyTrademarkAttribute" value="" />
                 <attribute type="AssemblyCultureAttribute" value="" />
                 <attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}.0" />
                 <attribute type="AssemblyInformationalVersionAttribute" value="${project.version}" />
+                <!-- 
+                   This will not compile with Visual Studio.  If you want to build a signed
+                    executable use the NAnt build file.  To build under Visual Studio just
+                    exclude this file from the build. 
+                -->
+                <attribute type="AssemblyDelaySignAttribute" value="false" />
+                <!--<attribute type="AssemblyKeyFileAttribute" value="NAnt.key" />-->
+                <attribute type="AssemblyKeyNameAttribute" value="" />
             </attributes>
         </asminfo>
     </target>
@@ -125,7 +141,7 @@
         <delete dir="build" if="${directory::exists('build')}" />
     </target>
 
-    <target name="build.common" depends="init, create-common-assemblyinfo">
+    <target name="build.common" depends="init, create-solutioninfo">
         <echo message="Build Directory is ${build.dir}" />
         <!-- ensure bin directory exists -->
         <mkdir dir="${build.dir}/bin" />
@@ -369,8 +385,6 @@
                     <include name="NAnt.Core.dll" />
                     <include name="*Tasks.dll" />
                     <include name="NAnt.NUnit.dll" />
-                    <!-- never document NAntContrib as part of NAnt -->
-                    <exclude name="NAnt.Contrib.Tasks.dll" />
                 </assemblies>
                 <documenters>
                     <documenter name="NAnt">
