@@ -11,7 +11,9 @@ Why NAnt2?
 ---------
 Because people still use it and because it still works great, even if the last release was long time ago (on 9th June 2012).
 
-
+License
+-------
+NAnt2 is provided under included GPL license.
 
 NAnt and NAnt.Contrib
 =====================
@@ -45,7 +47,7 @@ Files
 
 
 Compilation and Installation
-============================
+-----------------------------
 * Windows (net-2.0): [![TeamCity CodeBetter](https://img.shields.io/teamcity/codebetter/bt387.svg)](http://teamcity.codebetter.com/project.html?projectId=NAnt&guest=1)
 * Windows (mono-2.0): [![TeamCity CodeBetter](https://img.shields.io/teamcity/codebetter/bt175.svg)](http://teamcity.codebetter.com/project.html?projectId=NAnt&guest=1)
 * Linux: [![Travis-ci.org](https://travis-ci.org/nant/nant.svg)](https://travis-ci.org/nant/nant)
@@ -147,7 +149,7 @@ NAntContrib Copyright (C) 2002 Tomas Restrepo (tomasr@mvps.org)
 Contributors
 ================
 NAnt (2001 - 2018)
-------
+------------------
 **Lead Developers**
 * Gerry Shaw (gerry_shaw -at- yahoo.com)
 * Ian MacLean (ian_maclean -at- another.com)
