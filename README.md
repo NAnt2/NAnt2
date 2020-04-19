@@ -1,8 +1,10 @@
 NAnt2
 ====
-[![Build status](https://ci.appveyor.com/api/projects/status/jf9itaqnhmjf4aw8/branch/master?svg=true)](https://ci.appveyor.com/project/savornicesei/nant2/branch/master)
+* Windows [![Build status](https://ci.appveyor.com/api/projects/status/jf9itaqnhmjf4aw8/branch/master?svg=true)](https://ci.appveyor.com/project/savornicesei/nant2/branch/master)
 
-[![Build Status](https://travis-ci.org/savornicesei/NAnt2.svg?branch=master)](https://travis-ci.org/savornicesei/NAnt2)
+* Linux [![Build Status](https://travis-ci.org/savornicesei/NAnt2.svg?branch=master)](https://travis-ci.org/savornicesei/NAnt2)
+
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=nant2&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=nant2) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nant2&metric=coverage)](https://sonarcloud.io/dashboard?id=nant2)
 
 
 What is it? 
