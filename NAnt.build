@@ -944,6 +944,10 @@
         <property name="msbuild.parallel" value="9" unless="${property::exists('msbuild.parallel')}"/>
         <property name="msbuild.verbosity" value="m" unless="${property::exists('msbuild.verbosity')}" /><!-- q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic] -->
         <property name="opencover.exe" value="${path::combine(environment::get-variable('ProgramFiles(x86)'), 'OpenCover/OpenCover.Console.exe' )}" />
+        <if test="${not file::exists(opencover.exe)}">
+         <property name="opencover.exe" value="${path::combine(environment::get-variable('LocalAppData'), 'Apps/OpenCover/OpenCover.Console.exe' )}" />
+         
+        </if>
 
         <mkdir dir="${reports.dir}" if="${not directory::exists(reports.dir)}" />
 
