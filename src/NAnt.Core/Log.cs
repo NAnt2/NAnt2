@@ -485,7 +485,17 @@ namespace NAnt.Core {
                 indentationLevel = e.Project.IndentationLevel * e.Project.IndentationSize;
             }
 
-            BuildReport report = (BuildReport) _buildReports.Pop();
+            BuildReport report = null;
+            //In AppVeyor System.InvalidOperationException: Stack empty. is thrown here because stack is empty
+            if (_buildReports.Count == 0)
+            {
+                OutputMessage(Level.Warning, "No build results left to report", indentationLevel);
+                report = new BuildReport(DateTime.Now);
+            }
+            else
+            {
+                report = (BuildReport)_buildReports.Pop();
+            }
 
             if (error == null) {
                 OutputMessage(Level.Info, string.Empty, indentationLevel);

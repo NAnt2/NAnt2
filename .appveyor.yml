@@ -1,0 +1,71 @@
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+image: Visual Studio 2019
+
+environment:
+  NEXT_VERSION: 0.95
+
+platform:
+  - Any CPU
+configuration: 
+  - Release
+
+matrix:
+  fast_finish: true
+
+init:
+  - git config --global core.autocrlf true
+
+install:
+  - choco install -y sonarscanner-msbuild-net46
+  - choco install -y opencover
+
+before_build:
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"
+  - where resgen
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+build_script:
+#  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-2.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+#  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-3.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+#  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+test_script:
+#  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-2.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+#  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-3.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+#  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+
+after_test:
+  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"nant2" /o:"savornicesei-github" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=$env:SQTOKEN" /d:"sonar.analysis.mode=preview" /d:"sonar.github.pullRequest=$env:APPVEYOR_PULL_REQUEST_NUMBER" /d:"sonar.github.repository=https://github.com/savornicesei/NAnt2" /d:"sonar.branch.target=$env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH" /d:sonar.cs.nunit.reportsPaths="reports\NAnt.nunit2.xml" /d:sonar.cs.opencover.reportsPaths="reports\NAnt.coverage.xml" }
+  - ps: if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"nant2" /o:"savornicesei-github" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=$env:SQTOKEN" /d:"sonar.github.repository=https://github.com/savornicesei/NAnt2" /d:"sonar.branch.name=$env:APPVEYOR_REPO_BRANCH" /d:sonar.cs.nunit.reportsPaths="reports\NAnt.nunit2.xml" /d:sonar.cs.opencover.reportsPaths="reports\NAnt.coverage.xml" }
+  - nmake -f Makefile.nmake run-codequality prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+  - SonarScanner.MSBuild.exe end /d:"sonar.login=%SQTOKEN%"
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+#---------------------------------#
+#        global handlers          #
+#---------------------------------#
+on_success:
+  - ps: |    
+      if($true)
+      {
+        Write-Host 'Succesfuly build'
+      }
+
+on_failure:
+  - ps: |    
+      if($true)
+      {
+        Write-Host "Build failed with exit code $LASTEXITCODE! " -ForegroundColor Red -NoNewline
+      } 

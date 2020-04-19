@@ -1,5 +1,9 @@
 NAnt2
 ====
+[![Build status](https://ci.appveyor.com/api/projects/status/jf9itaqnhmjf4aw8/branch/master?svg=true)](https://ci.appveyor.com/project/savornicesei/nant2/branch/master)
+
+[![Build Status](https://travis-ci.org/savornicesei/NAnt2.svg?branch=master)](https://travis-ci.org/savornicesei/NAnt2)
+
 
 What is it? 
 -----------

@@ -3,6 +3,9 @@ CSC=csc
 RESGEN=resgen
 TARGET=net-2.0
 
+version=0.95
+build=0
+
 !ifdef MONO
 DEFINE = MONO
 FRAMEWORK_DIR = mono
@@ -33,17 +36,22 @@ NANT = $(MONO) bootstrap\NAnt.exe -j $(NANT_DEBUG)
 all:  bootstrap build-nant
 
 build-nant: bootstrap
-	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build build
+	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build build -D:project.version=$(version) -D:build.number=$(build) -verbose
 
 clean:
 	if exist bootstrap rmdir /S /Q bootstrap
 	if exist build rmdir /S /Q build
+	if exist reports rmdir /S /Q reports
+	if exist install rmdir /S /Q install
 
 install: bootstrap
-	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build install -D:prefix="$(prefix)"  -D:destdir="$(DESTDIR)" -D:doc.prefix="$(docdir)"
+	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build install  -D:project.version=$(version) -D:build.number=$(build) -D:prefix="$(prefix)" -D:destdir="$(DESTDIR)" -D:doc.prefix="$(docdir)" -verbose
 
 run-test: bootstrap
-	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build test
+	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build test -D:project.version=$(version) -D:build.number=$(build) -verbose
+
+run-codequality: bootstrap
+	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build code.quality -D:project.version=$(version) -D:build.number=$(build) -verbose
 	
 bootstrap: setup bootstrap\NAnt.exe bootstrap\NAnt.Core.dll bootstrap\NAnt.DotNetTasks.dll bootstrap\NAnt.CompressionTasks.dll bootstrap\NAnt.Win32Tasks.dll
 	

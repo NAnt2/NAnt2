@@ -14,6 +14,7 @@
     <property name="tests.dir" value="${path::combine(root.dir, 'tests')}" />
     <property name="tools.dir" value="${path::combine(root.dir, 'tools')}" />
     <property name="etc.dir" value="${path::combine(root.dir, 'etc')}" />
+    <property name="reports.dir" value="${path::combine(root.dir, 'reports')}" />
 
     <if test="${project.release.type == 'nightly'}">
         <property name="project.version.full" value="${project.version + '-nightly-' + build.date}" />
@@ -38,7 +39,7 @@
     <property name="project.config" value="debug" /> <!-- debug | release -->
     <property name="nant.console.name" value="NAnt" />
     <property name="build.defines" value="" />
-    <property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" />
+    <property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" unless="${property::exists('build.number')}" /> />
 
     <!-- platform specific properties. These are the defaults -->
     <property name="current.build.defines" value="${build.defines}" />
@@ -930,5 +931,76 @@
         <echo file="${wrapper}" append="false">#!/bin/sh${environment::newline()}</echo>
         <echo file="${wrapper}" append="true">exec ${path::combine(install.prefix, 'bin')}/mono ${path::combine(install.nant, 'bin')}/NAnt.exe "$@"</echo>
         <exec program="chmod" commandline="a+x ${path::combine(install.bindir, 'nant')}" />
+    </target>
+
+
+    <!-- ********************************** -->
+    <!-- *******Code quality*************** -->
+    <!-- ********************************** -->
+    <target name="code.quality" description="Builds project runs tests and generates code quality reports">
+        <property name="msbuild.configuration" value="Debug" />
+        <property name="msbuild.target" value="anycpu" />
+        <property name="msbuild.framework" value="v4.5" unless="${property::exists('msbuild.framework')}" />
+        <property name="msbuild.parallel" value="9" unless="${property::exists('msbuild.parallel')}"/>
+        <property name="msbuild.verbosity" value="m" unless="${property::exists('msbuild.verbosity')}" /><!-- q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic] -->
+        <property name="opencover.exe" value="${path::combine(environment::get-variable('ProgramFiles(x86)'), 'OpenCover/OpenCover.Console.exe' )}" />
+        <if test="${not file::exists(opencover.exe)}">
+         <property name="opencover.exe" value="${path::combine(environment::get-variable('LocalAppData'), 'Apps/OpenCover/OpenCover.Console.exe' )}" />
+         
+        </if>
+
+        <mkdir dir="${reports.dir}" if="${not directory::exists(reports.dir)}" />
+
+        <!-- Determine MSBuild path -->
+        <property name="temp" value="${path::get-temp-file-name()}" />
+        <if test="${platform::is-windows()}">			
+			<property name="temp" value="${path::get-temp-file-name()}" />
+			<trycatch>
+				<try>
+					<exec program="${path::combine(environment::get-variable('ProgramFiles(x86)'), 'Microsoft Visual Studio\Installer\vswhere.exe')}" basedir="${root.dir}" workingdir="${root.dir}" output="${temp}" verbose="true"
+						commandline="-latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe" />
+
+					<loadfile file="${temp}" property="msbuild.path" verbose="true"/>
+					<property name="msbuild.path" value="${string::trim(msbuild.path)}" />
+					<echo message="Found MS Build at ${msbuild.path}" />
+				</try>
+				<finally>
+					<delete file="${temp}" />
+				</finally>
+			</trycatch>		
+		</if>
+
+        <!-- Build -->
+        <exec program="${msbuild.path}" basedir="${root.dir}" workingdir="${root.dir}" verbose="true">
+			<arg value="NAnt.sln"/>
+			<arg value="/p:TargetFrameworkVersion=${msbuild.framework};Configuration=${msbuild.configuration}"/>
+			<arg value="/v:${msbuild.verbosity}"/> 
+			<arg value="/m:${msbuild.parallel}"/>
+			<arg value="/nologo"/>
+			<arg value="/t:Rebuild" />
+			<arg value="/p:SonarQubeTempPath=${path::combine(root.dir, '.sonarqube')}" />
+		</exec>
+
+        <!-- Run tests -->
+        <exec program="${nant::scan-probing-paths('nunit-console.exe')}" workingdir="${root.dir}\build\${msbuild.configuration}" failonerror="false">
+            <arg path="${root.dir}\build\${msbuild.configuration}\NAnt.Tests.dll"/>
+            <arg value="/noshadow" />
+            <arg value="/xml:&quot;${path::combine(reports.dir, 'NAnt.nunit2.xml')}&quot;"	/>
+        </exec>
+
+        <!-- Run code coverage -->
+        <exec program="${opencover.exe}" workingdir="${root.dir}" verbose="true">
+            <arg value="-target:${nant::scan-probing-paths('nunit-console.exe')}"/>
+            <arg value="-register:path64"/>
+            <arg value="-hideskipped:Filter;Attribute"/>
+            <arg value="-mergebyhash"/>
+            <arg value="-targetargs:&quot;\&quot;${root.dir}\build\${msbuild.configuration}\NAnt.Tests.dll\&quot; /noshadow /xml:\&quot;${path::combine(reports.dir, 'NAnt.nunit2.xml')}\&quot;&quot;" />
+            <arg value="-targetdir:&quot;${root.dir}\build\${msbuild.configuration}&quot;"/>
+            <arg value="-searchdirs:&quot;${root.dir}\build\${msbuild.configuration}&quot;" />
+            <arg value="-filter:+[NAnt.*]* -[*.Tests]* -[*.IntegrationTests]*"/>
+            <arg value="-output:&quot;${path::combine(reports.dir, 'NAnt.coverage.xml')}&quot;" />
+        </exec>
+
+        <!-- Generate reports -->
     </target>
 </project>

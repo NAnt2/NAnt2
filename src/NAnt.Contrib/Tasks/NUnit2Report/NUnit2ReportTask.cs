@@ -151,7 +151,7 @@ namespace NAnt.Contrib.Tasks.NUnit2Report {
         /// <summary>
         /// Set of summary XML files to use as input.
         /// </summary>
-        //[BuildElement("summaries")]
+        [BuildElement("summaries")]
         public FileSet XmlSummaries {
             get { return _summaries; }
         }
