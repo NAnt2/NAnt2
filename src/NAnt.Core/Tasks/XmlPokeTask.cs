@@ -186,7 +186,7 @@ namespace NAnt.Core.Tasks {
                 // file if no nodes were found in the first place.
                 if (nodes.Count > 0) {
                     UpdateNodes(nodes, Value);
-                    SaveDocument(document, XmlFile.FullName);
+                    SaveDocument(document, XmlFile.FullName, !PreserveWhitespace);
                 } 
             } catch (BuildException ex) {
                 throw ex;
@@ -306,13 +306,22 @@ namespace NAnt.Core.Tasks {
         /// </summary>
         /// <param name="document">The XML document to be saved.</param>
         /// <param name="fileName">The file name to save the XML document under.</param>
-        private void SaveDocument(XmlDocument document, string fileName) {
+        /// <param name="indent">
+        /// Value for <see cref="XmlWriterSettings.Indent"/> that is set before the xml is saved.
+        /// </param>
+        private void SaveDocument(XmlDocument document, string fileName, bool indent) {
             try {
                 Log(Level.Verbose, "Attempting to save XML document" 
                     + " to '{0}'.", fileName);
 
-                document.Save(fileName);
-                
+                XmlWriterSettings wSettings = new XmlWriterSettings();
+                wSettings.Indent = indent;
+                wSettings.ConformanceLevel = ConformanceLevel.Fragment;
+                using (XmlWriter output = XmlWriter.Create(fileName, wSettings))
+                {
+                    document.WriteTo(output);
+                }
+
                 Log(Level.Verbose, "XML document successfully saved" 
                     + " to '{0}'.", fileName);
             } catch (Exception ex) {
