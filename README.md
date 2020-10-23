@@ -5,6 +5,7 @@ NAnt2
 * Linux [![Build Status](https://travis-ci.org/savornicesei/NAnt2.svg?branch=master)](https://travis-ci.org/savornicesei/NAnt2)
 
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=nant2&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=nant2) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nant2&metric=coverage)](https://sonarcloud.io/dashboard?id=nant2)
+[![CodeScene general](https://codescene.io/images/analyzed-by-codescene-badge.svg)](https://codescene.io/projects/10108)
 
 
 What is it? 
