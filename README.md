@@ -57,7 +57,7 @@ Compilation and Installation
 -----------------------------
 * Windows (net-2.0): [![TeamCity CodeBetter](https://img.shields.io/teamcity/codebetter/bt387.svg)](http://teamcity.codebetter.com/project.html?projectId=NAnt&guest=1)
 * Windows (mono-2.0): [![TeamCity CodeBetter](https://img.shields.io/teamcity/codebetter/bt175.svg)](http://teamcity.codebetter.com/project.html?projectId=NAnt&guest=1)
-* Linux: [![Travis-ci.org](https://travis-ci.org/nant/nant.svg)](https://travis-ci.org/nant/nant)
+* Linux: [![Travis-ci.org](https://travis-ci.org/nant/nant.svg)](https://travis-ci.org/nant/nant) [![Join the chat at https://gitter.im/NAnt2/NAnt2](https://badges.gitter.im/NAnt2/NAnt2.svg)](https://gitter.im/NAnt2/NAnt2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
  
 Overview
 --------
