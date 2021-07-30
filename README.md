@@ -1,6 +1,6 @@
 NAnt2
 ====
-Let's chat (https://badges.gitter.im/NAnt2/NAnt2.svg)](https://gitter.im/NAnt2/NAnt2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+Let's chat [![Join the chat at https://gitter.im/NAnt2/NAnt2](https://badges.gitter.im/NAnt2/NAnt2.svg)](https://gitter.im/NAnt2/NAnt2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 * Windows [![Build status](https://ci.appveyor.com/api/projects/status/jf9itaqnhmjf4aw8/branch/master?svg=true)](https://ci.appveyor.com/project/savornicesei/nant2/branch/master)
 
