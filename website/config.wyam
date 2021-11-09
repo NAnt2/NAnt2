@@ -1,11 +1,11 @@
 // Preprocessor directives
-//#n Wyam.Yaml
-//#n Wyam.Razor
-//#n Wyam.Markdown
-//#n Wyam.Html
-//#n Wyam.CodeAnalysis
+#n Wyam2.Yaml
+#n Wyam2.Razor
+#n Wyam2.Markdown
+#n Wyam2.Html
+#n Wyam2.CodeAnalysis
 
-#a **/*
+//#a **/*
 /*
  * Hack to have intellisense in VS Code when debugging from IDE.
 */
@@ -37,7 +37,7 @@ if(!Settings.ContainsKey(Keys.LinksUseHttps))
 }
 Settings[Keys.LinkRoot] = "/";
 Settings[DocsKeys.Title] = "NAnt2";
-Settings[DocsKeys.Logo] = "/assets/img/logo-dark.png";
+Settings[DocsKeys.Logo] = "/assets/img/logo_dark.png";
 //Settings[DocsKeys.ProjectFiles] = "../../src/**/{!.vscode,!bin,!obj,!packages,!*.Tests, !NDoc.*.NAnt,}/**/*.csproj";//
 Settings[DocsKeys.ProjectFiles] = "../../src/{NAnt.Core,NAnt.DotNet}/*.csproj";
 Settings[DocsKeys.IncludeDateInPostPath] = true;
@@ -51,7 +51,7 @@ Settings[DocsKeys.IgnoreFolders] = "_reference, App_Code";
 Settings[DocsKeys.ImplicitInheritDoc] = true;
 
 /// <value>When true pipelines Docs.RenderApi, Docs.ApiIndex and Docs.ApiSearchIndex are not executed.</value>
-bool noApi = true;
+bool noApi = false;
 /// <value>
 /// When true pipelines Docs.BlogPosts, Docs.BlogIndexes, Docs.BlogCategories, Docs.BlogTags, Docs.BlogAuthors, 
 /// Docs.BlogArchives, Docs.BlogYearlyArchives, Docs.BlogFeed, Docs.RenderBlogPosts are not executed.
