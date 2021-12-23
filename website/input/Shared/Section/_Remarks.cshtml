@@ -1,8 +1,12 @@
 @{
 	string remarks = Model.String("Remarks");
+	bool displayHeader = ViewData.ContainsKey("displayHeader") ? Convert.ToBoolean(ViewData["displayHeader"]) : true;
 }
 @if(!string.IsNullOrWhiteSpace(remarks))
 {
-	<h1 id="Remarks">Remarks</h1>
+	if(displayHeader)
+	{
+		<h1 id="Remarks">Remarks</h1>
+	}
 	<div>@Html.Raw(remarks)</div>
 }

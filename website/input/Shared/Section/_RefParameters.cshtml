@@ -5,13 +5,17 @@
 @model IDocument
 @{
 	int level = ViewData.ContainsKey("level") ? Convert.ToInt32(ViewData["level"]) : 1;
+	bool isFramework = ViewData.ContainsKey("isFramework") ? Convert.ToBoolean(ViewData["isFramework"]) : false;
+
+	string parametersHeaderText = isFramework ? "Framework-configurable parameters" : "Parameters";
 
 	NAntRefType docType = Model.Get<NAntRefType>(NAntKeys.NAntRefType);
-	Trace.Information($"[_RefParameters view] level {level}, docType {docType} - Model is {Model.SourceString()}");
+	//Trace.Information($"[_RefParameters view] level {level}, docType {docType} - Model is {Model.SourceString()}");
 
 	IList<IDocument> properties =  Model.List<IDocument>("Members")
-										?.Where(x => NAntUtils.IsNAntParameter(x))
-										?.OrderBy(x => x["DisplayName"])
+										?.Where(x => isFramework ? NAntUtils.IsNAntFrameworkParameter(x) : NAntUtils.IsNAntParameter(x))
+										?.OrderByDescending(x => NAntUtils.GetTaskDetails(x).Required)
+										?.ThenBy(x => x["DisplayName"])
 										?.ToList();
 	IList<IDocument> baseProperties = Model.List<IDocument>(CodeAnalysisKeys.BaseTypes)
 											?.Where(bt => bt.List<IDocument>("Members") != null)
@@ -27,11 +31,11 @@
         <text>
 			@if(level == 1)
 			{
-				<h1 id="Parameters">Parameters</h1>
+				<h1 id="Parameters">@parametersHeaderText</h1>
 			}
 			else{
 				var headerId = Model.String("Name") + "Parameters";
-				<h3 id="@headerId">Parameters</h3>
+				<h3 id="@headerId">@parametersHeaderText</h3>
 			}
 			<div class="box">
 				<div class="box-body no-padding table-responsive">
@@ -50,19 +54,32 @@
 								@if(!baseProperties.Contains(property))
 								{
 									IDocument type = property.Get<IDocument>("Type");
+									var typeName = NAntUtils.GetParameterTypeDisplayName(type);
 									var details = NAntUtils.GetTaskDetails(property);
 									var obsolete = NAntUtils.GetObsoleteDetails(property);
+									//Trace.Information($"[_RefParameters view] type name for property {property.String(CodeAnalysisKeys.DisplayName)} is {typeName} and ctx.GetLink returns {Context.GetTypeLink(type, typeName)}");
 									<tr>
 										<td>
-											<b>
+											@if(details.Required)
+											{ 
+												<b>											
+													@details.Name
+													@if(obsolete.Obsolete)
+													{
+														<i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+													}
+												</b>
+											}
+											else
+											{ 
 												@details.Name
 												@if(obsolete.Obsolete)
 												{
 													<i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
 												}
-											</b>
+											}
 										</td>
-										<td>@(type == null ? new HtmlString(string.Empty) : Context.GetTypeLink(type))</td>
+										<td>@(type == null ? new HtmlString(string.Empty) : Context.GetTypeLink(type, typeName))</td>
 										<td>
 											<div>@Html.Raw(property.String("Summary"))</div>
 											@if(obsolete.Obsolete)
@@ -78,22 +95,24 @@
 									</tr>
 								}
 							}
-							@if(baseProperties != null)
+							@if(!isFramework && baseProperties != null)
 							{
 								@foreach(IDocument property in baseProperties)
 								{
 									IDocument type = property.Get<IDocument>("Type");
+									var typeName = NAntUtils.GetParameterTypeDisplayName(type);
 									var details = NAntUtils.GetTaskDetails(property);
 									var obsolete = NAntUtils.GetObsoleteDetails(property);
+									//Trace.Information($"[_RefParameters view] type name for property {property.String(CodeAnalysisKeys.DisplayName)} is {typeName} and ctx.GetLink returns {Context.GetTypeLink(type, typeName)}");
 									<tr>
 										<td>
-											@details.Name
+											<i>@details.Name</i>
 											@if(obsolete.Obsolete)
 											{
 												<i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
 											}
 										</td>
-										<td>@(type == null ? new HtmlString(string.Empty) : Context.GetTypeLink(type))</td>
+										<td>@(type == null ? new HtmlString(string.Empty) : Context.GetTypeLink(type, typeName))</td>
 										<td>
 											<div>@Html.Raw(property.String("Summary"))</div>
 											@if(obsolete.Obsolete)

@@ -1,8 +1,12 @@
 @{
 	string summary = Model.Get<string>("Summary");
+	bool displayHeader = ViewData.ContainsKey("displayHeader") ? Convert.ToBoolean(ViewData["displayHeader"]) : true;
 }
 @if(!string.IsNullOrWhiteSpace(summary))
 {	
-	<h1 id="Summary">Summary</h1>
+	if(displayHeader)
+	{
+		<h1 id="Summary">Summary</h1>
+	}
 	<div class="lead">@Html.Raw(summary)</div>
 }

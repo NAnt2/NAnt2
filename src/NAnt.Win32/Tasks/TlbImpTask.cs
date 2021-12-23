@@ -33,7 +33,7 @@ using NAnt.Core.Util;
 
 namespace NAnt.Win32.Tasks {
     /// <summary>
-    /// Imports a type library to a .NET assembly (wraps Microsoft's <c>tlbimp.exe</c>).
+    /// Imports a type library to a .NET assembly (wraps Microsoft's <see href="https://docs.microsoft.com/en-us/dotnet/framework/tools/tlbimp-exe-type-library-importer">tlbimp.exe</see>).
     /// </summary>
     /// <remarks>
     /// <para>
@@ -41,7 +41,7 @@ namespace NAnt.Win32.Tasks {
     /// not reimport if the underlying COM TypeLib or reference has not changed.
     /// </para>
     /// <para>
-    /// <see href="ms-help://MS.NETFrameworkSDK/cptools/html/cpgrftypelibraryimportertlbimpexe.htm">See the Microsoft.NET Framework SDK documentation for details.</see>
+    /// <see href="https://docs.microsoft.com/en-us/dotnet/framework/tools/tlbimp-exe-type-library-importer">See the Microsoft.NET Framework SDK documentation for details.</see>
     /// </para>
     /// </remarks>
     /// <example>

@@ -28,7 +28,7 @@ using NAnt.Core.Types;
 namespace NAnt.Win32.Tasks {
     /// <summary>
     /// Exports a .NET assembly to a type library that can be used from unmanaged 
-    /// code (wraps Microsoft's <c>tlbexp.exe</c>).
+    /// code (wraps Microsoft's <see href="https://docs.microsoft.com/en-us/dotnet/framework/tools/tlbexp-exe-type-library-exporter">tlbexp.exe</see>).
     /// </summary>
     /// <remarks>
     ///   <para>

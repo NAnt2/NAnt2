@@ -2,8 +2,6 @@ Title: Expressions
 Order: 80
 ---
 
-[//]: # (TOC Begin)
-
 * [Introduction](#introduction)
 * [Expression syntax](#expression-syntax)
 * [Data types](#data-types)
@@ -56,8 +54,6 @@ Order: 80
         * [Greater than or equal](#greater-than-or-equal-4)
         * [Less than](#less-than-4)
         * [Less than or equal](#less-than-or-equal-4)
-
-[//]: # (TOC End)
 
 # Introduction
 

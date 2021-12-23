@@ -35,10 +35,10 @@ using NAnt.VisualCpp.Util;
 
 namespace NAnt.VisualCpp.Tasks {
     /// <summary>
-    /// Links files using <c>link.exe</c>, Microsoft's Incremental Linker.
+    /// Links files using <see href="https://docs.microsoft.com/en-us/cpp/build/reference/linking?view=msvc-160">link.exe</see>, Microsoft's Incremental Linker.
     /// </summary>
     /// <remarks>
-    ///   <para>This task is intended for version 7.00.9466 of <c>link.exe</c>.</para>
+    ///   <para>This task is intended for version 7.00.9466 of <see href="https://docs.microsoft.com/en-us/cpp/build/reference/linking?view=msvc-160">link.exe</see>.</para>
     /// </remarks>
     /// <example>
     ///   <para>

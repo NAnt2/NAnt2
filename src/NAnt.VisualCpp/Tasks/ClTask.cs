@@ -42,10 +42,10 @@ using NAnt.VisualCpp.Util;
 
 namespace NAnt.VisualCpp.Tasks {
     /// <summary>
-    /// Compiles C/C++ programs using <c>cl.exe</c>, Microsoft's C/C++ compiler.
+    /// Compiles C/C++ programs using <see href="https://docs.microsoft.com/en-us/cpp/build/reference/compiler-command-line-syntax?view=msvc-160">cl.exe</see>, Microsoft's C/C++ compiler.
     /// </summary>
     /// <remarks>
-    ///   <para>This task is intended for version 13.00.9466 of <c>cl.exe</c>.</para>
+    ///   <para>This task is intended for version 13.00.9466 of <see href="https://docs.microsoft.com/en-us/cpp/build/reference/compiler-command-line-syntax?view=msvc-160">cl.exe</see>.</para>
     /// </remarks>
     /// <example>
     ///   <para>Compiles <c>helloworld.cpp</c> for the Common Language Runtime.</para>
@@ -223,7 +223,7 @@ namespace NAnt.VisualCpp.Tasks {
         }
 
         /// <summary>
-        /// Macro definitions to pass to cl.exe.
+        /// Macro definitions to pass to <see href="https://docs.microsoft.com/en-us/cpp/build/reference/compiler-command-line-syntax?view=msvc-160">cl.exe</see>.
         /// Each entry will generate a /D
         /// </summary>
         [BuildElementCollection("defines", "define")]
@@ -232,7 +232,7 @@ namespace NAnt.VisualCpp.Tasks {
         }
 
         /// <summary>
-        /// Macro undefines (/U) to pass to cl.exe.
+        /// Macro undefines (/U) to pass to <see href="https://docs.microsoft.com/en-us/cpp/build/reference/compiler-command-line-syntax?view=msvc-160">cl.exe</see>.
         /// </summary>
         [BuildElementCollection("undefines", "undefine")]
         public OptionCollection Undefines {

@@ -34,7 +34,7 @@ using NAnt.VisualCpp.Util;
 
 namespace NAnt.VisualCpp.Tasks {
     /// <summary>
-    /// Run <c>lib.exe</c>, Microsoft's Library Manager.
+    /// Run <see href="https://docs.microsoft.com/en-us/cpp/build/reference/lib-reference?view=msvc-160">lib.exe</see>, Microsoft's Library Manager.
     /// </summary>
     /// <example>
     ///   <para>Create a library.</para>

@@ -15,7 +15,8 @@
 }
  
 
-@Html.Partial("Section\\_Summary")
+@Html.Partial("Section\\_Summary", new ViewDataDictionary(this.ViewData) { { "displayHeader", false } })
+@Html.Partial("Section\\_Remarks", new ViewDataDictionary(this.ViewData) { { "dispayHeader", false } })
 
 @{ 
     @* AssemblyName assembly::get-name(assembly) *@
@@ -33,6 +34,5 @@
 }
 
 @Html.Partial("Section\\_Examples")
-@Html.Partial("Section\\_Remarks")
 @Html.Partial("Section\\_RefRequirements")
 @Html.Partial("Section\\_SeeAlso")

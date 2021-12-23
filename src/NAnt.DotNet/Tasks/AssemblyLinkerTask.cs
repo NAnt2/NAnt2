@@ -32,7 +32,7 @@ using NAnt.DotNet.Types;
 
 namespace NAnt.DotNet.Tasks {
     /// <summary>
-    /// Wraps <c>al.exe</c>, the assembly linker for the .NET Framework.
+    /// Wraps <see href="https://docs.microsoft.com/en-us/dotnet/framework/tools/al-exe-assembly-linker">al.exe</see>, the assembly linker for the .NET Framework.
     /// </summary>
     /// <remarks>
     ///   <para>

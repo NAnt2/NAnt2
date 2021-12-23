@@ -4,6 +4,7 @@
 #n Wyam2.Markdown
 #n Wyam2.Html
 #n Wyam2.CodeAnalysis
+#n ObjectDumper.NET
 
 //#a **/*
 /*
@@ -115,7 +116,7 @@ bool noPages = false;
 };
 
 /// <summary>
-/// NAnt reference types (task, type, function, filter, function set, parameters, nested elements, other elements and public enums).
+/// NAnt reference types (task, type, function, filter, function set, parameters, framework parameters, nested elements, other elements and public enums).
 /// </summary>
 public enum NAntRefType{
     None,
@@ -125,6 +126,7 @@ public enum NAntRefType{
     Filters,
     FunctionSets,
     Parameters,
+    FrameworkParameters,
     NestedElements,
     Elements,
     Enums
@@ -336,22 +338,34 @@ public static class NAntUtils{
     /// </summary>
     public static Func<IDocument, bool> IsNAntParameterAttribute = (attr) => attr.String(CodeAnalysisKeys.Name) == "TaskAttributeAttribute";
     /// <summary>
+    /// If attribute is called <i>FrameworkConfigurableAttribute</i> then it's a NAnt task framework parameter attribute.
+    /// </summary>
+    public static Func<IDocument, bool> IsNAntFrameworkParameterAttribute = (attr) => attr.String(CodeAnalysisKeys.Name) == "FrameworkConfigurableAttribute";
+    /// <summary>
     /// If attribute is called <i>BuildElementAttribute</i> then it's a NAnt nested element attribute whose Type has Element attribute.
     /// </summary>
     public static Func<IDocument, bool> IsNAntNestedSingleElementAttribute = (attr) => attr.String(CodeAnalysisKeys.Name) == "BuildElementAttribute";
     /// <summary>
-    /// If attribute is called <i>BuildElementArrayAttribute</i> or <i>BuildElementArrayAttribute</i> then it's a NAnt nested collection element attribute
+    /// If attribute is called <i>BuildElementCollectionAttribute</i> then it's a NAnt nested collection element attribute
     /// containing one or more build elements.
     /// </summary>
     public static Func<IDocument, bool> IsNAntNestedCollectionElementAttribute = (attr) => 
-        attr.String(CodeAnalysisKeys.Name) == "BuildElementArrayAttribute" || attr.String(CodeAnalysisKeys.Name) == "BuildElementCollectionAttribute";
+        attr.String(CodeAnalysisKeys.Name) == "BuildElementCollectionAttribute";
+    /// <summary>
+    /// If attribute is called <i>BuildElementArrayAttribute</i> then it's a NAnt nested array element attribute
+    /// containing one or more build elements.
+    /// </summary>
+    public static Func<IDocument, bool> IsNAntNestedArrayElementAttribute = (attr) => 
+        attr.String(CodeAnalysisKeys.Name) == "BuildElementArrayAttribute";
     /// <summary>
     /// If attribute is called <i>BuildElementAttribute</i>, <i>BuildElementArrayAttribute</i> or <i>BuildElementCollectionAttribute</i> 
     /// then it's a NAnt task nested element attribute.
     /// </summary>
     public static Func<IDocument, bool> IsNAntNestedElementAttribute = (attr) => 
     {
-        return IsNAntNestedSingleElementAttribute(attr) || IsNAntNestedCollectionElementAttribute(attr);
+        return IsNAntNestedSingleElementAttribute(attr) 
+                || IsNAntNestedCollectionElementAttribute(attr) 
+                || IsNAntNestedArrayElementAttribute(attr);
     };
     /// <summary>
     /// If attribute is called <i>Obsolete</i>.
@@ -363,7 +377,8 @@ public static class NAntUtils{
     /// </summary>
     public static Func<IDocument, bool> IsNAntRefAttribute = (attr) => IsNAntTaskAttribute(attr) || IsNAntFilterOrTypeAttribute(attr) 
                                                                 || IsNAntFunctionAttribute(attr) || IsNAntFunctionSetAttribute(attr) 
-                                                                || IsNAntParameterAttribute(attr) || IsNAntNestedElementAttribute(attr);
+                                                                || IsNAntParameterAttribute(attr) || IsNAntFrameworkParameterAttribute(attr)
+                                                                || IsNAntNestedElementAttribute(attr);
 
 
     /// <summary>
@@ -423,6 +438,14 @@ public static class NAntUtils{
                     && doc.DocumentList(CodeAnalysisKeys.Attributes) != null
                     && doc.DocumentList(CodeAnalysisKeys.Attributes).Any(attr => IsNAntParameterAttribute(attr));
     /// <summary>
+    /// If document has an attribute called <i>FrameworkConfigurableAttribute</i> then it's a NAnt task framework parameter.
+    /// </summary>
+    public static Func<IDocument, bool> IsNAntFrameworkParameter = 
+        (doc) => doc.Get<string>(CodeAnalysisKeys.SpecificKind) == "Property" 
+                    && doc.Get<string>(CodeAnalysisKeys.Accessibility) == "Public"
+                    && doc.DocumentList(CodeAnalysisKeys.Attributes) != null
+                    && doc.DocumentList(CodeAnalysisKeys.Attributes).Any(attr => IsNAntFrameworkParameterAttribute(attr));
+    /// <summary>
     /// If document has an attribute called <i>BuildElementAttribute</i>then it's a NAnt single nested element.
     /// </summary>
     public static Func<IDocument, bool> IsNAntNestedSingleElement =
@@ -431,18 +454,25 @@ public static class NAntUtils{
                     && doc.DocumentList(CodeAnalysisKeys.Attributes) != null
                     && doc.DocumentList(CodeAnalysisKeys.Attributes).Any(attr => IsNAntNestedSingleElementAttribute(attr));
      /// <summary>
-    /// If document has an attribute called <i>BuildElementArrayAttribute</i> or <i>BuildElementCollectionAttribute</i> then it's a NAnt nested collection element.
+    /// If document has an attribute called <i>BuildElementCollectionAttribute</i> then it's a NAnt nested collection element.
     /// </summary>
     public static Func<IDocument, bool> IsNAntNestedCollectionElement =
         (doc) => doc.Get<string>(CodeAnalysisKeys.SpecificKind) == "Property" 
                     && doc.Get<string>(CodeAnalysisKeys.Accessibility) == "Public"
                     && doc.DocumentList(CodeAnalysisKeys.Attributes) != null
                     && doc.DocumentList(CodeAnalysisKeys.Attributes).Any(attr => IsNAntNestedCollectionElementAttribute(attr));
+    /// If document has an attribute called <i>BuildElementArrayAttribute</i> then it's a NAnt nested array element.
+    /// </summary>
+    public static Func<IDocument, bool> IsNAntNestedArrayElement =
+        (doc) => doc.Get<string>(CodeAnalysisKeys.SpecificKind) == "Property" 
+                    && doc.Get<string>(CodeAnalysisKeys.Accessibility) == "Public"
+                    && doc.DocumentList(CodeAnalysisKeys.Attributes) != null
+                    && doc.DocumentList(CodeAnalysisKeys.Attributes).Any(attr => IsNAntNestedArrayElementAttribute(attr));
     /// <summary>
     /// If document has an attribute called <i>BuildElementAttribute</i>, <i>BuildElementArrayAttribute</i> or <i>BuildElementCollectionAttribute</i> 
     /// then it's a NAnt task nested element.
     /// </summary>
-    public static Func<IDocument, bool> IsNAntNestedElement = (doc) => IsNAntNestedCollectionElement(doc) || IsNAntNestedSingleElement(doc);
+    public static Func<IDocument, bool> IsNAntNestedElement = (doc) => IsNAntNestedCollectionElement(doc) || IsNAntNestedArrayElement(doc) || IsNAntNestedSingleElement(doc);
     /// <summary>
     /// If document derives from <i>Element</i> then it's a NAnt element. 
     /// </summary>
@@ -498,16 +528,12 @@ public static class NAntUtils{
     /// <summary>
     /// Extracts the first 2 atrribute parameters from the given document using the attribute selection function to select attributes.
     /// </summary>
-    public static Func<IDocument, Func<IDocument, bool>, Tuple<object, object, object>> GetAttributeDetails = 
+    public static Func<IDocument, Func<IDocument, bool>, Dictionary<string, object>> GetAttributeDetails = 
         (doc, atributeSelection) =>
     {
-        object item1 = null;
-        object item2 = null;
-        object item3 = null;
-
         if (doc == null || atributeSelection == null)
         {
-            return Tuple.Create(item1, item2, item3);
+            return null;
         }
 
         var attrDoc = doc.DocumentList(CodeAnalysisKeys.Attributes)
@@ -517,13 +543,69 @@ public static class NAntUtils{
             Microsoft.CodeAnalysis.AttributeData attrib = attrDoc.Get<Microsoft.CodeAnalysis.AttributeData>(CodeAnalysisKeys.AttributeData);
             if(attrib != null)
             {
-                if(attrib.ConstructorArguments.Length >= 1) item1 = attrib.ConstructorArguments[0].Value;
-                if(attrib.ConstructorArguments.Length >= 2) item2 = attrib.ConstructorArguments[1].Value;
-                if(attrib.ConstructorArguments.Length >= 3) item3 = attrib.ConstructorArguments[2].Value;
+               //Wyam.Common.Tracing.Trace.Verbose($"[NAntUtils.GetAttributeDetails] found attribute data for {attrib.AttributeClass?.Name}");
+
+                Dictionary<string, object> attribProps = new Dictionary<string, object>();
+
+                if(attrib.AttributeConstructor != null 
+                    && attrib.AttributeConstructor.Parameters != null 
+                    && attrib.AttributeConstructor.Parameters.Length > 0)
+                {
+                    //Wyam.Common.Tracing.Trace.Verbose($"[NAntUtils.GetAttributeDetails] adding {attrib.AttributeConstructor.Parameters.Length} AttributeConstructor.Parameters");
+                    for(int i = 0; i < attrib.AttributeConstructor.Parameters.Length; i++)
+                    {
+                        //Wyam.Common.Tracing.Trace.Verbose($"[NAntUtils.GetAttributeDetails] adding param {attrib.AttributeConstructor.Parameters[i].Name}");
+                        attribProps.Add(attrib.AttributeConstructor.Parameters[i].Name, attrib.ConstructorArguments[i].Value);
+                    }
+                }
+                if(attrib.NamedArguments != null)
+                {
+                    //Wyam.Common.Tracing.Trace.Verbose($"[NAntUtils.GetAttributeDetails] adding {attrib.NamedArguments.Length} NamedArguments");
+                    foreach(var p in attrib.NamedArguments)
+                    {
+                        if(attribProps.ContainsKey(p.Key)) 
+                        {
+                            //Wyam.Common.Tracing.Trace.Verbose($"[NAntUtils.GetAttributeDetails] arg {p.Key} already exists");
+                            continue;
+                        }
+
+                        //Wyam.Common.Tracing.Trace.Verbose($"[NAntUtils.GetAttributeDetails] adding arg {p.Key}");
+                        attribProps.Add(p.Key, p.Value.Value);
+                    }
+                }
+               
+                if(attribProps.Count == 0 )
+                {
+                    //this might be the case for well-known attributes
+                    if(attrib.AttributeClass?.Name == "ObsoleteAttribute")
+                    {
+                        if(attrib.ConstructorArguments.Length >= 1)
+                        {
+                            attribProps.Add("message", Convert.ToString(attrib.ConstructorArguments[0].Value));
+                        }
+                        if(attrib.ConstructorArguments.Length >= 2)
+                        {
+                            attribProps.Add("isError", Convert.ToBoolean(attrib.ConstructorArguments[1].Value));
+                        }
+                    }
+                }
+
+                if(attribProps.Count > 0)
+                {
+                    var keys = attribProps.Select(x=>String.Format("{0}={1}", x.Key, x.Value?.ToString()));
+                    var result = String.Join(",", keys);
+                    //Wyam.Common.Tracing.Trace.Verbose($"[NAntUtils.GetAttributeDetails] Document {doc.String(CodeAnalysisKeys.DisplayName)} has attribute properties: [{result}]");
+                }
+                else
+                {
+                    Wyam.Common.Tracing.Trace.Verbose($"[NAntUtils.GetAttributeDetails] Document {doc.String(CodeAnalysisKeys.DisplayName)} has no attribute properties");
+                }
+
+                return attribProps;
             }
         }
 
-        return Tuple.Create(item1, item2, item3);
+        return null;
     };
 
     public static DocumentConfig GetNAntRefType = (doc, ctx) =>
@@ -554,6 +636,10 @@ public static class NAntUtils{
         {
             nantType = NAntRefType.Parameters;
         }
+        else if(IsNAntFrameworkParameter(doc))
+        {
+            nantType = NAntRefType.FrameworkParameters;
+        }
         else if(IsNAntNestedElement(doc))
         {
             nantType = NAntRefType.NestedElements;
@@ -583,13 +669,28 @@ public static class NAntUtils{
         }
         else if(IsNAntRef(doc)|| IsNAntFunctionSet(doc) || IsNAntParameter(doc) || IsNAntNestedElement(doc))
         {
-            Tuple<object, object, object> details = GetAttributeDetails(doc, IsNAntRefAttribute);
-            title = Convert.ToString(details.Item1) ?? string.Empty;
+            Dictionary<string, object> details = GetAttributeDetails(doc, IsNAntRefAttribute);
+            if(details != null)
+            {
+                string attrKey = "name";
+                if(IsNAntFunctionSet(doc))
+                {
+                    attrKey = "prefix";
+                }
+                if(IsNAntNestedCollectionElement(doc))
+                {
+                    attrKey = "collectionName";
+                }
+                title = Convert.ToString(details[attrKey]) ?? string.Empty;
+            }
 
             if(IsNAntFunction(doc))
             {
-                Tuple<object, object, object> fsDetails = GetAttributeDetails(doc.Get<IDocument>(CodeAnalysisKeys.ContainingType), IsNAntFunctionSetAttribute);
-                title = $"{Convert.ToString(fsDetails.Item1) ?? string.Empty}.{title}"; // function-set_prefix.function_title
+                Dictionary<string, object> fsDetails = GetAttributeDetails(doc.Get<IDocument>(CodeAnalysisKeys.ContainingType), IsNAntFunctionSetAttribute);
+                if(fsDetails != null)
+                {
+                    title = $"{Convert.ToString(fsDetails["prefix"]) ?? string.Empty}.{title}"; // function-set_prefix.function_title
+                }
             }
         }
 
@@ -606,13 +707,30 @@ public static class NAntUtils{
         }
         else if(IsNAntRef(doc)|| IsNAntFunctionSet(doc) || IsNAntParameter(doc) || IsNAntNestedElement(doc))
         {
-            Tuple<object, object, object> details = GetAttributeDetails(doc, IsNAntRefAttribute);
-            displayName = Convert.ToString(details.Item1) ?? string.Empty;
+            Dictionary<string, object> details = GetAttributeDetails(doc, IsNAntRefAttribute);
+            if(details != null)
+            {
+                //NAntNestedCollectionElement (BuildElementCollection, BuildElementArray) do not have a "name" but a "collectionName"
+                //FunctionSet do not have a "name" but a "prefix"
+                string attrKey = "name";
+                if(IsNAntFunctionSet(doc))
+                {
+                    attrKey = "prefix";
+                }
+                if(IsNAntNestedCollectionElement(doc))
+                {
+                    attrKey = "collectionName";
+                }
+                displayName = Convert.ToString(details[attrKey]) ?? string.Empty;
+            }
             
             if(IsNAntFunction(doc))
             {
-                Tuple<object, object, object> fsDetails = GetAttributeDetails(doc.Get<IDocument>(CodeAnalysisKeys.ContainingType), IsNAntFunctionSetAttribute);
-                displayName = $"{Convert.ToString(fsDetails.Item1) ?? string.Empty}::{displayName}"; // function-set_prefix::function_title
+                Dictionary<string, object> fsDetails = GetAttributeDetails(doc.Get<IDocument>(CodeAnalysisKeys.ContainingType), IsNAntFunctionSetAttribute);
+                if(fsDetails != null)
+                {
+                    displayName = $"{Convert.ToString(fsDetails["prefix"]) ?? string.Empty}::{displayName}"; // function-set_prefix::function_title
+                }
             }
             else if(IsNAntTask(doc) || IsNAntParameter(doc) || IsNAntNestedElement(doc))
             {
@@ -631,9 +749,12 @@ public static class NAntUtils{
         string text = string.Empty;
 
         if(IsNAntObsolete(doc))
-        {
-            Tuple<object, object, object> details = GetAttributeDetails(doc, IsNAntObsoleteAttribute);
-            text = Convert.ToString(details.Item1) ?? string.Empty;
+        {   
+            Dictionary<string, object> details = GetAttributeDetails(doc, IsNAntObsoleteAttribute); 
+            if(details != null)
+            {
+                text = Convert.ToString(details["message"]) ?? string.Empty;
+            }
         }
 
         return text;
@@ -647,10 +768,10 @@ public static class NAntUtils{
 
         if(IsNAntFunction(doc))
         {
-            Tuple<object, object, object> fsDetails = GetAttributeDetails(doc.Get<IDocument>(CodeAnalysisKeys.ContainingType), IsNAntFunctionSetAttribute);
-            if(fsDetails.Item2 != null)
+            Dictionary<string, object> fsDetails = GetAttributeDetails(doc.Get<IDocument>(CodeAnalysisKeys.ContainingType), IsNAntFunctionSetAttribute);
+            if(fsDetails != null && fsDetails.ContainsKey("category"))
             {
-                tags.Add(Convert.ToString(fsDetails.Item2));
+                tags.Add(Convert.ToString(fsDetails["category"]));
             }
         }
 
@@ -666,23 +787,40 @@ public static class NAntUtils{
 
         //if doc namespace starts with NAnt then it's either in api or reference folder
         //else it's a standard .NET reference and link it to https://docs.microsoft.com/en-us/dotnet/api/?term=<doc.QualifiedName>
-        IDocument  nDoc = doc.Get<IDocument>(CodeAnalysisKeys.ContainingNamespace);
-        if(nDoc == null || nDoc.String(CodeAnalysisKeys.QualifiedName).StartsWith("NAnt"))
-        {
+        //IDocument  nDoc = doc.Get<IDocument>(CodeAnalysisKeys.ContainingNamespace);
+        //if(nDoc == null || nDoc.String(CodeAnalysisKeys.QualifiedName).StartsWith("NAnt"))
+        //{
             if(IsNAntRef(doc) || IsNAntElement(doc) || IsNAntEnum(doc))
             {
-                writePath =  new FilePath($"reference/{doc.String(NAntKeys.NAntRefType).ToLower()}/{doc.String(NAntKeys.NAntTitle)}.html");
+                string pageName = string.Empty;
+
+                // NAnt functions can have the same name but different set of parameters so the file name should contain
+                //the function category and the full name of the function e.g. GetClrVersion(string) and GetClrVersion()
+                if(IsNAntFunction(doc))
+                {
+                    Dictionary<string, object> fsDetails = GetAttributeDetails(doc.Get<IDocument>(CodeAnalysisKeys.ContainingType), IsNAntFunctionSetAttribute);
+                    if(fsDetails != null)
+                    {
+                        // pageName = function-set_prefix.function(params)
+                        pageName = $"{Convert.ToString(fsDetails["prefix"]) ?? string.Empty}.{doc.String(CodeAnalysisKeys.FullName)}";
+                    }
+                }
+                else{
+                    pageName = doc.String(NAntKeys.NAntTitle);
+                }
+
+                writePath =  new FilePath($"reference/{doc.String(NAntKeys.NAntRefType).ToLower()}/{System.Net.WebUtility.UrlEncode(pageName)}.html");
             }
             else
             {
                 writePath = doc.Get<FilePath>(Keys.WritePath);
             }
-        }
+        /*}
         else
         {
             writePath = new FilePath("https://docs.microsoft.com/en-us/dotnet/api/?term=" 
                                         + System.Net.WebUtility.UrlEncode(doc.String(CodeAnalysisKeys.QualifiedName)));
-        }
+        }*/
 
         return writePath;
     };
@@ -743,25 +881,133 @@ public static class NAntUtils{
     /// <param name="propDoc">An IDocument for a class property.</param>
     public static (string Name, bool Required) GetTaskDetails(IDocument propDoc)
     {		
-		Tuple<object, object, object> details = NAntUtils.GetAttributeDetails(propDoc, NAntUtils.IsNAntParameterAttribute);
-		return (Name: Convert.ToString(details.Item1) ?? string.Empty, Required: Convert.ToBoolean(details.Item2));
+		Dictionary<string, object> details = NAntUtils.GetAttributeDetails(propDoc, (attr) => { 
+            return NAntUtils.IsNAntParameterAttribute(attr) || NAntUtils.IsNAntFrameworkParameterAttribute(attr);
+        });
+
+        if(details != null)
+        {
+            return (Name: Convert.ToString(details["name"]) ?? string.Empty, 
+                    Required: (details.ContainsKey("Required") ? Convert.ToBoolean(details["Required"]) : false));
+        }
+        
+        return (Name: string.Empty, Required: false);
 	}
 
     /// <summary>
     /// Returns a tuple containing the Obsolete attribute details for the given property IDocument.
     /// </summary>
-	public static (bool Obsolete, string Details) GetObsoleteDetails( IDocument propDoc)
+	public static (bool Obsolete, string Details) GetObsoleteDetails(IDocument propDoc)
     {
 		if(NAntUtils.IsNAntObsolete(propDoc))
 		{
-			Tuple<object, object, object> details = NAntUtils.GetAttributeDetails(propDoc, NAntUtils.IsNAntObsoleteAttribute);
-			return (Obsolete: true, Details: Convert.ToString(details.Item1) ?? string.Empty);
+			Dictionary<string, object> details = NAntUtils.GetAttributeDetails(propDoc, NAntUtils.IsNAntObsoleteAttribute);
+            if(details != null)
+            {
+			    return (Obsolete: true, Details: Convert.ToString(details["message"]) ?? string.Empty);
+            }
 		}
-		else
-		{
-			return (Obsolete: false, Details: string.Empty);	
-		}
+		
+        return (Obsolete: false, Details: string.Empty);	
 	}
+
+    /// <summary>
+    /// Returns a string with the display name of the NAnt parameter type if the type is a standard one from .NET framework.
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
+    public static string GetParameterTypeDisplayName(IDocument doc)
+    {
+        if(doc == null) return string.Empty;
+
+        string typeName = string.Empty;
+
+        string t = doc.String(CodeAnalysisKeys.QualifiedName);
+        if(t == typeof(System.Byte).FullName)
+        {
+            typeName = "byte";
+        }
+        else if(t == typeof(System.SByte).FullName)
+        {
+            typeName = "sbyte";
+        }
+        else if(t == typeof(System.Int16).FullName)
+        {
+            typeName = "short";
+        }
+        else if(t == typeof(System.UInt16).FullName)
+        {
+            typeName = "ushort";
+        }
+        else if(t == typeof(System.Int32).FullName)
+        {
+            typeName = "int";
+        }
+        else if(t == typeof(System.UInt32).FullName)
+        {
+            typeName = "uint";
+        }
+        else if(t == typeof(System.Int64).FullName)
+        {
+            typeName = "long";
+        }
+        else if(t == typeof(System.UInt64).FullName)
+        {
+            typeName = "ulong";
+        }
+        else if(t == typeof(System.Single).FullName)
+        {
+            typeName = "float";
+        }
+        else if(t == typeof(System.Double).FullName)
+        {
+            typeName = "double";
+        }
+        else if(t == typeof(System.Decimal).FullName)
+        {
+            typeName = "decimal";
+        }
+        else if(t == typeof(System.String).FullName)
+        {
+            typeName = "string";
+        }
+        else if(t == typeof(System.Char).FullName)
+        {
+            typeName = "char";
+        }
+        else if(t == typeof(System.Boolean).FullName)
+        {
+            typeName = "bool";
+        }
+        else if(t == typeof(void).FullName)
+        {
+            typeName = "void";
+        }
+        else if(t == typeof(System.Object).FullName)
+        {
+            typeName = "object";
+        }
+        else if(t == typeof(System.IO.FileInfo).FullName)
+        {
+            typeName = "file";
+        }
+        else if(t == typeof(System.IO.DirectoryInfo).FullName)
+        {
+            typeName = "directory";
+        }
+        else if(t == typeof(System.DateTime).FullName)
+        {
+            typeName = "datetime";
+        }
+        else if(t == typeof(System.TimeSpan).FullName)
+        {
+            typeName = "timespan";
+        }
+
+        //Wyam.Common.Tracing.Trace.Verbose($"[NAntUtils.GetParameterTypeDisplayName] Doc {doc.String(CodeAnalysisKeys.DisplayName)} with qualified name {doc.String(CodeAnalysisKeys.QualifiedName)} - returned type name {typeName}");
+
+        return typeName;
+    }
 };
 
 
@@ -856,7 +1102,7 @@ Pipelines.InsertAfter(Docs.Api, "Reference",
  Pipelines.InsertAfter("Reference", "Test",
     Documents(Docs.Api),
     ForEach(
-        Trace(DocToJson)
+        Trace(NAntUtils.DocToJson)
     )
  );
 */

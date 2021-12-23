@@ -36,7 +36,7 @@ using NAnt.VisualCpp.Util;
 
 namespace NAnt.VisualCpp.Tasks {
     /// <summary>
-    /// Compiles resources using <c>rc.exe</c>, Microsoft's Win32 resource 
+    /// Compiles resources using <see href="https://docs.microsoft.com/en-us/windows/win32/menurc/using-rc-the-rc-command-line-">rc.exe</see>, Microsoft's Win32 resource 
     /// compiler.
     /// </summary>
     /// <example>
@@ -125,7 +125,7 @@ namespace NAnt.VisualCpp.Tasks {
         }
 
         /// <summary>
-        /// Macro definitions to pass to rc.exe.
+        /// Macro definitions to pass to <see href="https://docs.microsoft.com/en-us/windows/win32/menurc/using-rc-the-rc-command-line-">rc.exe</see>.
         /// Each entry will generate a /d
         /// </summary>
         [BuildElementCollection("defines", "define")]

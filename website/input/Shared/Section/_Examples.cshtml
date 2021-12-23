@@ -1,8 +1,16 @@
 @{
 	string examples = Model.String("Example");
+	int level = ViewData.ContainsKey("level") ? Convert.ToInt32(ViewData["level"]) : 1;
 }
 @if(!string.IsNullOrWhiteSpace(examples))
 {
-	<h1 id="Examples">Examples</h1>
+	@if(level == 1)
+	{
+		<h1 id="Examples">Examples</h1>
+	}
+	else{
+		<h3 id="Examples">Examples</h3>
+	}
+
 	<div>@Html.Raw(examples)</div>
 }

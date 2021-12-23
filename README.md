@@ -22,7 +22,7 @@ Because people still use it and because it still works great, even if the last r
 
 License
 -------
-NAnt2 is provided under included GPL license.
+NAnt2 is provided under included GPL and LGPL licenses.
 
 NAnt and NAnt.Contrib
 =====================
@@ -149,6 +149,10 @@ To generate local documentation (available at http://localhost:5080):
 
 ```batch
 dotnet "C:\Wyam\wyam.dll" -w -p
+# or as a local tool
+dotnet new tool-manifest
+dotnet tool install wyam2
+dotnet wyam2 -w -p -v -l wyam.log
 ```
 
 ```bash
