@@ -71,13 +71,14 @@
 {
     @*The document for Model type: the one contained in Model and the one retrieved from References pipelines, containing the NAnt meta information *@
     IDocument type = Model.Get<IDocument>("Type");
-    IDocument refType = (IDocument)NAntUtils.GetNAntReferenceDoc(type, Context);
-
+    Trace.Information($"[_RefNestedElements {root}] level {ViewData["level"]}. Here. type is {(type is null ? "null" : "not null")}: {type?.SourceString()}");    
     @* Trace.Information($"[_RefNestedElements {root}] level {ViewData["level"]}. Document '{Model.SourceString()}' is nested single element and it's ref doc is {NAntUtils.DocToJson(type, Context)}"); *@
-    Trace.Information($"[_RefNestedElements {root}] level {ViewData["level"]}. Document '{Model.SourceString()}' is nested single element and type is {refType.String(NAntKeys.NAntDisplayName)}");
+
+    IDocument refType = (IDocument)NAntUtils.GetNAntReferenceDoc(type, Context);
+    Trace.Information($"[_RefNestedElements {root}] level {ViewData["level"]}. Document '{Model.SourceString()}' is nested single element and ref. type is {(refType == null ? "null" : "not null")}: {refType?.String(NAntKeys.NAntDisplayName)}");
 
     var linkName = GetNestedElementDetails(Model).Name;
-    var link = type == null ? string.Empty : Context.GetLink(refType.FilePath(Keys.WritePath));
+    var link = type == null || refType == null ? string.Empty : Context.GetLink(refType.FilePath(Keys.WritePath));
     var obsolete = NAntUtils.GetObsoleteDetails(refModel);
 
     <div class="row">
@@ -105,7 +106,7 @@
                 }
                 {
                     var newViewData = new ViewDataDictionary(this.ViewData);
-                    Trace.Information($"[_RefNestedElements {root}] _RefParameters calling with level {newViewData["level"]} for document {refModel.SourceString()}");
+                    Trace.Information($"[_RefNestedElements {root}] _RefParameters calling with level {newViewData["level"]} for document {refModel?.SourceString()}");
                     Html.RenderPartial("Section\\_RefParameters", refType, newViewData);
                     Html.RenderPartial("Section\\_RefNestedElements", refType, newViewData);
                 }
@@ -147,12 +148,12 @@
                     child = Context.Documents["Reference"]
                               .First( r => r.Get<NAntRefType>(NAntKeys.NAntRefType) != NAntRefType.None
                                             && r.Get<IDocument>(CodeAnalysisKeys.Type).String(CodeAnalysisKeys.QualifiedName) == collectionElement.ChildType.ToString());
-                    Trace.Information($"[_RefNestedElements {root}] found child {child} for provided child type {collectionElement.ChildType}");
+                    //Trace.Information($"[_RefNestedElements {root}] found child {child} for provided child type {collectionElement.ChildType}");
                 }
                 //if childType not provided find IDocument that corresponds to Type returned by the Add method of the collection
                 else
                 {
-                    Trace.Information($"[_RefNestedElements {root}] At level {level} for document {Model.SourceString()}: type is {Model.Get<IDocument>("Type").String(CodeAnalysisKeys.QualifiedName)}");
+                    //Trace.Information($"[_RefNestedElements {root}] At level {level} for document {Model.SourceString()}: type is {Model.Get<IDocument>("Type").String(CodeAnalysisKeys.QualifiedName)}");
                     //Trace.Information($"[_RefNestedElements {root}] At level {level} for document {Model.SourceString()}: type is {NAntUtils.DocToJson(Model.Get<IDocument>("Type"), Context)}");
 
                     //for arrays, kind is "ArrayType", e.g. SourceString = "NAnt.Core.Types.Token[]"
@@ -167,9 +168,29 @@
                                             ?.FirstOrDefault(x => x.String(CodeAnalysisKeys.Name) == "Add")
                                             ?.SourceString(); //e.g. "NAnt.Core.Types.ArgumentCollection.Add(NAnt.Core.Types.Argument)"
                         //Trace.Information($"[_RefNestedElements {root}] At level {level} for document {Model.SourceString()}: typeKind is {typeKind}, raw childName is {childName}");
-                        childName = childName.Substring(childName.LastIndexOf("(") +1, 
+                        if(!string.IsNullOrEmpty(childName))
+                        {
+                            childName = childName.Substring(childName.LastIndexOf("(") +1, 
                                                     childName.LastIndexOf(")") - childName.LastIndexOf("(") -1);
-                        Trace.Information($"[_RefNestedElements {root}] At level {level} for document {Model.SourceString()}: typeKind is {typeKind}, childName is {childName}");
+                        }
+                        else
+                        { 
+                            //must be a generic collection; look for a basetype of kind ErrorType and name = Collection
+                            childName = Model.Get<IReadOnlyList<IDocument>>(CodeAnalysisKeys.BaseTypes)
+                                            ?.FirstOrDefault(x => x.String(CodeAnalysisKeys.Kind) == "ErrorType" && x.String(CodeAnalysisKeys.Name) == "Collection")
+                                            ?.SourceString();
+                            if(!string.IsNullOrEmpty(childName))
+                            {
+                                childName = childName.Substring(childName.LastIndexOf("<") +1, 
+                                                        childName.LastIndexOf(">") - childName.LastIndexOf("<") -1);
+                            }
+                            else
+                            {
+                                Trace.Information($"[_RefNestedElements {root}] At level {level} for document {Model.SourceString()}: typeKind is {typeKind}, childName not found");
+                            }
+                        }
+                        
+                        //Trace.Information($"[_RefNestedElements {root}] At level {level} for document {Model.SourceString()}: typeKind is {typeKind}, childName is {childName}");
                     }
                     else if( typeKind == "ArrayType")
                     {
@@ -177,13 +198,13 @@
                                         .SourceString(); //"NAnt.Core.Types.Token[]"
                         //Trace.Information($"[_RefNestedElements {root}] At level {level} for document {Model.SourceString()}: typeKind is {typeKind}, raw childName is {childName}");
                         childName = childName.Substring(0, childName.LastIndexOf("["));
-                        Trace.Information($"[_RefNestedElements {root}] At level {level} for document {Model.SourceString()}: typeKind is {typeKind}, childName is {childName}");
+                        //Trace.Information($"[_RefNestedElements {root}] At level {level} for document {Model.SourceString()}: typeKind is {typeKind}, childName is {childName}");
                     }
 
                     child = Context.Documents["Reference"]
                               .FirstOrDefault( r => r.Get<NAntRefType>(NAntKeys.NAntRefType) != NAntRefType.None
                                                         && r.String(CodeAnalysisKeys.QualifiedName) == childName);
-                    Trace.Information($"[_RefNestedElements {root}] found child {child} for based on Add method");
+                    //Trace.Information($"[_RefNestedElements {root}] found child {child} for based on Add method");
                 }
                 
                 //Trace.Information("[_RefNestedElements view] found child " + NAntUtils.DocToJson(child, Context));
@@ -194,7 +215,7 @@
                     <p>@Html.Raw(child.String("Remarks"))</p>
                     Html.RenderPartial("Section\\_RefParameters", child, newViewData);
                     
-                    Trace.Information($"[_RefNestedElements {root}] recursive calling with level {newViewData["level"]} for child {child.SourceString()}");
+                    //Trace.Information($"[_RefNestedElements {root}] recursive calling with level {newViewData["level"]} for child {child.SourceString()}");
                     Html.RenderPartial("Section\\_RefNestedElements", child, newViewData);
 
                     @Html.Partial("Section\\_Examples", child, newViewData)

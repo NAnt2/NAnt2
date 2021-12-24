@@ -4,7 +4,6 @@
 #n Wyam2.Markdown
 #n Wyam2.Html
 #n Wyam2.CodeAnalysis
-#n ObjectDumper.NET
 
 //#a **/*
 /*
@@ -39,8 +38,8 @@ if(!Settings.ContainsKey(Keys.LinksUseHttps))
 Settings[Keys.LinkRoot] = "/";
 Settings[DocsKeys.Title] = "NAnt2";
 Settings[DocsKeys.Logo] = "/assets/img/logo_dark.png";
-//Settings[DocsKeys.ProjectFiles] = "../../src/**/{!.vscode,!bin,!obj,!packages,!*.Tests, !NDoc.*.NAnt,}/**/*.csproj";//
-Settings[DocsKeys.ProjectFiles] = "../../src/{NAnt.Core,NAnt.DotNet}/*.csproj";
+Settings[DocsKeys.ProjectFiles] = "../../src/**/{!.vscode,!bin,!obj,!packages,!*.Tests, !NDoc.*.NAnt,}/**/*.csproj";//
+//Settings[DocsKeys.ProjectFiles] = "../../src/**/{NAnt.Core,NAnt.DotNet,NAnt.NUnit*}/**/*.csproj";
 Settings[DocsKeys.IncludeDateInPostPath] = true;
 Settings[DocsKeys.BlogAtomPath] = "blog/feed/atom/index.xml";
 Settings[DocsKeys.BlogRssPath] = "blog/feed/rss/index.xml";
@@ -869,9 +868,10 @@ public static class NAntUtils{
         if(doc == null) return null;
 
         IDocument refDoc = ctx.Documents["Reference"]
-                              .First( r => r.Get<NAntRefType>(NAntKeys.NAntRefType) != NAntRefType.None
-                                        && r.Id == doc.Id 
-                                        && r.String(CodeAnalysisKeys.SymbolId) == doc.String(CodeAnalysisKeys.SymbolId));
+                              .FirstOrDefault( r => r.Get<NAntRefType>(NAntKeys.NAntRefType) != NAntRefType.None
+                                                && r.SourceString() == doc.SourceString()); 
+                                        //&& r.Id == doc.Id 
+                                        //&& r.String(CodeAnalysisKeys.SymbolId) == doc.String(CodeAnalysisKeys.SymbolId));
         return refDoc;
     };
 

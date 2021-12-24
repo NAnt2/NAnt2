@@ -4,9 +4,10 @@
 
 @model IDocument
 @{
-	int level = ViewData.ContainsKey("level") ? Convert.ToInt32(ViewData["level"]) : 1;
-	bool isFramework = ViewData.ContainsKey("isFramework") ? Convert.ToBoolean(ViewData["isFramework"]) : false;
-
+	int level = ViewData != null && ViewData.ContainsKey("level") ? Convert.ToInt32(ViewData["level"]) : 1;
+	string root = ViewData.ContainsKey("root") ? Convert.ToString(ViewData["root"]) : string.Empty;
+	bool isFramework = ViewData != null && ViewData.ContainsKey("isFramework") ? Convert.ToBoolean(ViewData["isFramework"]) : false;
+	Trace.Information($"[_RefParameters {root}] Model is {Model?.SourceString()}, ViewData is {(ViewData == null ? "null" : "not null")}");
 	string parametersHeaderText = isFramework ? "Framework-configurable parameters" : "Parameters";
 
 	NAntRefType docType = Model.Get<NAntRefType>(NAntKeys.NAntRefType);
