@@ -37,7 +37,7 @@ if(!Settings.ContainsKey(Keys.LinksUseHttps))
 }
 Settings[Keys.LinkRoot] = "/";
 Settings[DocsKeys.Title] = "NAnt2";
-Settings[DocsKeys.Logo] = "/assets/img/logo_dark.png";
+Settings[DocsKeys.Logo] = "/assets/img/logo-dark.png";
 Settings[DocsKeys.ProjectFiles] = "../../src/**/{!.vscode,!bin,!obj,!packages,!*.Tests, !NDoc.*.NAnt,}/**/*.csproj";//
 //Settings[DocsKeys.ProjectFiles] = "../../src/**/{NAnt.Core,NAnt.DotNet,NAnt.NUnit*}/**/*.csproj";
 Settings[DocsKeys.IncludeDateInPostPath] = true;
