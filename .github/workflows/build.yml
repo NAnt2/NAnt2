@@ -32,6 +32,9 @@ jobs:
                 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
                 where resgen
         shell: cmd
+      - name: Install .NET 4.5 SDK (Windows 8)
+        run: choco install -y windows-sdk-8.0
+        shell: cmd
       - name: Install mono on Windows
         run: choco install -y mono
         shell: cmd
