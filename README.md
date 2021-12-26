@@ -2,9 +2,8 @@ NAnt2
 ====
 Let's chat [![Join the chat at https://gitter.im/NAnt2/NAnt2](https://badges.gitter.im/NAnt2/NAnt2.svg)](https://gitter.im/NAnt2/NAnt2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-* Windows [![Build status](https://ci.appveyor.com/api/projects/status/jf9itaqnhmjf4aw8/branch/master?svg=true)](https://ci.appveyor.com/project/savornicesei/nant2/branch/master)
 
-* Linux [![Build Status](https://travis-ci.org/savornicesei/NAnt2.svg?branch=master)](https://travis-ci.org/savornicesei/NAnt2)
+* [![NAnt2 build](https://github.com/NAnt2/NAnt2/actions/workflows/build.yml/badge.svg)](https://github.com/NAnt2/NAnt2/actions/workflows/build.yml)
 
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=nant2&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=nant2) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nant2&metric=coverage)](https://sonarcloud.io/dashboard?id=nant2)
 [![CodeScene general](https://codescene.io/images/analyzed-by-codescene-badge.svg)](https://codescene.io/projects/10108)
