@@ -39,7 +39,8 @@ jobs:
                 Write-Output "downloading $sdk45Url"
                 Invoke-WebRequest -Uri $sdk45Url -OutFile $sdk45Path
                 Write-Output "installing $sdk45Path"
-                Start-Process $sdk45Path -Verb runas -ArgumentList "/q /norestart /ceip off /features OptionId.NetFxSoftwareDevelopmentKit" -Wait
+                $process = Start-Process $sdk45Path -Verb runas -ArgumentList "/q /norestart /ceip off /features OptionId.NetFxSoftwareDevelopmentKit" -PassThru
+                $process.WaitForExit() | Out-Null
         shell: pwsh
       - name: Install mono on Windows
         run: choco install -y mono
@@ -92,7 +93,16 @@ jobs:
               fi
         shell: bash
       - name: Build with make
-        run: make clean build-nant TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
+        run: |
+                if [ "${RUNNER_OS}" == "macOS" ]; then
+                  export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
+                fi
+                make clean build-nant TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
         shell: bash
       - name: Run tests with make
-        run: make clean run-tests TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
+        run: |
+                if [ "${RUNNER_OS}" == "macOS" ]; then
+                  export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
+                fi
+                make clean run-tests TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
+        shell: bash
