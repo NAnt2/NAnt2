@@ -1,8 +1,8 @@
 # NAnt make makefile for Mono
 MONO=mono
-MCS=gmcs
+MCS=mcs -sdk:4.5
 RESGEN=resgen
-TARGET=mono-2.0
+TARGET=mono-4.5
 
 # Contains a list of acceptable targets used to build NAnt
 VALID_TARGETS := mono-2.0 mono-3.5 mono-4.0 mono-4.5 net-2.0 net-3.5 net-4.0 net-4.5

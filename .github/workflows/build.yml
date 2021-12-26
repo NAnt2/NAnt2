@@ -38,21 +38,21 @@ jobs:
       - name: Build with nmake on Windows
         run: |
               call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-              nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${PROJECT_VERSION}
+              nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
         shell: cmd
       - name: Run tests with nmake on Windows
         run: |
                 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-                nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${PROJECT_VERSION}
+                nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
         shell: cmd
       - name: Check mono version
         run: mono --version
         shell: bash
       - name: Build with make on Windows
-        run: make clean build-nant TARGET=mono-4.5 MCS="mcs -sdk:4.5"
+        run: make clean build-nant TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
         shell: bash
       - name: Run tests with make on Windows
-        run: make clean run-tests TARGET=mono-4.5 MCS="mcs -sdk:4.5"
+        run: make clean run-tests TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
   nix-build:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -81,7 +81,7 @@ jobs:
         run: mono --version
         shell: bash
       - name: Build with make
-        run: make clean build-nant TARGET=mono-4.5 MCS="mcs -sdk:4.5"
+        run: make clean build-nant TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
         shell: bash
       - name: Run tests with make
-        run: make clean run-tests TARGET=mono-4.5 MCS="mcs -sdk:4.5"
+        run: make clean run-tests TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}

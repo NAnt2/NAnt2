@@ -1,7 +1,7 @@
 #NAnt nmake makefile for building on windows
 CSC=csc
 RESGEN=resgen
-TARGET=net-2.0
+TARGET=net-4.5
 
 version=0.95
 build=0
