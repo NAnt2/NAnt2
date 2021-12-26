@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    commit-message:
+      prefix: "GHA"
+      include: "scope"
+    labels:
+      - ":game_die: dependencies"
+      - ":robot: bot"
+  - package-ecosystem: nuget
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: "sunday"
+    commit-message:
+      prefix: "nuget"
+      include: "scope"
+    labels:
+      - ":game_die: dependencies"
+      - ":robot: bot"
+

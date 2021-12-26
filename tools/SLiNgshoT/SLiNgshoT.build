@@ -29,7 +29,7 @@
         <call target="SLiNgshoT" />
     </target>
     <target name="SLiNgshoT" depends="setup">
-        <csc target="exe" output="${output}" debug="${debug}" define="${define}">
+        <csc target="exe" output="${output}" debug="${debug}" define="${define}" verbose="true">
             <arg value="${unsafe}" />
             <arg value="${checked}" />
             <sources>
@@ -38,9 +38,9 @@
                 <include name="../../src/SolutionInfo.cs" />
             </sources>
             <references>
-                <include name="System.dll" />
+                <!-- <include name="System.dll" />
                 <include name="System.Data.dll" />
-                <include name="System.XML.dll" />
+                <include name="System.Xml.dll" /> -->
                 <include name="${build.dir}/SLiNgshoT.Core.dll" />
             </references>
         </csc>
@@ -66,7 +66,7 @@
         <call target="SLiNgshoT.Core" />
     </target>
     <target name="SLiNgshoT.Core" depends="setup">
-        <csc target="library" output="${output}" debug="${debug}" define="${define}">
+        <csc target="library" output="${output}" debug="${debug}" define="${define}" verbose="true">
             <arg value="${unsafe}" />
             <arg value="${checked}" />
             <sources>
@@ -75,9 +75,9 @@
                 <include name="../../src/SolutionInfo.cs" />
             </sources>
             <references>
-                <include name="System.dll" />
+                <!-- <include name="System.dll" />
                 <include name="System.Data.dll" />
-                <include name="System.Xml.dll" />
+                <include name="System.Xml.dll" /> -->
             </references>
         </csc>
     </target>
