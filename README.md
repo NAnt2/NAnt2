@@ -22,7 +22,8 @@ Because people still use it and because it still works great, even if the last r
 
 License
 -------
-NAnt2 is provided under included GPL license.
+NAnt2 is provided under included GPL license. Portions of it (NAnt2.Contrib) are provided under included LGPL license.  
+There is an effort to change license to Apache 2.0 / MIT. If you ever contributed to NAnt, NAnt.Contrib or NAnt2, please state your approval/disapproval on [ticket #14](https://github.com/NAnt2/NAnt2/issues/14)
 
 NAnt and NAnt.Contrib
 =====================
@@ -115,13 +116,13 @@ Build NAnt using Microsoft .NET:
 
         make install MONO= MCS=csc prefix=<installation path> [DESTDIR=<staging path>] [TARGET=<nant target>]
 
-    eg. `make install MONO= MCS=csc prefix="c:\Program Files" TARGET=net-2.0`
+    eg. `make install MONO= MCS=csc prefix="c:\Program Files" TARGET=net-4.5`
 
 * NMake
 
         nmake -f Makefile.nmake install prefix=<installation path> [DESTDIR=<staging path>] [TARGET=<nant target>]
 
-    eg. `nmake -f Makefile.nmake install prefix="c:\Program Files" TARGET=net-4.0`
+    eg. `nmake -f Makefile.nmake install prefix="c:\Program Files" TARGET=net-4.5`
 
 
 Building NAnt using Mono:
@@ -130,7 +131,7 @@ Building NAnt using Mono:
 
         make install prefix=<installation path> [DESTDIR=<staging path>] [TARGET=<nant target>]
 
-    eg. `make install prefix="c:\Program Files" TARGET=mono-4.0`
+    eg. `make install prefix="c:\Program Files" TARGET=mono-4.5 MCS="mcs -sdk:4.5"`
 
 * NMake
 
@@ -149,20 +150,26 @@ Documentation is available in HTML format, in the `doc/` directory.
 
 License
 ========
-NAnt is provided under included GPL license.
-NAntContrib is provided under included LGPL license.
-NAnt Copyright (C) 2001-2012 Gerry Shaw
+NAnt is provided under included GPL license.  
+NAntContrib is provided under included LGPL license.  
+NAnt Copyright (C) 2001-2012 Gerry Shaw  
 NAntContrib Copyright (C) 2002 Tomas Restrepo (tomasr@mvps.org)
 
 Contributors
 ================
+NAnt2 (2018 - present day)
+---------------------------
+* [Simona Avornicesei](https://github.com/savornicesei)
+
 NAnt (2001 - 2018)
 ------------------
 **Lead Developers**
-* Gerry Shaw (gerry_shaw -at- yahoo.com)
+* [Gerry Shaw](https://github.com/gshaw) (gerry_shaw -at- yahoo.com)
 * Ian MacLean (ian_maclean -at- another.com)
 * Scott Hernandez (scotthernandez -at- hotmail.com)
-* Gert Driesen (gert.driesen -at- ardatis.com)
+* [Gert Driesen](https://github.com/drieseng) (gert.driesen -at- ardatis.com)
+* [Ryan Boggs](https://github.com/rmboggs)
+* [Dominik Guder](https://github.com/dguder)
 
 **Developers**
 * Eric V. Smith
@@ -198,10 +205,10 @@ NAnt (2001 - 2018)
 NAntContrib (2003 - 2018)
 --------------------------
 **Lead Developers**
-* Gerry Shaw (gerry_shaw -at- yahoo.com)
+* [Gerry Shaw](https://github.com/gshaw) (gerry_shaw -at- yahoo.com)
 * Ian MacLean (ian_maclean -at- another.com)
 * Scott Hernandez (scotthernandez -at- hotmail.com)
-* Gert Driesen (gert.driesen -at- ardatis.com)
+* [Gert Driesen](https://github.com/drieseng) (gert.driesen -at- ardatis.com)
 
 **Contributors**
 * Dominik Guder 
