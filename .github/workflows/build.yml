@@ -38,11 +38,13 @@ jobs:
         shell: cmd
       - name: Build with nmake on Windows
         run: |
-              nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=${{github.run_number}} version=$PROJECT_VERSION
+              call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+              nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${PROJECT_VERSION}
         shell: cmd
       - name: Run tests with nmake on Windows
         run: |
-                nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=${{github.run_number}} version=$PROJECT_VERSION
+                call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+                nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${PROJECT_VERSION}
         shell: cmd
       - name: Check mono version
         run: mono --version
