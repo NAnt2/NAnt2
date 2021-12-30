@@ -39,8 +39,9 @@ jobs:
                 Write-Output "downloading $sdk45Url"
                 Invoke-WebRequest -Uri $sdk45Url -OutFile $sdk45Path
                 Write-Output "installing $sdk45Path"
-                $process = Start-Process $sdk45Path -Verb runas -ArgumentList "/q /norestart /ceip off /features OptionId.NetFxSoftwareDevelopmentKit" -PassThru
+                $process = (Start-Process $sdk45Path -Verb runas -ArgumentList "/q /norestart /ceip off /features OptionId.NetFxSoftwareDevelopmentKit" -PassThru)
                 $process.WaitForExit() | Out-Null
+                Write-Output -Fore Red "Errorcode: " $process.ExitCode
         shell: pwsh
       - name: Install mono on Windows
         run: choco install -y mono
