@@ -60,7 +60,7 @@ jobs:
                   New-Item -ItemType Directory -Force -Path $sdk45KitPath
                 }
                 Write-Output "Downloading all components to bypass download error for sdk_tools4.msi when running the installer directly"
-                $process = (Start-Process $sdk45Path -Verb runas -ArgumentList "/q /norestart /ceip off /features OptionId.NetFxSoftwareDevelopmentKit /layout $sdk45KitPath /log sdkkit.log" -PassThru)
+                $process = (Start-Process $sdk45Path -Verb runas -ArgumentList "/q /norestart /ceip off /layout $sdk45KitPath /log sdkkit.log" -PassThru)
                 $process.WaitForExit() | Out-Null
                 if($process.ExitCode -ne 0)
                 {
