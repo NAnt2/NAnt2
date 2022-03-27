@@ -18,8 +18,9 @@ init:
   - git config --global core.autocrlf true
 
 install:
+  - choco install -y chocolatey-dotnetfx.extension
   - choco install -y sonarscanner-msbuild-net46
-  - choco install -y opencover
+  - choco install -y opencover.install
 
 before_build:
   - set JAVA_HOME=C:\Program Files\Java\jdk13
