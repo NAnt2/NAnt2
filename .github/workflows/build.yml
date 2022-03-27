@@ -26,42 +26,21 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Install CMake; NMake is provided by default
+      - name: Install Make; NMake is provided by default
         run: |
-                choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System'
-                call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-                where resgen
+              choco install -y make
+              call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+              where resgen
         shell: cmd
-      - name: Install mono on Windows
-        run: choco install -y mono
-        shell: cmd
-      - name: Check mono version
-        run: |
-                SET "monoPath=c:\Program Files\Mono\bin"
-                SET PATH=%PATH%;%monoPath%
-                mono --version
-        shell: cmd
-      - name: Build with nmake on Windows
+      - name: Build on .NET framework with nmake
         run: |
               call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
               nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
         shell: cmd
-      - name: Run tests with nmake on Windows
+      - name: Run tests on .NET framework with nmake
         run: |
-                call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-                nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
-        shell: cmd
-      - name: Build with make on Windows
-        run: |
-                SET "monoPath=c:\Program Files\Mono\bin"
-                SET PATH=%PATH%;%monoPath%
-                make clean build-nant TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
-        shell: cmd
-      - name: Run tests with make on Windows
-        run: |
-                SET "monoPath=c:\Program Files\Mono\bin"
-                SET PATH=%PATH%;%monoPath%
-                make clean run-tests TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
+              call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+              nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
         shell: cmd
   nix-build:
     runs-on: ${{ matrix.os }}
