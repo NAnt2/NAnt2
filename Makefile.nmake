@@ -24,7 +24,25 @@ DEFINE = $(DEFINE),NET_3_5,ONLY_3_5
 !else if "$(TARGET)" == "net-4.0" || "$(TARGET)" == "mono-4.0"
 DEFINE = $(DEFINE),NET_3_5,NET_4_0,ONLY_4_0
 !else if "$(TARGET)" == "net-4.5" || "$(TARGET)" == "mono-4.5"
-DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5
+DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x
+!else if "$(TARGET)" == "net-4.5.1"
+DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x
+!else if "$(TARGET)" == "net-4.5.2"
+DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x
+!else if "$(TARGET)" == "net-4.6"
+DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x
+!else if "$(TARGET)" == "net-4.6.1"
+DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x
+!else if "$(TARGET)" == "net-4.6.2"
+DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x
+!else if "$(TARGET)" == "net-4.7"
+DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x,NET_4_7,ONLY_NET_4_7_x
+!else if "$(TARGET)" == "net-4.7.1"
+DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x,NET_4_7,ONLY_NET_4_7_x
+!else if "$(TARGET)" == "net-4.7.2"
+DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x,NET_4_7,ONLY_NET_4_7_x
+!else if "$(TARGET)" == "net-4.8"
+DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x,NET_4_7,ONLY_NET_4_7_x,NET_4_8,ONLY_NET_4_8
 !else
 !error Specified target "$(TARGET)" is not valid
 !endif
