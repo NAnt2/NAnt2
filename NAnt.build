@@ -955,6 +955,7 @@
 
         <!-- Determine MSBuild path -->
         <property name="temp" value="${path::get-temp-file-name()}" />
+        <property name="msbuild.path" value="" />
         <if test="${platform::is-windows()}">			
 			<property name="temp" value="${path::get-temp-file-name()}" />
 			<trycatch>
