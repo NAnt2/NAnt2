@@ -50,6 +50,8 @@ namespace NAnt.Win32.Tasks {
         private string _maxNetFxVer;
         private readonly string _registryBase = @"SOFTWARE\Microsoft\Microsoft SDKs\Windows";
         private readonly string _registryBaseWow6432 = @"SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows";
+        private readonly string _registryNDP = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full";
+        private readonly string _registryNetFxSdk = @"SOFTWARE\WOW6432Node\Microsoft\Microsoft SDKs\NETFXSDK";
         private readonly string _regexNetFxTools = @"^WinSDK.*NetFx.*Tools.*$";
         
         #endregion Private Instance Fields
@@ -151,39 +153,97 @@ namespace NAnt.Win32.Tasks {
             }
             
             // Sort and reverse the WinSDK version key array to make sure that
-            // the latest version is reviewed first before reviewing earlier
-            // versions.
-            installedWinSdkVersions.Sort();
+            // the latest version is reviewed first before reviewing earlier versions.
+            // Default Sort does not work properly if v10.0 SDK is installed so they need to be compared as Version objects
+            installedWinSdkVersions.Sort(delegate (string sdk1, string sdk2)
+            {
+                if (string.IsNullOrEmpty(sdk1) && string.IsNullOrEmpty(sdk2)) return 0;
+                if (string.IsNullOrEmpty(sdk1)) return -1;
+                if (string.IsNullOrEmpty(sdk2)) return 1;
+                
+                Version sdk1Version = StringToVersion(sdk1);
+                Version sdk2Version = StringToVersion(sdk2);
+                return sdk1Version.CompareTo(sdk2Version);
+            });
             installedWinSdkVersions.Reverse();
             
             // Loop through all of the WinSDK version keys.
-            for(int i = 0; i < installedWinSdkVersions.Count; i++) {
+            for(int i = 0; i < installedWinSdkVersions.Count; i++) 
+            {
                 loopSdkVersion = StringToVersion(installedWinSdkVersions[i]);
                 
                 // If a maxVersion was indicated and the loopVersion is greater than
                 // the maxVersion, skip to the next item in the installedVersion array.
-                if (maxSdkVersion != null) {
-                    if (loopSdkVersion > maxSdkVersion) {
+                if (maxSdkVersion != null) 
+                {
+                    if (loopSdkVersion > maxSdkVersion) 
+                    {
                         continue;
                     }
                 }
                 
                 // If the loopVersion is greater than or equal to the minVersion, loop through the subkeys
                 // for a valid .NET sdk path
-                if (minSdkVersion <= loopSdkVersion) {
-                    RegistryKey sdkVerRegSubKey = sdkRegSubKey.OpenSubKey(installedWinSdkVersions[i]);
-                    // Gets all of the current WinSdk loop subkeys
+                if (minSdkVersion <= loopSdkVersion) 
+                {
                     List<string> installedWinSdkSubKeys = new List<string>();
-                    if (sdkVerRegSubKey != null)
-                        installedWinSdkSubKeys.AddRange(sdkVerRegSubKey.GetSubKeyNames());
+                    RegistryKey sdkVerRegSubKey = null;
                     RegistryKey sdkVerRegSubKey_x86 = null;
-                    if (sdkRegSubKey_x86 != null) {
-                        sdkVerRegSubKey_x86 = sdkRegSubKey_x86.OpenSubKey(installedWinSdkVersions[i]);
-                        if (sdkVerRegSubKey_x86 != null) {
-                            foreach (string installedWinSdkSubKey in sdkVerRegSubKey_x86.GetSubKeyNames())
-                                if (!installedWinSdkSubKeys.Contains(installedWinSdkSubKey))
-                                    installedWinSdkSubKeys.Add(installedWinSdkSubKey);
+
+                    //If SDK v10 is installed then it has no subkeys and the NETFXSDK key must be checked 
+                    //based on the .NET version installed
+                    //see https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
+                    if (loopSdkVersion.Major >= 10)
+                    {
+                        using (RegistryKey ndpKey = Registry.LocalMachine.OpenSubKey(_registryNDP, false))
+                        {
+                            //this is an improbable case since SDK v10 means Windows 10 which comes with .NET 4.5 out of the box
+                            if (ndpKey == null || ndpKey.GetValue("Release") == null) continue;
+                            int release = (int)ndpKey.GetValue("Release");
+                            string version = string.Empty;
+                            if (release >= 528040)
+                                version = "4.8";
+                            else if (release >= 461808)
+                                version = "4.7.2";
+                            else if (release >= 461308)
+                                version = "4.7.1";
+                            else if (release >= 460798)
+                                version = "4.7";
+                            else if (release >= 394802)
+                                version = "4.6.2";
+                            else if (release >= 394254)
+                                version = "4.6.1";
+                            else if (release >= 393295)
+                                version = "4.6";
+                            else if (release >= 379893)
+                                version = "4.5.2";
+                            else if (release >= 378675)
+                                version = "4.5.1";
+                            else if (release >= 378389)
+                                version = "4.5";
+
+                            string key = _registryNetFxSdk + @"\" + version;
+                            sdkVerRegSubKey_x86 = Registry.LocalMachine.OpenSubKey(key, false);
                         }
+                    }
+                    else
+                    {
+                        sdkVerRegSubKey = sdkRegSubKey.OpenSubKey(installedWinSdkVersions[i]);
+                        // Gets all of the current WinSdk loop subkeys
+                        if (sdkVerRegSubKey != null)
+                            installedWinSdkSubKeys.AddRange(sdkVerRegSubKey.GetSubKeyNames());
+
+                        if (sdkRegSubKey_x86 != null)
+                        {
+                            sdkVerRegSubKey_x86 = sdkRegSubKey_x86.OpenSubKey(installedWinSdkVersions[i]);
+                        }
+                    }
+
+                    if (sdkVerRegSubKey_x86 != null)
+                    {
+                        foreach (string installedWinSdkSubKey in sdkVerRegSubKey_x86.GetSubKeyNames())
+                            if (!installedWinSdkSubKeys.Contains(installedWinSdkSubKey))
+                                installedWinSdkSubKeys.Add(installedWinSdkSubKey);
                     }
 
                     // Sort and reverse the order of the subkeys to go from greatest to least

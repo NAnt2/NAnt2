@@ -32,55 +32,6 @@ jobs:
                 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
                 where resgen
         shell: cmd
-      - name: Install .NET 4.5
-        run: |
-                $net45Url = "https://download.microsoft.com/download/B/A/4/BA4A7E71-2906-4B2D-A0E1-80CF16844F5F/dotNetFx45_Full_setup.exe"
-                $net45Path = Join-Path $env:TEMP "net45.exe"
-                Write-Output "downloading $net45Url"
-                Invoke-WebRequest -Uri $net45Url -OutFile $net45Path
-                Write-Output "installing $net45Path"
-                $process = (Start-Process $net45Path -Verb runas -ArgumentList "/q /norestart /log net45.log" -PassThru)
-                $process.WaitForExit() | Out-Null
-                if($process.ExitCode -ne 0)
-                {
-                  Write-Host -ForegroundColor Red "Errorcode: " $process.ExitCode
-                  $output = Get-Content "net45.log"
-                  Write-Host $output
-                }
-                exit $process.ExitCode
-      - name: Install .NET 4.5 SDK (Windows 8)
-        run: |
-                $sdk45Url = "http://download.microsoft.com/download/F/1/3/F1300C9C-A120-4341-90DF-8A52509B23AC/standalonesdk/sdksetup.exe"
-                $sdk45Path = Join-Path $env:TEMP "sdksetup.exe"
-                $sdk45KitPath = Join-Path $env:TEMP "sdkkit"
-                Write-Output "downloading $sdk45Url"
-                Invoke-WebRequest -Uri $sdk45Url -OutFile $sdk45Path
-                if(! (Test-Path -IsValid $sdk45KitPath))
-                {
-                  New-Item -ItemType Directory -Force -Path $sdk45KitPath
-                }
-                Write-Output "Downloading all components to bypass download error for sdk_tools4.msi when running the installer directly"
-                $process = (Start-Process $sdk45Path -Verb runas -ArgumentList "/q /norestart /ceip off /layout $sdk45KitPath /log sdkkit.log" -PassThru)
-                $process.WaitForExit() | Out-Null
-                if($process.ExitCode -ne 0)
-                {
-                  Write-Host -ForegroundColor Red "Errorcode: " $process.ExitCode
-                  $output = Get-Content "sdkkit.log"
-                  Write-Host $output
-                  exit $process.ExitCode
-                }
-                dir $sdk45KitPath
-                Write-Output "Running sdksetup.exe from $sdk45KitPath"
-                $process = (Start-Process (Join-Path $env:TEMP $sdk45KitPath "sdksetup.exe") -Verb runas -ArgumentList "/q /norestart /ceip off /features OptionId.NetFxSoftwareDevelopmentKit /log sdk.log" -PassThru)
-                $process.WaitForExit() | Out-Null
-                if($process.ExitCode -ne 0)
-                {
-                  Write-Host -ForegroundColor Red "Errorcode: " $process.ExitCode
-                  $output = Get-Content "sdk.log"
-                  Write-Host $output
-                }
-                exit $process.ExitCode
-        shell: pwsh
       - name: Install mono on Windows
         run: choco install -y mono
         shell: cmd
