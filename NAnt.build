@@ -959,11 +959,22 @@
 			<property name="temp" value="${path::get-temp-file-name()}" />
 			<trycatch>
 				<try>
-					<exec program="${path::combine(environment::get-variable('ProgramFiles(x86)'), 'Microsoft Visual Studio\Installer\vswhere.exe')}" basedir="${root.dir}" workingdir="${root.dir}" output="${temp}" verbose="true"
-						commandline="-latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe" />
+                    <!-- for Visual Studio 2017 or later vswhere is available -->
+                    <if test="${file::exists(path::combine(environment::get-variable('ProgramFiles(x86)'), 'Microsoft Visual Studio\Installer\vswhere.exe'))}">
+                        <exec program="${path::combine(environment::get-variable('ProgramFiles(x86)'), 'Microsoft Visual Studio\Installer\vswhere.exe')}" basedir="${root.dir}" workingdir="${root.dir}" output="${temp}" verbose="true"
+                            commandline="-latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe" />
 
-					<loadfile file="${temp}" property="msbuild.path" verbose="true"/>
-					<property name="msbuild.path" value="${string::trim(msbuild.path)}" />
+                        <loadfile file="${temp}" property="msbuild.path" verbose="true"/>
+                        <property name="msbuild.path" value="${string::trim(msbuild.path)}" />
+                    </if>
+                    <!-- for Visual Studio 2015 / MSBuild 14 -->
+                    <if test="${not file::exists(msbuild.path) and directory::exists(path::combine(environment::get-variable('ProgramFiles(x86)'), 'MSBuild\14.0\Bin'))}">
+                        <property name="msbuild.path" value="${path::combine(environment::get-variable('ProgramFiles(x86)'), 'MSBuild\14.0\Bin\MSBuild.exe')}" />
+                    </if>
+                    <!-- for Visual Studio 2013 / MSBuild 12 -->
+                    <if test="${not file::exists(msbuild.path) and directory::exists(path::combine(environment::get-variable('ProgramFiles(x86)'), 'MSBuild\12.0\Bin'))}">
+                        <property name="msbuild.path" value="${path::combine(environment::get-variable('ProgramFiles(x86)'), 'MSBuild\12.0\Bin\MSBuild.exe')}" />
+                    </if>
 					<echo message="Found MS Build at ${msbuild.path}" />
 				</try>
 				<finally>
