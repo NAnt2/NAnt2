@@ -943,13 +943,15 @@
         <property name="msbuild.framework" value="v4.5" unless="${property::exists('msbuild.framework')}" />
         <property name="msbuild.parallel" value="9" unless="${property::exists('msbuild.parallel')}"/>
         <property name="msbuild.verbosity" value="m" unless="${property::exists('msbuild.verbosity')}" /><!-- q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic] -->
+        <!-- OpenCover path - older installers might install it in ProgramFiles, latest one installs in AppData and choco installs it in ProgramData -->
         <property name="opencover.exe" value="${path::combine(environment::get-variable('ProgramFiles(x86)'), 'OpenCover/OpenCover.Console.exe' )}" />
         <if test="${not file::exists(opencover.exe)}">
          <property name="opencover.exe" value="${path::combine(environment::get-variable('LocalAppData'), 'Apps/OpenCover/OpenCover.Console.exe' )}" />
         </if>
         <if test="${not file::exists(opencover.exe)}">
-         <property name="opencover.exe" value="opencover.console" />
+         <property name="opencover.exe" value="${path::combine(environment::get-variable('ProgramData'), 'chocolatey\bin\OpenCover.Console.exe' )}" />
         </if>
+        <fail if="${not file::exists(opencover.exe)}" message="OpenCover was not found." />
 
         <mkdir dir="${reports.dir}" if="${not directory::exists(reports.dir)}" />
 
