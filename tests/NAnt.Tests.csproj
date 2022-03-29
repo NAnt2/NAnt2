@@ -106,6 +106,7 @@
     <Compile Include="NAnt.Core\ExpressionTokenizerTest.cs" />
     <EmbeddedResource Include="NAnt.Core\Framework.config" />
     <Compile Include="NAnt.Core\FrameworkInfoTest.cs" />
+    <Compile Include="NAnt.Core\Functions\PathFunctionsTest.cs" />
     <Compile Include="NAnt.Core\LocationTest.cs" />
     <None Include="NAnt.Core\NAnt.Core.build" />
     <Compile Include="NAnt.Core\ProjectTest.cs" />

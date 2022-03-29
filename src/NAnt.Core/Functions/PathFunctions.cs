@@ -81,6 +81,53 @@ namespace NAnt.Core.Functions {
         }
 
         /// <summary>
+        /// Combines three paths.
+        /// </summary>
+        /// <param name="path1">first path</param>
+        /// <param name="path2">second path</param>
+        /// <param name="path3">third path</param>
+        /// <returns>
+        /// A string containing the combined paths. If one of the specified paths 
+        /// is a zero-length string, this method returns the other path. If 
+        /// <paramref name="path3" /> contains an absolute path, this method 
+        /// returns <paramref name="path3" />.
+        /// </returns>
+        /// <exception cref="ArgumentException"><paramref name="path1" /> or <paramref name="path2" /> or <paramref name="path3" /> contain one or more invalid characters.</exception>
+        [Function("combine")]
+        public static string Combine(string path1, string path2, string path3)
+        {
+#if NET_4_0
+            return Path.Combine(path1, path2, path3);
+#else
+            return Path.Combine(Path.Combine(path1, path2), path3);
+#endif
+        }
+
+        /// <summary>
+        /// Combines four paths.
+        /// </summary>
+        /// <param name="path1">first path</param>
+        /// <param name="path2">second path</param>
+        /// <param name="path3">third path</param>
+        /// <param name="path4">fourth path</param>
+        /// <returns>
+        /// A string containing the combined paths. If one of the specified paths 
+        /// is a zero-length string, this method returns the other path. If 
+        /// <paramref name="path4" /> contains an absolute path, this method 
+        /// returns <paramref name="path4" />.
+        /// </returns>
+        /// <exception cref="ArgumentException"><paramref name="path1" />, <paramref name="path2" />, <paramref name="path3" /> or <paramref name="path4" /> contain one or more invalid characters.</exception>
+        [Function("combine")]
+        public static string Combine(string path1, string path2, string path3, string path4)
+        {
+#if NET_4_0
+            return Path.Combine(path1, path2, path3, path4);
+#else
+            return Path.Combine(Path.Combine(Path.Combine(path1, path2), path3), path4);
+#endif
+        }
+
+        /// <summary>
         /// Changes the extension of the path string.
         /// </summary>
         /// <param name="path">The path information to modify. The path cannot contain any of the characters 
