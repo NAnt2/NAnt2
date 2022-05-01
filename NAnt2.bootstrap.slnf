@@ -1,0 +1,11 @@
+{
+  "solution": {
+    "path": "NAnt.sln",
+    "projects": [
+      "src\\NAnt.Compression\\NAnt.Compression.csproj",
+      "src\\NAnt.Console\\NAnt.Console.csproj",
+      "src\\NAnt.Core\\NAnt.Core.csproj",
+      "src\\NAnt.DotNet\\NAnt.DotNet.csproj"
+    ]
+  }
+}

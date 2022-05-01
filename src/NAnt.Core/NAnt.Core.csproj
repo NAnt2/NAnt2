@@ -1,273 +1,66 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" xmlns:Conversion="urn:Conversion" ToolsVersion="4.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8F5F8375-4097-4952-B860-784EB9961ABE}</ProjectGuid>
     <RootNamespace>NAnt.Core</RootNamespace>
     <AssemblyName>NAnt.Core</AssemblyName>
     <OutputType>Library</OutputType>
-    <RunPostBuildEvent>OnSuccessfulBuild</RunPostBuildEvent>
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <NoConfig>false</NoConfig>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <OutputPath>..\..\build\Debug\</OutputPath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DocumentationFile>..\..\build\Debug\NAnt.Core.xml</DocumentationFile>
+  <PropertyGroup>
+    <PackageId>NAnt2.Core</PackageId>
+    <Description>$(NAnt2Description) This library provides core functionalities, including functions and tasks.</Description>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\build\Release\</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>..\..\build\Release\NAnt.Core.xml</DocumentationFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
+  <ItemGroup Condition="$(DefineConstants.Contains(NET45_OR_GREATER))">
     <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
     <Reference Include="log4net">
       <HintPath>..\..\lib\common\neutral\log4net.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup Condition="$(DefineConstants.Contains(NET40_OR_GREATER))">
+    <Reference Include="System.Net" />
+  </ItemGroup>
+  <ItemGroup Condition="! $(DefineConstants.Contains(NET40_OR_GREATER))">
+    <Reference Include="System.Web" />
+  </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SolutionInfo.cs">
-      <Link>SolutionInfo.cs</Link>
-    </Compile>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Attributes\BaseBuildAttribute.cs" />
-    <Compile Include="BuildException.cs" />
-    <Compile Include="CommandLineOptions.cs" />
-    <Compile Include="ConfigurationSection.cs" />
-    <Compile Include="ConsoleDriver.cs" />
-    <Compile Include="DataTypeBase.cs" />
-    <Compile Include="DataTypeBaseBuilder.cs" />
-    <Compile Include="DataTypeBaseBuilderCollection.cs" />
-    <Compile Include="DataTypeBaseDictionary.cs" />
-    <Compile Include="DirectoryScanner.cs" />
-    <Compile Include="Element.cs" />
-    <Compile Include="ExpressionEvalBase.cs" />
-    <Compile Include="ExpressionEvaluator.cs" />
-    <Compile Include="ExpressionParseException.cs" />
-    <Compile Include="ExpressionTokenizer.cs" />
-    <Compile Include="FrameworkInfo.cs" />
-    <Compile Include="FrameworkInfoDictionary.cs" />
-    <Compile Include="FrameworkTypes.cs" />
-    <Compile Include="FunctionSetBase.cs" />
-    <Compile Include="IConditional.cs" />
-    <Compile Include="Location.cs" />
-    <Compile Include="LocationMap.cs" />
-    <Compile Include="Log.cs" />
-    <None Include="NAnt.Core.build" />
-    <Compile Include="PathScanner.cs" />
-    <Compile Include="PlatformHelper.cs" />
-    <Compile Include="ExecutionGraph.cs" />
-    <Compile Include="Project.cs" />
-    <Compile Include="ProjectSettingsLoader.cs" />
-    <Compile Include="PropertyDictionary.cs" />
-    <Compile Include="Target.cs" />
-    <Compile Include="TargetCollection.cs" />
-    <Compile Include="Task.cs" />
-    <Compile Include="TaskBuilder.cs" />
-    <Compile Include="TaskBuilderCollection.cs" />
-    <Compile Include="TaskContainer.cs" />
-    <Compile Include="TypeFactory.cs" />
-    <Compile Include="ValidationException.cs" />
-    <Compile Include="XmlLogger.cs" />
-    <Compile Include="Attributes\BooleanValidatorAttribute.cs" />
-    <Compile Include="Attributes\BuildAttributeAttribute.cs" />
-    <Compile Include="Attributes\BuildElementArrayAttribute.cs" />
-    <Compile Include="Attributes\BuildElementAttribute.cs" />
-    <Compile Include="Attributes\BuildElementCollectionAttribute.cs" />
-    <Compile Include="Attributes\DateTimeValidatorAttribute.cs" />
-    <Compile Include="Attributes\ElementNameAttribute.cs" />
-    <Compile Include="Attributes\FileSetAttribute.cs" />
-    <Compile Include="Attributes\FrameworkConfigurableAttribute.cs" />
-    <Compile Include="Attributes\FunctionAttribute.cs" />
-    <Compile Include="Attributes\FunctionSetAttribute.cs" />
-    <Compile Include="Attributes\Int32ValidatorAttribute.cs" />
-    <Compile Include="Attributes\ProgramLocationAttribute.cs" />
-    <Compile Include="Attributes\StringValidatorAttribute.cs" />
-    <Compile Include="Attributes\TaskAttributeAttribute.cs" />
-    <Compile Include="Attributes\TaskNameAttribute.cs" />
-    <Compile Include="Attributes\ValidatorAttribute.cs" />
-    <Compile Include="Configuration\DirectoryName.cs" />
-    <Compile Include="Configuration\DirList.cs" />
-    <Compile Include="Configuration\ManagedExecutionMode.cs" />
-    <Compile Include="Configuration\ManagedExecutionModes.cs" />
-    <Compile Include="Configuration\Runtime.cs" />
-    <Compile Include="Configuration\RuntimeEngine.cs" />
-    <Compile Include="Extensibility\ExtensionAssembly.cs" />
-    <Compile Include="Extensibility\ExtensionBuilder.cs" />
-    <Compile Include="Extensibility\FunctionArgument.cs" />
-    <Compile Include="Extensibility\IPlugin.cs" />
-    <Compile Include="Extensibility\IPluginConsumer.cs" />
-    <Compile Include="Extensibility\PluginBuilder.cs" />
-    <Compile Include="Extensibility\PluginConsumerAttribute.cs" />
-    <Compile Include="Extensibility\PluginScanner.cs" />
-    <Compile Include="Filters\ExpandProperties.cs" />
-    <Compile Include="Filters\ReplaceString.cs" />
-    <Compile Include="Filters\ReplaceTokens.cs" />
-    <Compile Include="Filters\TabsToSpaces.cs" />
-    <Compile Include="Filters\Support\ChainableReader.cs" />
-    <Compile Include="Filters\Support\Filter.cs" />
-    <Compile Include="Filters\Support\FilterBuilder.cs" />
-    <Compile Include="Filters\Support\FilterBuilderCollection.cs" />
-    <Compile Include="Filters\Support\FilterChain.cs" />
-    <Compile Include="Filters\Support\FilterCollection.cs" />
-    <Compile Include="Filters\Support\PhysicalTextReader.cs" />
-    <Compile Include="Functions\AssemblyFunctions.cs" />
-    <Compile Include="Functions\AssemblyNameFunctions.cs" />
-    <Compile Include="Functions\BooleanFunctions.cs" />
-    <Compile Include="Functions\ConversionFunctions.cs" />
-    <Compile Include="Functions\DateTimeFunctions.cs" />
-    <Compile Include="Functions\DirectoryFunctions.cs" />
-    <Compile Include="Functions\DoubleFunctions.cs" />
-    <Compile Include="Functions\EnvironmentFunctions.cs" />
-    <Compile Include="Functions\FileFunctions.cs" />
-    <Compile Include="Functions\FileVersionInfoFunctions.cs" />
-    <Compile Include="Functions\FrameworkFunctions.cs" />
-    <Compile Include="Functions\Int32Functions.cs" />
-    <Compile Include="Functions\Int64Functions.cs" />
-    <Compile Include="Functions\MathFunctions.cs" />
-    <Compile Include="Functions\NAntFunctions.cs" />
-    <Compile Include="Functions\OperatingSystemFunctions.cs" />
-    <Compile Include="Functions\PathFunctions.cs" />
-    <Compile Include="Functions\PkgConfigFunctions.cs" />
-    <Compile Include="Functions\StringFunctions.cs" />
-    <Compile Include="Functions\TimeSpanFunctions.cs" />
-    <Compile Include="Functions\VersionFunctions.cs" />
     <EmbeddedResource Include="Resources\ProjectHelp.xslt" />
-    <EmbeddedResource Include="Resources\Strings.resx" />
-    <Compile Include="Tasks\AttribTask.cs" />
-    <Compile Include="Tasks\AvailableTask.cs" />
-    <Compile Include="Tasks\CallTask.cs" />
-    <Compile Include="Tasks\CopyTask.cs" />
-    <Compile Include="Tasks\DeleteTask.cs" />
-    <Compile Include="Tasks\DescriptionTask.cs" />
-    <Compile Include="Tasks\EchoTask.cs" />
-    <Compile Include="Tasks\ExecTask.cs" />
-    <Compile Include="Tasks\ExternalProgramBase.cs" />
-    <Compile Include="Tasks\FailTask.cs" />
-    <Compile Include="Tasks\GetTask.cs" />
-    <Compile Include="Tasks\IfTask.cs" />
-    <Compile Include="Tasks\IncludeTask.cs" />
-    <Compile Include="Tasks\LoadFileTask.cs" />
-    <Compile Include="Tasks\LoadTasks.cs" />
-    <Compile Include="Tasks\LoopTask.cs" />
-    <Compile Include="Tasks\MailTask.cs" />
-    <Compile Include="Tasks\MkDirTask.cs" />
-    <Compile Include="Tasks\MoveTask.cs" />
-    <Compile Include="Tasks\NAntSchemaTask.cs" />
-    <Compile Include="Tasks\NAntTask.cs" />
-    <Compile Include="Tasks\PropertyTask.cs" />
-    <Compile Include="Tasks\RegexTask.cs" />
-    <Compile Include="Tasks\SetEnvTask.cs" />
-    <Compile Include="Tasks\SleepTask.cs" />
-    <Compile Include="Tasks\StyleTask.cs" />
-    <Compile Include="Tasks\SysInfo.cs" />
-    <Compile Include="Tasks\TouchTask.cs" />
-    <Compile Include="Tasks\TStampTask.cs" />
-    <Compile Include="Tasks\UpToDateTask.cs" />
-    <Compile Include="Tasks\XmlPeekTask.cs" />
-    <Compile Include="Tasks\XmlPokeTask.cs" />
-    <Compile Include="Types\Argument.cs" />
-    <Compile Include="Types\ArgumentCollection.cs" />
-    <Compile Include="Types\Credential.cs" />
-    <Compile Include="Types\DirSet.cs" />
-    <Compile Include="Types\EnvironmentVariable.cs" />
-    <Compile Include="Types\EnvironmentVariableCollection.cs" />
-    <Compile Include="Types\FileSet.cs" />
-    <Compile Include="Types\Formatter.cs" />
-    <Compile Include="Types\FormatterCollection.cs" />
-    <Compile Include="Types\ManagedExecution.cs" />
-    <Compile Include="Types\Option.cs" />
-    <Compile Include="Types\OptionCollection.cs" />
-    <Compile Include="Types\PathElement.cs" />
-    <Compile Include="Types\PathSet.cs" />
-    <Compile Include="Types\Pattern.cs" />
-    <Compile Include="Types\PatternCollection.cs" />
-    <Compile Include="Types\PatternSet.cs" />
-    <Compile Include="Types\Proxy.cs" />
-    <Compile Include="Types\RawXml.cs" />
-    <Compile Include="Types\Token.cs" />
-    <Compile Include="Types\XmlNamespace.cs" />
-    <Compile Include="Types\XmlNamespaceCollection.cs" />
-    <Compile Include="Types\XsltExtensionObject.cs" />
-    <Compile Include="Types\XsltExtensionObjectCollection.cs" />
-    <Compile Include="Types\XsltParameter.cs" />
-    <Compile Include="Types\XsltParameterCollection.cs" />
-    <Compile Include="Util\AssemblyResolver.cs" />
-    <Compile Include="Util\CommandLineArgument.cs" />
-    <Compile Include="Util\CommandLineArgumentAttribute.cs" />
-    <Compile Include="Util\CommandLineArgumentCollection.cs" />
-    <Compile Include="Util\CommandLineArgumentException.cs" />
-    <Compile Include="Util\CommandLineArgumentTypes.cs" />
-    <Compile Include="Util\CommandLineParser.cs" />
-    <Compile Include="Util\DateTimeProvider.cs" />
-    <Compile Include="Util\DefaultCommandLineArgumentAttribute.cs" />
-    <Compile Include="Util\FileUtils.cs" />
-    <Compile Include="Util\GacCache.cs" />
-    <Compile Include="Util\ReflectionUtils.cs" />
-    <Compile Include="Util\ResourceUtils.cs" />
-    <Compile Include="Util\StopWatchStack.cs" />
-    <Compile Include="Util\StringUtils.cs" />
-    <Compile Include="Tasks\ChooseTask.cs" />
-    <Compile Include="Tasks\TryCatchTask.cs" />
-    <Compile Include="ElementContainer.cs" />
-    <Compile Include="ExecutionNode.cs" />
+  </ItemGroup>
+  <!-- <ItemGroup>
+    <EmbeddedResource Update="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+      <StronglyTypedNamespace>$(RootNamespace)</StronglyTypedNamespace>
+      <StronglyTypedClassName>Strings</StronglyTypedClassName>
+    </EmbeddedResource>
+  </ItemGroup> -->
+  <!-- <ItemGroup>
+    <Compile Update="Resources\Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources\Strings.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
+    <EmbeddedResource Update="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources\Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <ResXCodeSources Include="Resources\Strings.resx"/>
+  </ItemGroup> -->
+  <ItemGroup>
+		<EmbeddedResource Update="Resources\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<Compile Update="Resources\Resources.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Strings.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+		</Compile>
+	</ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Functions\DnsFunctions.cs" />
+    <Compile Remove="AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

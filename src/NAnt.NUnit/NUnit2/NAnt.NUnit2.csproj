@@ -1,62 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" xmlns:Conversion="urn:Conversion" ToolsVersion="4.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{47503BEE-27D9-4D1C-B8E1-6C9CCC19AEAA}</ProjectGuid>
     <RootNamespace>NAnt.NUnit2</RootNamespace>
     <AssemblyName>NAnt.NUnit2Tasks</AssemblyName>
     <OutputType>Library</OutputType>
-    <RunPostBuildEvent>OnSuccessfulBuild</RunPostBuildEvent>
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <NoConfig>false</NoConfig>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <OutputPath>..\..\build\Debug\</OutputPath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DocumentationFile>..\..\build\Debug\NAnt.NUnit2Tasks.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\build\Release\</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>..\..\build\Release\NAnt.NUnit2Tasks.xml</DocumentationFile>
+  <PropertyGroup>
+    <PackageId>NAnt2.NUnit2</PackageId>
+    <Description>$(NAnt2Description) This library provides NUnit2-related tasks.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Xml" />
-    <Reference Include="System" />
     <Reference Include="nunit.core">
       <HintPath>..\..\..\lib\common\2.0\nunit.core.dll</HintPath>
     </Reference>
@@ -71,48 +23,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\SolutionInfo.cs">
-      <Link>SolutionInfo.cs</Link>
-    </Compile>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="NUnit2Task.cs" />
-    <Compile Include="NUnit2Test.cs" />
-    <Compile Include="NUnit2TestDomain.cs" />
-    <Compile Include="Types\Categories.cs" />
-    <Compile Include="Types\Category.cs" />
-    <Compile Include="Types\CategoryCollection.cs" />
-    <Compile Include="NUNit2TestCollection.cs" />
+    <ProjectReference Include="..\..\NAnt.Core\NAnt.Core.csproj" />
+    <ProjectReference Include="..\..\NAnt.DotNet\NAnt.DotNet.csproj" />
+    <ProjectReference Include="..\NAnt.NUnit.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\..\NAnt.Core\NAnt.Core.csproj">
-      <Project>{8F5F8375-4097-4952-B860-784EB9961ABE}</Project>
-      <Name>NAnt.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NAnt.DotNet\NAnt.DotNet.csproj">
-      <Project>{B50A1067-785B-4686-8FFC-5AF424BEF163}</Project>
-      <Name>NAnt.DotNet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NAnt.NUnit.csproj">
-      <Project>{00F5C075-9874-4BCE-909A-99C1F600E047}</Project>
-      <Name>NAnt.NUnit</Name>
-    </ProjectReference>
+    <Compile Remove="AssemblyInfo.cs" />
   </ItemGroup>
 </Project>

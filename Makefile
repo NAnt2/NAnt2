@@ -1,11 +1,11 @@
 # NAnt make makefile for Mono
-MONO=mono
-MCS=mcs -sdk:4.5
-RESGEN=resgen
-TARGET=mono-4.5
+#MONO=mono
+#MCS=mcs -sdk:4.5
+RESGEN ?= resgen
+TARGET ?= mono-4.5
 
 # Contains a list of acceptable targets used to build NAnt
-VALID_TARGETS := mono-2.0 mono-3.5 mono-4.0 mono-4.5 net-2.0 net-3.5 net-4.0 net-4.5
+VALID_TARGETS := mono-2.0 mono-3.5 mono-4.0 mono-4.5 mono-4.5.1 mono-4.5.2 mono-4.6 mono-4.6.1 mono-4.6.2 mono-4.7 mono-4.7.1 mono-4.7.2 mono-4.8 net-2.0 net-3.5 net-4.0 net-4.5 net-4.5.1 net-4.5.2 net-4.6 net-4.6.1 net-4.6.2 net-4.7 net-4.7.1 net-4.7.2 net-4.8
 
 ifndef DIRSEP
 ifeq ($(OS),Windows_NT)
@@ -15,19 +15,26 @@ DIRSEP = /
 endif
 endif
 
+#determine if mono must be used based on target
+ifndef MONO
+ifeq ($(findstring mono,$(TARGET)),mono)
+$(info Building NAnt2 using mono)
+MONO=mono
+FRAMEWORK_DIR = mono
+DEFINE = MONO
+else
+$(info Building NAnt2 using .NET)
+MONO=
+FRAMEWORK_DIR = net
+DEFINE = NET
+endif
+endif
+
 ifndef PLATFORM_REFERENCES
 ifeq ($(OS),Windows_NT)
 PLATFORM_REFERENCES = \
 	bootstrap/NAnt.Win32Tasks.dll
 endif
-endif
-
-ifeq ($(MONO),mono)
-FRAMEWORK_DIR = mono
-DEFINE = MONO
-else
-FRAMEWORK_DIR = net
-DEFINE = NET
 endif
 
 # Validates TARGET var. If the value of TARGET exists
@@ -60,18 +67,95 @@ endif
 
 # Loads (net,mono)-4.5 DEFINE vars
 ifeq ($(findstring 4.5,$(SELECTED_TARGET)),4.5)
-DEFINE := $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5
+DEFINE := $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x
 endif
 
-# Loads (net,mono)-4.5 DEFINE vars
-ifeq ($(findstring 4.5,$(SELECTED_TARGET)),4.5)
-DEFINE := $(DEFINE),NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,NET_4_5,ONLY_4_5
+# Loads (net,mono)-4.5.1 DEFINE vars
+ifeq ($(findstring 4.5.1,$(SELECTED_TARGET)),4.5.1)
+DEFINE := $(DEFINE),NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x
+endif
+
+# Loads (net,mono)-4.5.2 DEFINE vars
+ifeq ($(findstring 4.5.2,$(SELECTED_TARGET)),4.5.2)
+DEFINE := $(DEFINE),NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x
+endif
+
+# Loads (net,mono)-4.6 DEFINE vars
+ifeq ($(findstring 4.6,$(SELECTED_TARGET)),4.6)
+DEFINE := $(DEFINE),NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x
+endif
+
+# Loads (net,mono)-4.6.1 DEFINE vars
+ifeq ($(findstring 4.6.1,$(SELECTED_TARGET)),4.6.1)
+DEFINE := $(DEFINE),NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x
+endif
+
+# Loads (net,mono)-4.6.2 DEFINE vars
+ifeq ($(findstring 4.6.2,$(SELECTED_TARGET)),4.6.2.)
+DEFINE := $(DEFINE),NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x
+endif
+
+# Loads (net,mono)-4.7 DEFINE vars
+ifeq ($(findstring 4.7,$(SELECTED_TARGET)),4.7)
+DEFINE := $(DEFINE),NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x,NET_4_7,ONLY_NET_4_7_x
+endif
+
+# Loads (net,mono)-4.7.1 DEFINE vars
+ifeq ($(findstring 4.7.1,$(SELECTED_TARGET)),4.7.1)
+DEFINE := $(DEFINE),NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x,NET_4_7,ONLY_NET_4_7_x
+endif
+
+# Loads (net,mono)-4.7.2 DEFINE vars
+ifeq ($(findstring 4.7.2,$(SELECTED_TARGET)),4.7.2)
+DEFINE := $(DEFINE),NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x,NET_4_7,ONLY_NET_4_7_x
+endif
+
+# Loads (net,mono)-4.8 DEFINE vars
+ifeq ($(findstring 4.8,$(SELECTED_TARGET)),4.8)
+DEFINE := $(DEFINE),NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x,NET_4_7,ONLY_NET_4_7_x,NET_4_8,ONLY_NET_4_8
 endif
 
 # If TARGET var is invalid, throw an error
 else
 $(error Specified target "$(TARGET)" is not valid)
 endif
+
+ifeq ($(findstring mono,$(MONO)),mono)
+    netVersion = $(subst mono-,,$(TARGET))
+    $(info Detected .NET framework version to use at build: $(netVersion))
+
+    #For mono v3.0 up to v5.0.0 use msc, from 5.0 to latest use csc
+    #starting with mono 4.0, reference assemblies are used
+    monoVersion := $(shell mono --version=number)
+    majorVersion:=$(word 1, $(subst ., ,$(monoVersion)))
+    minVersion:=$(word 2, $(subst ., ,$(monoVersion))) 
+    $(info Detected mono version: $(monoVersion))
+
+    gte3 = $(shell echo $(majorVersion) \>= 3 | bc)
+    gte44 = $(shell echo $(majorVersion).$(minVersion) \>= 4.4 | bc)
+    lt5 = $(shell echo $(majorVersion) \< 5 | bc)
+    $(info gte3=$(gte3), gte44=$(gte44), lt5=$(lt5))
+
+    $(info Default compiler for building on mono is mcs with {.NET framework version} as sdk parameter)
+    MCS=mcs -sdk:$(netVersion)
+
+    ifeq ($(gte3), 1) #mono version >= 3
+        $(info Mono major version is greater or equal to 3.x)
+        ifeq ($(lt5), 1) #mono version <5
+            $(info Mono major version is less than 5.0)
+            ifeq ($(gte44), 1) #mono version >= 4.4
+                $(info Mono version is between 4.4 and 5 = use mcs with {.NET framework version}-api as sdk parameter)
+                MCS=mcs -sdk:$(netVersion)-api
+            endif
+        else    
+            $(info mono major version is greater than 5 = use csc)
+            MCS=csc
+        endif
+    else ifeq ($(gte3), 0) #mono version < 3
+        $(info Mono major version is lower than 3 = use gmcs)
+        MCS=gmcs 
+    endif
+endif #end is mono
 
 # Make sure that -debug+ is specified in NAnt command if DEBUG is defined
 ifdef DEBUG
@@ -88,6 +172,7 @@ all: bootstrap build-nant
 build-nant: bootstrap
 	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build build
 
+#migrated to pwsh
 clean:
 ifeq ($(OS),Windows_NT)
 	if exist bootstrap rmdir /S /Q bootstrap
@@ -109,7 +194,7 @@ bootstrap/NAnt.exe:
 
 bootstrap: setup bootstrap/NAnt.exe bootstrap/NAnt.Core.dll bootstrap/NAnt.DotNetTasks.dll bootstrap/NAnt.CompressionTasks.dll ${PLATFORM_REFERENCES}
 	
-
+#migrated to pwsh
 setup:
 ifeq ($(OS),Windows_NT)
 	if not exist bootstrap md bootstrap

@@ -35,7 +35,11 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.Remoting.Lifetime;
 using System.Text;
+#if NET40_OR_GREATER
+using System.Net.Mail;
+#else
 using System.Web.Mail;
+#endif
 
 using NAnt.Core.Types;
 using NAnt.Core.Util;
@@ -896,7 +900,7 @@ namespace NAnt.Core {
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">A <see cref="BuildEventArgs" /> object that contains the event data.</param>
         public override void BuildFinished(object sender, BuildEventArgs e) {
-#if (NET_1_1)
+#if (NET11)
             const string cdoNamespaceURI = "http://schemas.microsoft.com/cdo/configuration/";
 #endif
 
@@ -956,7 +960,7 @@ namespace NAnt.Core {
                 string smtpPort = GetPropertyValue(properties, "smtp.port", null, false);
                 string smtpEnableSSL = GetPropertyValue(properties, "smtp.enablessl", null, false);
 
-#if (NET_1_1)
+#if (NET11)
                 // when either a user name or a specific port is specified, or
                 // SSL is enabled, then send the message must be sent using the 
                 // network (instead of using the local SMTP pickup directory)
@@ -966,7 +970,7 @@ namespace NAnt.Core {
 #endif
 
                 if (smtpUsername != null) {
-#if (NET_1_1)
+#if (NET11)
                     mailMessage.Fields[cdoNamespaceURI + "smtpauthenticate"] = 1;
                     mailMessage.Fields[cdoNamespaceURI + "sendusername"] = smtpUsername;
 #else
@@ -978,7 +982,7 @@ namespace NAnt.Core {
 
                 string smtpPassword = GetPropertyValue(properties, "smtp.password", null, false);
                 if (smtpPassword != null) {
-#if (NET_1_1)
+#if (NET11)
                     mailMessage.Fields[cdoNamespaceURI + "sendpassword"] = smtpPassword;
 #else
                     Console.Error.WriteLine("[MailLogger] MailLogger.smtp.password"
@@ -988,7 +992,7 @@ namespace NAnt.Core {
                 }
 
                 if (smtpPort != null) {
-#if (NET_1_1)
+#if (NET11)
                     mailMessage.Fields[cdoNamespaceURI + "smtpserverport"] = smtpPort;
 #else
                     Console.Error.WriteLine("[MailLogger] MailLogger.smtp.port"
@@ -998,7 +1002,7 @@ namespace NAnt.Core {
                 }
 
                 if (smtpEnableSSL != null) {
-#if (NET_1_1)
+#if (NET11)
                     mailMessage.Fields[cdoNamespaceURI + "smtpusessl"] = smtpEnableSSL;
 #else
                     Console.Error.WriteLine("[MailLogger] MailLogger.smtp.enablessl"

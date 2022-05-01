@@ -64,8 +64,9 @@ namespace NAnt.Win32.Tasks {
         /// If new registry paths are used by the Mono team, add them to this array.
         /// </remarks>
         private string[] _regKeys = new string[] {
-            @"SOFTWARE\Wow6432Node\Novell\Mono",
-            @"SOFTWARE\Novell\Mono"
+            //@"SOFTWARE\Wow6432Node\Novell\Mono",
+            @"SOFTWARE\Novell\Mono",
+            @"SOFTWARE\Mono"
         };
 
         #endregion Private Instance Fields

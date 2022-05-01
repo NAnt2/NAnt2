@@ -57,7 +57,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-#if NET_4_0
+#if NET40_OR_GREATER
 using System.Threading.Tasks;
 #endif
 
@@ -451,7 +451,7 @@ namespace NAnt.Core {
             getDirList.Join();
 
             // Run both "Check" methods in parallel.
-#if NET_4_0
+#if NET40_OR_GREATER
             Parallel.Invoke(CheckHasEmptyDirectories, CheckIsEverythingIncluded);
 #else
             Thread[] lastTasks = new Thread[2];

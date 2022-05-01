@@ -338,7 +338,7 @@ namespace NAnt.Core.Tasks {
                     sb.AppendLine(e.Message);
                 }
 
-#if NET_4_0
+#if NET40_OR_GREATER
                 // If e is an aggregated exception, get the messages from
                 // the inner exceptions if they exist.
                 if (e is AggregateException)

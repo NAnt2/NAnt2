@@ -293,14 +293,14 @@ namespace NAnt.Contrib.Tasks {
 
             try {
                 if (Unregister) {
-#if NET_2_0
+#if NET20_OR_GREATER
                     ITypeLib typeLib = null;
 #else
                     UCOMITypeLib typeLib = null;
 #endif
 
                     try {
-#if NET_2_0
+#if NET20_OR_GREATER
                         typeLib = (ITypeLib) Marshal.GetTypedObjectForIUnknown(
                             Typelib, typeof(ITypeLib));
 

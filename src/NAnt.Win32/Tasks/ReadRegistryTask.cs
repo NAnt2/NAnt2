@@ -25,7 +25,7 @@ using Microsoft.Win32;
 using NAnt.Core;
 using NAnt.Core.Attributes;
 
-#if (!NET_4_0)
+#if (!NET40_OR_GREATER)
 [assembly: RegistryPermissionAttribute(SecurityAction.RequestMinimum , Unrestricted=true)]
 #endif
 namespace NAnt.Win32.Tasks {

@@ -561,7 +561,7 @@ namespace NAnt.VSNet {
             }
 
             try {
-#if NET_2_0
+#if NET20_OR_GREATER
                 Uri uri = null;
                 Uri.TryCreate(translatedPath, UriKind.Absolute, out uri);
 #else

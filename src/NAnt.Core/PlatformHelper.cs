@@ -21,7 +21,7 @@
 using System;
 using System.Diagnostics;
 
-#if !NET_4_0
+#if !NET40_OR_GREATER
 using System.Runtime.InteropServices;
 #endif
 
@@ -81,7 +81,7 @@ namespace NAnt.Core
 
             IsWin32 = !IsUnix;
 
-#if NET_4_0
+#if NET40_OR_GREATER
             Is64BitProcess = Environment.Is64BitProcess;
             Is64BitOs = Environment.Is64BitOperatingSystem;
 #else
@@ -196,7 +196,7 @@ namespace NAnt.Core
             return false;
         }
 
-#if !NET_4_0
+#if !NET40_OR_GREATER
 
         // This section should be removed as soon as the NAnt releases switch to
         // 4.0+ by default (i.e.:net-4.0/mono-4.0).

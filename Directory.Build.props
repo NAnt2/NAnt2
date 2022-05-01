@@ -1,0 +1,48 @@
+<Project> 
+  <PropertyGroup> <!-- General project and packages info -->
+    <Product>NAnt2</Product>
+    <Copyright>Copyright 2001 - $([System.DateTime]::Now.Year) © NAnt &amp; NAnt2 Contributors</Copyright>
+    <Authors>Simona Avornicesei, NAnt2, and contributors</Authors>
+    <PackageLicenseExpression>GPL</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageIcon>logo.gif</PackageIcon>
+    <PackageIconUrl>https://github.com/NAnt2/NAnt2/blob/master/web/logo.gif</PackageIconUrl>
+    <NAnt2Description>NAnt2 is a free .NET build tool, updated and enhanced from original NAnt project. Easy to use even by non-programmers to automate their daily tasks.</NAnt2Description>
+    <PackageTags>NAnt NAnt2 NAntContrib cross-platform automation build dotnet</PackageTags>
+    <PackageProjectUrl>https://nant2.github.io</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/NAnt2/NAnt2.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+  <PropertyGroup> <!-- SourceLink props, see https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/ -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols Condition=" '$(DebugType)' == 'portable' ">true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- <TargetFrameworks>net20;net35;net40;net45;net462;net48;netstandard2.0</TargetFrameworks> -->
+    <TargetFramework>net20</TargetFramework>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+  </PackageReference>
+  </ItemGroup>
+  <ItemGroup Condition=" $(DefineConstants.Contains(NET461_OR_GREATER)) ">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406" PrivateAssets="All" />
+    <PackageReference Include="Roslynator.Analyzers" Version="4.1.0" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'web', 'logo.gif'))" Pack="true" PackagePath="logo.gif"/>
+  </ItemGroup>
+  <Import Project="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '.local.Build.props'))" Condition="Exists($([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '.local.Build.props')))" />
+</Project>

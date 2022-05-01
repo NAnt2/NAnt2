@@ -1,10 +1,12 @@
 #NAnt nmake makefile for building on windows
+MONO=
 CSC=csc
 RESGEN=resgen
 TARGET=net-4.5
 
 version=0.95
 build=0
+nant_test_task=test
 
 !ifdef MONO
 DEFINE = MONO
@@ -69,7 +71,7 @@ install: bootstrap
 	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build install  -D:project.version=$(version) -D:build.number=$(build) -D:prefix="$(prefix)" -D:destdir="$(DESTDIR)" -D:doc.prefix="$(docdir)" -verbose
 
 run-test: bootstrap
-	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build test -D:project.version=$(version) -D:build.number=$(build) -verbose
+	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build $(nant_test_task) -D:project.version=$(version) -D:build.number=$(build) -verbose
 
 run-codequality: bootstrap
 	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build code.quality -D:project.version=$(version) -D:build.number=$(build) -verbose

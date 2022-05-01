@@ -34,7 +34,7 @@
             <references>
                 <include name="${build.dir}/bin/log4net.dll" />
                 <include name="System.Configuration.dll" />
-                <include name="System.Xml.dll" />
+                <!-- <include name="System.Xml.dll" /> -->
             </references>
             <resources>
                 <include name="*.resx"/>

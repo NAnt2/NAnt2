@@ -1,0 +1,25 @@
+<!-- 
+    Workaround for .NET SDK prior 3.1.300 for deterministic builds.
+    see https://github.com/clairernovotny/DeterministicBuilds
+-->
+<Project>
+  <!-- <PropertyGroup>
+    <TargetFrameworkMonikerAssemblyAttributesPath>$([System.IO.Path]::Combine('$(IntermediateOutputPath)','$(TargetFrameworkMoniker).AssemblyAttributes$(DefaultLanguageSourceExtension)'))</TargetFrameworkMonikerAssemblyAttributesPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedFiles Include="$(GeneratedAssemblyInfoFile)"/>
+  </ItemGroup> -->
+  <!-- <Target Name="ResgenMessages" AfterTargets="Build">
+    <GenerateResource Sources="@(ResXCodeSources->'%(identity)')"
+      UseSourcePath="true"
+      StronglyTypedClassName="@(ResXCodeSources->'%(filename)')"
+      StronglyTypedLanguage="C#"
+      StronglyTypedNamespace="My.Namespace"
+      StronglyTypedFileName="@(ResXCodeSources->'%(relativedir)%(filename).Designer.cs')"
+      OutputResources="@(ResXCodeSources->'My.Namespace.%(filename).resources')" />
+  </Target> -->
+  <Target Name="BeforeResGen">
+    <!-- <ResgenToolPath></ResgenToolPath> -->
+    <Message Text="BeforeResGen: $(PlatformTargetAsMSBuildArchitecture), $(TargetFrameworkSDKToolsDirectory), $(ResgenToolPath)" Importance="high"/>
+  </Target>
+</Project>

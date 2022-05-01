@@ -96,7 +96,7 @@ namespace NAnt.Core.Functions {
         [Function("combine")]
         public static string Combine(string path1, string path2, string path3)
         {
-#if NET_4_0
+#if NET40_OR_GREATER
             return Path.Combine(path1, path2, path3);
 #else
             return Path.Combine(Path.Combine(path1, path2), path3);
@@ -120,7 +120,7 @@ namespace NAnt.Core.Functions {
         [Function("combine")]
         public static string Combine(string path1, string path2, string path3, string path4)
         {
-#if NET_4_0
+#if NET40_OR_GREATER
             return Path.Combine(path1, path2, path3, path4);
 #else
             return Path.Combine(Path.Combine(Path.Combine(path1, path2), path3), path4);

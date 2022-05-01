@@ -6,11 +6,16 @@ image: Visual Studio 2015
 
 environment:
   NEXT_VERSION: 0.95
+  SONAR_DOTNET_ENABLE_CONCURRENT_EXECUTION: true
 
 platform:
   - Any CPU
 configuration: 
   - Release
+
+branches:
+  only:
+    - master
 
 matrix:
   fast_finish: true
@@ -48,10 +53,13 @@ test_script:
   - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
 
 after_test:
-  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"nant2" /o:"savornicesei-github" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=$env:SQTOKEN" /d:"sonar.analysis.mode=preview" /d:"sonar.pullrequest.key=$env:APPVEYOR_PULL_REQUEST_NUMBER" /d:"sonar.github.repository=https://github.com/savornicesei/NAnt2" /d:sonar.cs.nunit.reportsPaths="reports\NAnt.nunit2.xml" /d:sonar.cs.opencover.reportsPaths="reports\NAnt.coverage.xml" }
-  - ps: if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"nant2" /o:"savornicesei-github" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=$env:SQTOKEN" /d:"sonar.github.repository=https://github.com/savornicesei/NAnt2" /d:"sonar.branch.name=$env:APPVEYOR_REPO_BRANCH" /d:sonar.cs.nunit.reportsPaths="reports\NAnt.nunit2.xml" /d:sonar.cs.opencover.reportsPaths="reports\NAnt.coverage.xml" }
+  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"nant2" /o:"savornicesei-github" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=$env:SQTOKEN" /d:"sonar.analysis.mode=preview" /d:"sonar.pullrequest.key=$env:APPVEYOR_PULL_REQUEST_NUMBER" /d:"sonar.github.repository=https://github.com/NAnt2/NAnt2" /d:sonar.cs.nunit.reportsPaths="reports\NAnt.nunit2.xml" /d:sonar.cs.opencover.reportsPaths="reports\NAnt.coverage.xml" }
+  - ps: if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"nant2" /o:"savornicesei-github" /d:"sonar.host.url=https://sonarcloud.io" /d:"sonar.login=$env:SQTOKEN" /d:"sonar.github.repository=https://github.com/NAnt2/NAnt2" /d:"sonar.branch.name=$env:APPVEYOR_REPO_BRANCH" /v:$env:NEXT_VERSION /d:sonar.cs.nunit.reportsPaths="reports\NAnt.nunit2.xml" /d:sonar.cs.opencover.reportsPaths="reports\NAnt.coverage.xml" }
   - nmake -f Makefile.nmake run-codequality prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
   - SonarScanner.MSBuild.exe end /d:"sonar.login=%SQTOKEN%"
+  - ps: |
+      $wc = New-Object 'System.Net.WebClient'
+      $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path reports\NAnt.nunit2.xml))
 
 #---------------------------------#
 #      artifacts configuration    #

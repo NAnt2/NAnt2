@@ -25,7 +25,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-#if NET_2_0
+#if NET20_OR_GREATER
 using System.Runtime.InteropServices.ComTypes;
 #endif
 using System.Xml;
@@ -354,7 +354,7 @@ namespace NAnt.VSNet {
                     Location.UnknownLocation);
             }
 
-#if NET_2_0
+#if NET20_OR_GREATER
             return Marshal.GetTypeLibName((ITypeLib) typeLib);
 #else
             return Marshal.GetTypeLibName((UCOMITypeLib) typeLib);

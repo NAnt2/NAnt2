@@ -4,6 +4,6 @@ using System.Security.Permissions;
 [assembly: AssemblyTitleAttribute("NAnt.Win32Tasks")]
 [assembly: AssemblyDescriptionAttribute("")]
 
-#if (!NET_4_0)
+#if (!NET40_OR_GREATER)
 [assembly: RegistryPermissionAttribute(SecurityAction.RequestMinimum , Unrestricted=true)]
 #endif

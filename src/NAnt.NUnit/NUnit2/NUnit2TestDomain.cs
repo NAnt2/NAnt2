@@ -85,7 +85,7 @@ namespace NAnt.NUnit2.Tasks {
             probePaths [probePaths.Length - 1] = AppDomain.CurrentDomain.BaseDirectory;
 
             // create an instance of our custom Assembly Resolver in the target domain.
-#if NET_4_0
+#if NET40_OR_GREATER
             _domain.CreateInstanceFrom(Assembly.GetExecutingAssembly().CodeBase,
                     typeof(AssemblyResolveHandler).FullName,
                     false, 
@@ -149,7 +149,7 @@ namespace NAnt.NUnit2.Tasks {
             ObjectHandle oh;
             Type rtrType = typeof(RemoteTestRunner);
 
-#if NET_4_0
+#if NET40_OR_GREATER
             oh = domain.CreateInstance(
                 rtrType.Assembly.FullName,
                 rtrType.FullName,

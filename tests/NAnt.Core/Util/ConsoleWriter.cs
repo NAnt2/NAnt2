@@ -43,7 +43,7 @@ namespace Tests.NAnt.Core.Util {
 
         static Encoding ConsoleEncoding {
             get {
-#if NET_2_0
+#if NET20_OR_GREATER
                 return System.Console.OutputEncoding;
 #else
                 return Encoding.Default;
