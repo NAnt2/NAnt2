@@ -93,10 +93,10 @@ namespace NAnt.Contrib.Tasks.BizTalk {
             }
         }
 
-        private EnumerationOptions EnumerationOptions {
+        private System.Management.EnumerationOptions EnumerationOptions {
             get {
                 if (_enumerationOptions == null) {
-                    _enumerationOptions = new EnumerationOptions();
+                    _enumerationOptions = new System.Management.EnumerationOptions();
                     _enumerationOptions.ReturnImmediately = false;
                 }
                 return _enumerationOptions;
@@ -302,7 +302,7 @@ namespace NAnt.Contrib.Tasks.BizTalk {
         private string _receivePipeline;
         private string _sendPipeline;
         private ManagementScope _scope;
-        private EnumerationOptions _enumerationOptions;
+        private System.Management.EnumerationOptions _enumerationOptions;
         private AssemblyName _assemblyName;
 
         #endregion Private Instance Fields

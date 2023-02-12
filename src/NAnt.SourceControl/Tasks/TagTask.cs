@@ -34,6 +34,9 @@ namespace NAnt.SourceControl.Tasks {
     /// revisions can be considered in commits.  It also allows you to verify that
     /// all local files have been checked in before a tag is performed.    
     /// </para>
+    /// <para>
+    /// Only available on .NET framework.
+    /// </para>
     /// </remarks>
     /// <example>
     ///   <para>Tag NAnt sources remotely.</para>

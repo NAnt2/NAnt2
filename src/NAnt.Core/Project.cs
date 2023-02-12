@@ -1665,11 +1665,18 @@ namespace NAnt.Core {
         private XmlNode GetConfigurationNode() {
             XmlNode configurationNode = ConfigurationSettings.GetConfig("nant") as XmlNode;
             if (configurationNode == null) { 
+                // FIXME: This requires proper handling for .NET standard / core / .NET 5.0 or later
+#if NETFRAMEWORK
                 throw new BuildException(string.Format(CultureInfo.InvariantCulture, 
                     "The NAnt configuration settings in file '{0}' could" 
                     + " not be loaded.  Please ensure this file is available"
                     + " and contains a 'nant' settings node.", 
                     AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+#else
+                throw new BuildException("The NAnt configuration settings could" 
+                    + " not be loaded.  Please ensure this file is available"
+                    + " and contains a 'nant' settings node.");
+#endif
             }
             return configurationNode;
         }

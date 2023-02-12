@@ -37,6 +37,11 @@ namespace NAnt.SourceControl.Tasks {
     ///     ]]>
     ///   </code>
     /// </example>
+    /// <remarks>
+    /// <para>
+    /// Only available on .NET framework.
+    /// </para>
+    /// </remarks>
     [TaskName("cvs-pass")]
     public class CvsPass : Task {
         #region Private Instance Fields
@@ -114,6 +119,7 @@ namespace NAnt.SourceControl.Tasks {
         /// </list>
         /// </summary>
         protected override void ExecuteTask () {
+            #if NET48_OR_LESSER
             ICSharpCode.SharpCvsLib.FileSystem.Manager manager = 
                 new ICSharpCode.SharpCvsLib.FileSystem.Manager(this.DestinationDirectory);
 
@@ -125,6 +131,7 @@ namespace NAnt.SourceControl.Tasks {
                 manager.UpdatePassFile(this.Password, 
                     new ICSharpCode.SharpCvsLib.Misc.CvsRoot(this.Root), this.PassFile);
             }
+            #endif
         }
 
         #endregion Override implementation of Task

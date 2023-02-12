@@ -3,23 +3,33 @@
     see https://github.com/clairernovotny/DeterministicBuilds
 -->
 <Project>
-  <!-- <PropertyGroup>
-    <TargetFrameworkMonikerAssemblyAttributesPath>$([System.IO.Path]::Combine('$(IntermediateOutputPath)','$(TargetFrameworkMoniker).AssemblyAttributes$(DefaultLanguageSourceExtension)'))</TargetFrameworkMonikerAssemblyAttributesPath>
+  <!--  Debug and Release configs are implicit in the new csproj format; same settings should be applied to our custom ones -->
+  <!-- see https://github.com/pedrolamas/MSBuildConfigurationDefaults -->
+  <PropertyGroup Condition="$(Configuration.StartsWith('Debug_'))">
+    <TargetFramework>$(Configuration.Replace('Debug_', ''))</TargetFramework>
+    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+    <DebugSymbols Condition="'$(DebugSymbols)' == ''">true</DebugSymbols>
+    <DebugType Condition="'$(DebugType)' == ''">full</DebugType>
+    <Optimize Condition="'$(Optimize)' == ''">false</Optimize>
   </PropertyGroup>
-  <ItemGroup>
-    <EmbeddedFiles Include="$(GeneratedAssemblyInfoFile)"/>
-  </ItemGroup> -->
-  <!-- <Target Name="ResgenMessages" AfterTargets="Build">
-    <GenerateResource Sources="@(ResXCodeSources->'%(identity)')"
-      UseSourcePath="true"
-      StronglyTypedClassName="@(ResXCodeSources->'%(filename)')"
-      StronglyTypedLanguage="C#"
-      StronglyTypedNamespace="My.Namespace"
-      StronglyTypedFileName="@(ResXCodeSources->'%(relativedir)%(filename).Designer.cs')"
-      OutputResources="@(ResXCodeSources->'My.Namespace.%(filename).resources')" />
-  </Target> -->
-  <Target Name="BeforeResGen">
-    <!-- <ResgenToolPath></ResgenToolPath> -->
-    <Message Text="BeforeResGen: $(PlatformTargetAsMSBuildArchitecture), $(TargetFrameworkSDKToolsDirectory), $(ResgenToolPath)" Importance="high"/>
+  
+  <PropertyGroup Condition="$(Configuration.StartsWith('Release_'))">
+    <TargetFramework>$(Configuration.Replace('Release_', ''))</TargetFramework>
+    <DefineConstants>$(DefineConstants);RELEASE;TRACE</DefineConstants>
+    <DebugSymbols Condition="'$(DebugSymbols)' == ''">false</DebugSymbols>
+    <DebugType Condition="'$(DebugType)' == ''">portable</DebugType>
+    <Optimize Condition="'$(Optimize)' == ''">true</Optimize>
+  </PropertyGroup>
+
+  <Target Name="AfterPrepareForBuild" AfterTargets="PrepareForBuild">
+    <Message Text="TargetFramework: $(TargetFramework); Constants: $(DefineConstants)" Importance="High" />
+  </Target>
+
+    <!-- Removes /bin/Configuration and /obj folders to make sure no strange/previous artifacts are left before build -->
+    <!-- Should be called on demand, and not executed automatically after Clean target (adding 'AfterTargets="Clean"' attribute to Target element)-->
+  <Target Name="DeepClean">
+    <Message Text=" MSBuild target: DeepClean" Importance="high"/>
+    <RemoveDir Directories="$(TargetDir)" /> <!-- bin -->
+    <RemoveDir Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- obj -->
   </Target>
 </Project>

@@ -24,7 +24,10 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+
+#if NETFRAMEWORK
 using System.Runtime.Remoting.Lifetime;
+#endif
 
 using System.Security;
 using System.Security.Permissions;
@@ -80,9 +83,14 @@ namespace NAnt.Core.Util {
         private GacResolver Resolver {
             get {
                 if (_resolver == null) {
+#if (NETFRAMEWORK || NETCOREAPP3_0_OR_GREATER || NET)
                     _resolver = ((GacResolver) Domain.CreateInstanceFrom(
                         Assembly.GetExecutingAssembly().Location,
                         typeof(GacResolver).FullName).Unwrap());
+#else
+                    // FIXME: How to overcome missing AppDomain.CreateInstanceFrom method in .NET standard 2.0?
+                    //_resolver = ((GacResolver)Activator.CreateInstance(Assembly.GetExecutingAssembly().Location, typeof(GacResolver).FullName));
+#endif
                 }
                 return _resolver;
             }
@@ -126,9 +134,14 @@ namespace NAnt.Core.Util {
             _resolver = null;
 
             PermissionSet domainPermSet = new PermissionSet(PermissionState.Unrestricted);
+            
+            // FIXME: this will raise PlatformNotSupported on .NET Standard/ Core /.NET 5.0 or later
+#if NETFRAMEWORK
             _domain = AppDomain.CreateDomain("GacCacheDomain", AppDomain.CurrentDomain.Evidence, 
                 AppDomain.CurrentDomain.SetupInformation, domainPermSet);
-
+#else
+            _domain = AppDomain.CreateDomain("GacCacheDomain");
+#endif
             _hasLoadedAssembly = false;
         }
 
@@ -213,7 +226,9 @@ namespace NAnt.Core.Util {
 
         private class GacResolver : MarshalByRefObject {
             #region Override implementation of MarshalByRefObject
-
+            
+            // FIXME: This should be properly handled, not hidden behind a compilation flag
+#if NETFRAMEWORK
             /// <summary>
             /// Obtains a lifetime service object to control the lifetime policy for 
             /// this instance.
@@ -231,6 +246,7 @@ namespace NAnt.Core.Util {
                 }
                 return lease;
             }
+#endif
 
             #endregion Override implementation of MarshalByRefObject
 

@@ -74,6 +74,11 @@ namespace NAnt.SourceControl.Tasks {
     ///     ]]>
     ///   </code>
     /// </example>
+    /// <remarks>
+    /// <para>
+    /// Only available on .NET framework.
+    /// </para>
+    /// </remarks>
     [TaskName("cvs-checkout")]
     public class CheckoutTask : AbstractCvsTask {
         #region Internal Static Fields

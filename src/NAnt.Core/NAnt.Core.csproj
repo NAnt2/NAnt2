@@ -8,46 +8,26 @@
     <PackageId>NAnt2.Core</PackageId>
     <Description>$(NAnt2Description) This library provides core functionalities, including functions and tasks.</Description>
   </PropertyGroup>
-  <ItemGroup Condition="$(DefineConstants.Contains(NET45_OR_GREATER))">
-    <Reference Include="System.Configuration" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="log4net">
-      <HintPath>..\..\lib\common\neutral\log4net.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup Condition="$(DefineConstants.Contains(NET40_OR_GREATER))">
     <Reference Include="System.Net" />
   </ItemGroup>
-  <ItemGroup Condition="! $(DefineConstants.Contains(NET40_OR_GREATER))">
+  <ItemGroup Condition="$(DefineConstants.Contains(NET35_OR_LESSER))">
     <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup Condition="$(DefineConstants.Contains(NET46_OR_LESSER))">
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup Condition=" !$(DefineConstants.Contains(NET46_OR_LESSER)) ">
+    <PackageReference Include="System.Security.Permissions" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" />
+    <PackageReference Include="System.Resources.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ProjectHelp.xslt" />
   </ItemGroup>
-  <!-- <ItemGroup>
-    <EmbeddedResource Update="Resources\Strings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
-      <StronglyTypedNamespace>$(RootNamespace)</StronglyTypedNamespace>
-      <StronglyTypedClassName>Strings</StronglyTypedClassName>
-    </EmbeddedResource>
-  </ItemGroup> -->
-  <!-- <ItemGroup>
-    <Compile Update="Resources\Strings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources\Strings.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\Strings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources\Strings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <ResXCodeSources Include="Resources\Strings.resx"/>
-  </ItemGroup> -->
   <ItemGroup>
 		<EmbeddedResource Update="Resources\Resources.resx">
 			<Generator>ResXFileCodeGenerator</Generator>
@@ -62,5 +42,8 @@
   <ItemGroup>
     <Compile Remove="Functions\DnsFunctions.cs" />
     <Compile Remove="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="NAnt.Core.build" />
   </ItemGroup>
 </Project>

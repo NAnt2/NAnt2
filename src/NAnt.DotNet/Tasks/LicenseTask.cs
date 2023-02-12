@@ -28,7 +28,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+#if NETFRAMEWORK
 using System.Runtime.Remoting.Lifetime;
+#endif
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using NAnt.Core;
@@ -426,7 +428,7 @@ namespace NAnt.DotNet.Tasks {
                     newDomain.CreateInstanceAndUnwrap(typeof(LicenseGatherer).Assembly.FullName,
                     typeof(LicenseGatherer).FullName, false, BindingFlags.Public | BindingFlags.Instance,
                     null, new object[0], CultureInfo.InvariantCulture, new object[0]);
-#else
+#elif NET35_OR_LESSER
                 AppDomain newDomain = AppDomain.CreateDomain("LicenseGatheringDomain", 
                     AppDomain.CurrentDomain.Evidence);
                 LicenseGatherer licenseGatherer = (LicenseGatherer)
@@ -434,11 +436,23 @@ namespace NAnt.DotNet.Tasks {
                     typeof(LicenseGatherer).FullName, false, BindingFlags.Public | BindingFlags.Instance,
                     null, new object[0], CultureInfo.InvariantCulture, new object[0],
                     AppDomain.CurrentDomain.Evidence);
+#else
+                // FIXME: AppDomain no longer supported in .NET Standard / .NET Core / .NET 5.0 or later
+                // see https://learn.microsoft.com/en-us/dotnet/core/porting/net-framework-tech-unavailable#application-domains
+                LicenseGatherer licenseGatherer = (LicenseGatherer)Activator.CreateInstance(
+                    typeof(LicenseGatherer),
+                    BindingFlags.Public | BindingFlags.Instance,
+                    null,
+                    new object[0],
+                    CultureInfo.InvariantCulture,
+                    new object[0]);
 #endif
                 licenseGatherer.CreateLicenseFile(this, licensesFile.FullName);
 
                 // unload newly created domain
+#if NETFRAMEWORK
                 AppDomain.Unload(newDomain);
+#endif
             }
         }
 
@@ -493,6 +507,7 @@ namespace NAnt.DotNet.Tasks {
         private class LicenseGatherer : MarshalByRefObject {
             #region Override implementation of MarshalByRefObject
 
+#if NETFRAMEWORK
             /// <summary>
             /// Obtains a lifetime service object to control the lifetime policy for 
             /// this instance.
@@ -510,7 +525,9 @@ namespace NAnt.DotNet.Tasks {
                 }
                 return lease;
             }
-
+#else
+            // FIXME: Not available in .NET Standard / Core / .NET 5.0 or later, see https://learn.microsoft.com/en-us/dotnet/core/porting/net-framework-tech-unavailable#remoting
+#endif
             #endregion Override implementation of MarshalByRefObject
 
             #region Public Instance Methods

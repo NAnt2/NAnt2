@@ -59,6 +59,11 @@ namespace NAnt.SourceControl.Tasks {
     ///     ]]>
     ///   </code>
     /// </example>
+    /// <remarks>
+    /// <para>
+    /// Only available on .NET framework.
+    /// </para>
+    /// </remarks>
     [TaskName("cvs-update")]
     public class UpdateTask : AbstractCvsTask {
         #region Internal Static Fields

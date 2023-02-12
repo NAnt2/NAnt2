@@ -20,7 +20,6 @@
 using System;
 using System.Globalization;
 using System.Security.Permissions;
-
 using Microsoft.Win32;
 using NAnt.Core;
 using NAnt.Core.Attributes;

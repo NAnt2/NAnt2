@@ -471,16 +471,23 @@ namespace NAnt.VSNet.Tasks {
                     }
 
                     // create temporary domain
+#if NETFRAMEWORK
                     PermissionSet tempDomainPermSet = new PermissionSet(PermissionState.Unrestricted);
                     
                     AppDomain temporaryDomain = AppDomain.CreateDomain("temporaryDomain", AppDomain.CurrentDomain.Evidence, 
                         AppDomain.CurrentDomain.SetupInformation, tempDomainPermSet);
-
+#else
+                    // FIXME: AppDomain no longer supported in .NET Standard / .NET Core / .NET 5.0 or later
+                    // see https://learn.microsoft.com/en-us/dotnet/core/porting/net-framework-tech-unavailable#application-domains
+#endif
                     try {
+#if NETFRAMEWORK
                         ReferencesResolver referencesResolver =
                             ((ReferencesResolver) temporaryDomain.CreateInstanceFrom(Assembly.GetExecutingAssembly().Location,
                             typeof(ReferencesResolver).FullName).Unwrap());
-
+#else
+                        ReferencesResolver referencesResolver = (ReferencesResolver)Activator.CreateInstance(typeof(ReferencesResolver));
+#endif
                         using (GacCache gacCache = new GacCache(this.Project)) {
                             SolutionBase sln = SolutionFactory.LoadSolution(this, 
                                 tfc, gacCache, referencesResolver);
@@ -490,7 +497,12 @@ namespace NAnt.VSNet.Tasks {
                         }
                     } finally {
                         // unload temporary domain
+#if NETFRAMEWORK
                         AppDomain.Unload(temporaryDomain);
+#else
+                        // FIXME: AppDomain no longer supported in .NET Standard / .NET Core / .NET 5.0 or later
+                        // see https://learn.microsoft.com/en-us/dotnet/core/porting/net-framework-tech-unavailable#application-domains
+#endif
                     }
                 }
             } finally {

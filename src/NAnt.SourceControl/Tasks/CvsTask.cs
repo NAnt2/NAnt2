@@ -34,6 +34,11 @@ namespace NAnt.SourceControl.Tasks {
     ///     ]]>
     ///   </code>
     /// </example>
+    /// <remarks>
+    /// <para>
+    /// Only available on .NET framework.
+    /// </para>
+    /// </remarks>
     [TaskName("cvs")]
     public class CvsTask : AbstractCvsTask {
         #region Private Instance Fields

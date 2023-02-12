@@ -32,6 +32,11 @@ namespace NAnt.SourceControl.Tasks {
     /// A base class for creating tasks for executing CVS client commands on a 
     /// CVS repository.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Only available on .NET framework.
+    /// </para>
+    /// </remarks>
     public abstract class AbstractSourceControlTask : ExternalProgramBase {
         #region Protected Static Fields
 

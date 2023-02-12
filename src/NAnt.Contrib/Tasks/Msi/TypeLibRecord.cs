@@ -115,6 +115,7 @@ namespace NAnt.Contrib.Tasks.Msi {
         public CUSTDATAITEM[] prgCustData;
     }
 
+    #if NET11_OR_LESSER
     [ComImport]
     [Guid("00020412-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -157,4 +158,48 @@ namespace NAnt.Contrib.Tasks.Msi {
         void GetAllVarCustData(int index, [Out] out CUSTDATA pCustData);
         void GetAllImplTypeCustData(int index, [Out] out CUSTDATA pCustData);
     }
+#else
+    [ComImport]
+    [Guid("00020412-0000-0000-C000-000000000046")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    public interface ITypeInfo2 {
+        #region Implementation of ITypeInfo2
+        void GetContainingTypeLib(out System.Runtime.InteropServices.ComTypes.ITypeLib ppTLB, out int pIndex);
+        void GetIDsOfNames(string[] rgszNames, int cNames, int[] pMemId);
+        void GetRefTypeInfo(int hRef, out System.Runtime.InteropServices.ComTypes.ITypeLib ppTI);
+        void GetMops(int memid, out string pBstrMops);
+        void ReleaseVarDesc(System.IntPtr pVarDesc);
+        void ReleaseTypeAttr(System.IntPtr pTypeAttr);
+        void GetDllEntry(int memid, System.Runtime.InteropServices.ComTypes.INVOKEKIND invKind, out string pBstrDllName, out string pBstrName, out short pwOrdinal);
+        void GetRefTypeOfImplType(int index, out int href);
+        void GetTypeComp(out System.Runtime.InteropServices.ComTypes.ITypeComp ppTComp);
+        void GetTypeAttr(out System.IntPtr ppTypeAttr);
+        void GetDocumentation(int index, out string strName, out string strDocString, out int dwHelpContext, out string strHelpFile);
+        void AddressOfMember(int memid, System.Runtime.InteropServices.ComTypes.INVOKEKIND invKind, out System.IntPtr ppv);
+        void GetNames(int memid, string[] rgBstrNames, int cMaxNames, out int pcNames);
+        void CreateInstance(object pUnkOuter, ref System.Guid riid, out object ppvObj);
+        void Invoke(object pvInstance, int memid, short wFlags, ref System.Runtime.InteropServices.ComTypes.DISPPARAMS pDispParams, out object pVarResult, out System.Runtime.InteropServices.ComTypes.EXCEPINFO pExcepInfo, out int puArgErr);
+        void GetVarDesc(int index, out System.IntPtr ppVarDesc);
+        void ReleaseFuncDesc(System.IntPtr pFuncDesc);
+        void GetFuncDesc(int index, out System.IntPtr ppFuncDesc);
+        void GetImplTypeFlags(int index, out int pImplTypeFlags);
+        #endregion
+
+        void GetTypeKind([Out] out System.Runtime.InteropServices.ComTypes.TYPEKIND pTypeKind);
+        void GetTypeFlags([Out] out int pTypeFlags);
+        void GetFuncIndexOfMemId(int memid, System.Runtime.InteropServices.ComTypes.INVOKEKIND invKind, [Out] out int pFuncIndex);
+        void GetVarIndexOfMemId(int memid, [Out] out int pVarIndex);
+        void GetCustData([In] ref Guid guid, [Out] out object pCustData);
+        void GetFuncCustData(int index, [In] ref Guid guid, [Out] out object pVarVal);
+        void GetParamCustData(int indexFunc, int indexParam, [In] ref Guid guid, [Out] out object pVarVal);
+        void GetVarCustData(int index, [In] ref Guid guid, [Out] out object pVarVal);
+        void GetImplTypeCustData(int index, [In] ref Guid guid, [Out] out object pVarVal);
+        void GetDocumentation2(int memid, int lcid, [Out] out string pbstrHelpString, [Out] out int pdwHelpStringContext, [Out] out string pbstrHelpStringDll);
+        void GetAllCustData([In,Out] ref IntPtr pCustData);
+        void GetAllFuncCustData(int index, [Out] out CUSTDATA pCustData);
+        void GetAllParamCustData(int indexFunc, int indexParam, [Out] out CUSTDATA pCustData);
+        void GetAllVarCustData(int index, [Out] out CUSTDATA pCustData);
+        void GetAllImplTypeCustData(int index, [Out] out CUSTDATA pCustData);
+    }
+#endif
 }

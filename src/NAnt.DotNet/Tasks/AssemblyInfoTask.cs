@@ -27,7 +27,11 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+#if NETFRAMEWORK
 using System.Runtime.Remoting.Lifetime;
+#else
+// FIXME: How should we handle this on NET standard / core / .NET 5.0 or later?
+#endif
 using System.Security.Cryptography;
 using System.Text;
 
@@ -446,28 +450,48 @@ namespace NAnt.DotNet.Tasks {
 
             private object GetTypedValue(AssemblyAttribute attribute, StringCollection assemblies, StringCollection imports) {
                 // locate type assuming TypeName is fully qualified typename
+#if NET40_OR_GREATER
                 PermissionSet domainPermSet = new PermissionSet(PermissionState.Unrestricted);
                 AppDomain newDomain = AppDomain.CreateDomain("TypeGatheringDomain", AppDomain.CurrentDomain.Evidence, 
                     AppDomain.CurrentDomain.SetupInformation, domainPermSet);
+#elif NET35_OR_LESSER
+                PermissionSet domainPermSet = new PermissionSet(PermissionState.Unrestricted);
+                AppDomain newDomain = AppDomain.CreateDomain("TypeGatheringDomain", AppDomain.CurrentDomain.Evidence, 
+                    AppDomain.CurrentDomain.SetupInformation, domainPermSet);
+#else
+                // FIXME: Application domains are no longer supported in  .NET 5+ and .NET Core. AppDomain.CreateDomain throws PlatformNotSupportedException
+#endif
 
 #if NET40_OR_GREATER
                 TypedValueGatherer typedValueGatherer = (TypedValueGatherer) 
                     newDomain.CreateInstanceAndUnwrap(typeof(TypedValueGatherer).Assembly.FullName, 
                     typeof(TypedValueGatherer).FullName, false, BindingFlags.Public | BindingFlags.Instance, 
                     null, new object[0], CultureInfo.InvariantCulture, new object[0]);
-#else
+#elif NET35_OR_LESSER
                 TypedValueGatherer typedValueGatherer = (TypedValueGatherer) 
                     newDomain.CreateInstanceAndUnwrap(typeof(TypedValueGatherer).Assembly.FullName, 
                     typeof(TypedValueGatherer).FullName, false, BindingFlags.Public | BindingFlags.Instance, 
                     null, new object[0], CultureInfo.InvariantCulture, new object[0], 
                     AppDomain.CurrentDomain.Evidence);
+#else
+                // FIXME: AppDomain no longer supported in .NET Standard / .NET Core / .NET 5.0 or later
+                // see https://learn.microsoft.com/en-us/dotnet/core/porting/net-framework-tech-unavailable#application-domains
+                TypedValueGatherer typedValueGatherer = (TypedValueGatherer)Activator.CreateInstance(
+                    typeof(TypedValueGatherer),
+                    BindingFlags.Public | BindingFlags.Instance,
+                    null,
+                    new object[0],
+                    CultureInfo.InvariantCulture,
+                    new object[0]);
 #endif
 
                 object typedValue = typedValueGatherer.GetTypedValue(
                     assemblies, imports, attribute.TypeName, attribute.Value);
 
                 // unload newly created AppDomain
+#if NETFRAMEWORK
                 AppDomain.Unload(newDomain);
+#endif
 
                 return typedValue;
             }
@@ -483,6 +507,7 @@ namespace NAnt.DotNet.Tasks {
         private class TypedValueGatherer : MarshalByRefObject {
             #region Override implementation of MarshalByRefObject
 
+#if NETFRAMEWORK
             /// <summary>
             /// Obtains a lifetime service object to control the lifetime policy for 
             /// this instance.
@@ -500,7 +525,9 @@ namespace NAnt.DotNet.Tasks {
                 }
                 return lease;
             }
-
+#else
+            // FIXME: Not available in .NET Standard / Core / .NET 5.0 or later, see https://learn.microsoft.com/en-us/dotnet/core/porting/net-framework-tech-unavailable#remoting
+#endif
             #endregion Override implementation of MarshalByRefObject
 
             #region Public Instance Methods

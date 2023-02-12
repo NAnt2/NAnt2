@@ -63,6 +63,11 @@ namespace NAnt.SourceControl.Tasks {
     ///     ]]>
     ///   </code>
     /// </example>
+    /// <remarks>
+    /// <para>
+    /// Only available on .NET framework.
+    /// </para>
+    /// </remarks>
     [TaskName("cvs-export")]
     public class ExportTask : AbstractCvsTask {
         #region Private Static Fields

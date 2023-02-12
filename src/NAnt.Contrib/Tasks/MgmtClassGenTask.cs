@@ -17,15 +17,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
 
-using System;
-using System.Collections;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Web.Mail;
-using System.Xml;
-using System.Xml.Xsl;
-
 using NAnt.Core;
 using NAnt.Core.Attributes;
 using NAnt.Core.Tasks;

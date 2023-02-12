@@ -7,9 +7,14 @@
     <PackageId>NAnt2.MSNet</PackageId>
     <Description>$(NAnt2Description) This library provides Windows-only .NET tasks.</Description>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" $(DefineConstants.Contains(NET46_OR_LESSER)) ">
     <Reference Include="System.ServiceProcess" />
     <Reference Include="Microsoft.JScript" />
+  </ItemGroup>
+  <ItemGroup Condition=" !$(DefineConstants.Contains(NET46_OR_LESSER)) ">
+    <PackageReference Include="System.ServiceProcess.ServiceController" />
+    <PackageReference Include="Microsoft.ClearScript.Windows.Core" />
+    <PackageReference Include="System.Resources.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources\Strings.resx">
@@ -17,6 +22,7 @@
       <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
       <StronglyTypedNamespace>$(RootNamespace)</StronglyTypedNamespace>
       <StronglyTypedClassName>Strings</StronglyTypedClassName>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -24,5 +30,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources\Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="NAnt.MSNet.build" />
   </ItemGroup>
 </Project>

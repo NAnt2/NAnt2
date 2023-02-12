@@ -12,11 +12,11 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition="$(DefineConstants.Contains(NET46_OR_LESSER))">
     <Reference Include="System.Configuration" />
-    <Reference Include="log4net">
-      <HintPath>..\..\lib\common\neutral\log4net.dll</HintPath>
-    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" !$(DefineConstants.Contains(NET46_OR_LESSER)) ">
+    <PackageReference Include="System.Configuration.ConfigurationManager" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NAnt.Compression\NAnt.Compression.csproj" />
@@ -25,8 +25,8 @@
     <ProjectReference Include="..\NAnt.MSBuild\NAnt.MSBuild.csproj" />
     <ProjectReference Include="..\NAnt.MSNet\NAnt.MSNet.csproj" />
     <ProjectReference Include="..\NAnt.NUnit\NAnt.NUnit.csproj" />
-    <ProjectReference Include="..\NAnt.NUnit\NUnit1\NAnt.NUnit1.csproj" />
-    <ProjectReference Include="..\NAnt.NUnit\NUnit2\NAnt.NUnit2.csproj" />
+    <ProjectReference Include="..\NAnt.NUnit1\NAnt.NUnit1.csproj" />
+    <ProjectReference Include="..\NAnt.NUnit2\NAnt.NUnit2.csproj" />
     <ProjectReference Include="..\NAnt.SourceControl\NAnt.SourceControl.csproj" />
     <ProjectReference Include="..\..\tests\NAnt.Tests.csproj" />
     <ProjectReference Include="..\NAnt.VisualCpp\NAnt.VisualCpp.csproj" />
@@ -36,5 +36,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="NAnt.Console.build" />
   </ItemGroup>
 </Project>

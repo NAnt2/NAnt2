@@ -28,6 +28,15 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+
+#if (!NET11_OR_LESSER)
+using System.Runtime.InteropServices.ComTypes;
+using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
+using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
+using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
+using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
+#endif
+
 using System.Text;
 using System.Xml;
 
@@ -757,6 +766,11 @@ namespace NAnt.Contrib.Tasks.Msi {
         /// Loads TypeLibs for the TypeLib table.
         /// </summary>
         /// <param name="database">The MSI database.</param>
+        /// <remarks>
+        ///     <para>Not available on .NET standard / core / .NET 5.0 or later</para>
+        /// </remarks>
+        /// <exception cref="PlatformNotSupportedException">NAnt2 build is running on .NET standard / core / .NET 5.0 or later
+        /// where most of the COM operations are not available.</exception>
         private void LoadTypeLibs(InstallerDatabase database) {
             // Open the "TypeLib" Table
             using (InstallerTable typeLibTable = database.OpenTable("TypeLib"), registryTable = database.OpenTable("Registry")) {
@@ -768,8 +782,11 @@ namespace NAnt.Contrib.Tasks.Msi {
                     if (result != 0)
                         continue;
 
-                    UCOMITypeLib typeLib = (UCOMITypeLib)Marshal.GetTypedObjectForIUnknown(
-                        pTypeLib, typeof(UCOMITypeLib));
+#if NET11_OR_LESSER
+                    UCOMITypeLib typeLib = (UCOMITypeLib)Marshal.GetTypedObjectForIUnknown(pTypeLib, typeof(UCOMITypeLib));
+#else
+                    ITypeLib typeLib = (ITypeLib)Marshal.GetTypedObjectForIUnknown(pTypeLib, typeof(ITypeLib));
+#endif
                     if (typeLib == null)
                         continue;
 
@@ -786,10 +803,12 @@ namespace NAnt.Contrib.Tasks.Msi {
                     TYPELIBATTR typeLibAttr = (TYPELIBATTR)Marshal.PtrToStructure(pTypeLibAttr, typeof(TYPELIBATTR));
 
                     string tlbCompName = (string)typeLibComponents[Path.GetFileName(tlbRecord.TypeLibFileName)];
-
+#if NETFRAMEWORK
                     typeLibTable.InsertRecord("{"+typeLibAttr.guid.ToString().ToUpper()+"}", Marshal.GetTypeLibLcid(typeLib),
                         tlbCompName, 256, docString == null ? name : docString, null, tlbRecord.FeatureName, 0);
-
+#else
+                    throw new PlatformNotSupportedException("Not supported on .NET Standard / .NET Core / .NET 5.0 or later");
+#endif
                     typeLib.ReleaseTLibAttr(pTypeLibAttr);
 
                     // If a .NET type library wrapper for an assembly
@@ -801,7 +820,11 @@ namespace NAnt.Contrib.Tasks.Msi {
 
                     int typeCount = typeLib.GetTypeInfoCount();
                     for (int j = 0; j < typeCount; j++) {
+#if NET11_OR_LESSER
                         UCOMITypeInfo typeInfo = null;
+#else
+                        ITypeInfo typeInfo = null;
+#endif
                         typeLib.GetTypeInfo(j, out typeInfo);
 
                         if (typeInfo == null)
@@ -810,7 +833,11 @@ namespace NAnt.Contrib.Tasks.Msi {
                         TYPEATTR typeAttr = GetTypeAttributes(typeInfo);
 
                         if (IsCreatableCoClass(typeAttr)) {
+#if NET11_OR_LESSER
                             if (typeInfo is UCOMITypeInfo2) {
+#else
+                            if (typeInfo is ITypeInfo2) {
+#endif
                                 string className = GetClassName(typeInfo);
 
                                 if (className != null) {
@@ -825,11 +852,17 @@ namespace NAnt.Contrib.Tasks.Msi {
                             typeInfo.GetDocumentation(-1, out typeName,
                                 out typeDocString, out typeHelpContextId,
                                 out typeHelpFile);
-
+#if NET11_OR_LESSER
                             if (!(typeInfo is UCOMITypeInfo2))
                                 continue;
 
                             UCOMITypeInfo2 typeInfo2 = (UCOMITypeInfo2)typeInfo;
+#else
+                            if (!(typeInfo is ITypeInfo2))
+                                continue;
+                            
+                            ITypeInfo2 typeInfo2 = (ITypeInfo2)typeInfo;
+#endif
                             if (typeInfo2 == null)
                                 continue;
 
@@ -870,6 +903,7 @@ namespace NAnt.Contrib.Tasks.Msi {
             return typeAttr.typekind == TYPEKIND.TKIND_DISPATCH;
         }
 
+        #if NET11_OR_LESSER
         private TYPEATTR GetTypeAttributes(UCOMITypeInfo typeInfo) {
             IntPtr pTypeAttr = new IntPtr(0);
             typeInfo.GetTypeAttr(out pTypeAttr);
@@ -886,6 +920,24 @@ namespace NAnt.Contrib.Tasks.Msi {
             typeInfo2.GetCustData(ref g, out custData);
             return (string)custData;
         }
+#else
+        private TYPEATTR GetTypeAttributes(System.Runtime.InteropServices.ComTypes.ITypeInfo typeInfo) {
+            IntPtr pTypeAttr = new IntPtr(0);
+            typeInfo.GetTypeAttr(out pTypeAttr);
+
+            TYPEATTR typeAttr = (TYPEATTR)Marshal.PtrToStructure(pTypeAttr, typeof(TYPEATTR));
+            return typeAttr;
+        }
+
+        private string GetClassName(System.Runtime.InteropServices.ComTypes.ITypeInfo typeInfo) {
+            ITypeInfo2  typeInfo2 = (ITypeInfo2)typeInfo;
+
+            object custData = new object();
+            Guid g = new Guid("0F21F359-AB84-41E8-9A78-36D110E6D2F9");
+            typeInfo2.GetCustData(ref g, out custData);
+            return (string)custData;
+        }
+#endif
 
         private bool IsCreatableCoClass(TYPEATTR typeAttr) {
             return typeAttr.typekind == TYPEKIND.TKIND_COCLASS

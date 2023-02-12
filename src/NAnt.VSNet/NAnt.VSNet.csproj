@@ -17,4 +17,7 @@
   <ItemGroup>
     <Compile Remove="AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="NAnt.VSNet.build" />
+  </ItemGroup>
 </Project>

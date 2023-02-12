@@ -33,7 +33,7 @@
         we do not want this for releases (whether they're beta or release) as
         this would cause the build number to be updated
     -->
-    <property name="create.solutioninfo" value="true" />
+    <property name="create.solutioninfo" value="false" />
 
     <!-- default configuration -->
     <property name="project.config" value="debug" /> <!-- debug | release -->

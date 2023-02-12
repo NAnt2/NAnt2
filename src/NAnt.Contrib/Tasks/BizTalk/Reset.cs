@@ -91,10 +91,10 @@ namespace NAnt.Contrib.Tasks.BizTalk {
             }
         }
 
-        private EnumerationOptions EnumerationOptions {
+        private System.Management.EnumerationOptions EnumerationOptions {
             get {
                 if (_enumerationOptions == null) {
-                    _enumerationOptions = new EnumerationOptions();
+                    _enumerationOptions = new System.Management.EnumerationOptions();
                     _enumerationOptions.ReturnImmediately = false;
                 }
                 return _enumerationOptions;
@@ -160,7 +160,7 @@ namespace NAnt.Contrib.Tasks.BizTalk {
         private string _server;
         private ResetAction _action = ResetAction.Reset;
         private ManagementScope _scope;
-        private EnumerationOptions _enumerationOptions;
+        private System.Management.EnumerationOptions _enumerationOptions;
 
         #endregion Private Instance Fields
     }

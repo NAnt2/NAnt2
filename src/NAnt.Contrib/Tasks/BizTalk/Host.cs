@@ -126,7 +126,7 @@ namespace NAnt.Contrib.Tasks.BizTalk {
                 // we're only interested in in-process instances
                 ObjectQuery query = new ObjectQuery("SELECT * FROM MSBTS_HostInstance WHERE HostType = 1");
 
-                EnumerationOptions enumerationOptions = new EnumerationOptions();
+                System.Management.EnumerationOptions enumerationOptions = new System.Management.EnumerationOptions();
                 enumerationOptions.ReturnImmediately = false;
 
                 using (ManagementObjectSearcher searcher = new ManagementObjectSearcher (Scope, query, enumerationOptions)) {

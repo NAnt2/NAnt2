@@ -19,59 +19,21 @@ env:
   PROJECT_VERSION: 0.95
 
 jobs:
-  win-build:
-    runs-on: windows-2019
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Install Make; NMake is provided by default
-        run: |
-              choco install -y make
-              call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-              where resgen
-        shell: cmd
-      - name: Build on .NET framework with nmake
-        run: |
-              call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-              nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
-        shell: cmd
-      - name: Run tests on .NET framework with nmake
-        run: |
-              call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-              nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
-        shell: cmd
-  nix-build:
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ windows-2019, ubuntu-latest, macos-latest ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Check mono version
-        run: mono --version
-        shell: bash
-      - name: Ensure mono is found using pkg-config
-        run: |
-              if [ "${RUNNER_OS}" == "macOS" ]; then
-                export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
-              fi
-        shell: bash
-      - name: Build with make
-        run: |
-                if [ "${RUNNER_OS}" == "macOS" ]; then
-                  export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
-                fi
-                make clean build-nant TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
-        shell: bash
-      - name: Run tests with make
-        run: |
-                if [ "${RUNNER_OS}" == "macOS" ]; then
-                  export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
-                fi
-                make clean run-tests TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
-        shell: bash
+      - name: Ensure .NET SDK availability
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.x'
+          dotnet-quality: 'ga'
+      - name: Build and test
+        shell: pwsh
+        run: .\build.ps1 -Tasks Build -BuildConfiguration Debug -Rebuild

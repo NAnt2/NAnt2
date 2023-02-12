@@ -1,0 +1,227 @@
+<Project>
+
+	<!-- 
+    Version-specific symbols taken from https://github.com/gsemac/Gsemac.Common/blob/7448494908e7daaac10fc871be3e4e09302ec369/src/Directory.Build.props, MIT licensed
+    
+		Some of these constants may already be defined depending on the SDK in use.
+		https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives
+	-->
+
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net[1-4]'))">
+		<DefineConstants>$(DefineConstants);NETFRAMEWORK</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netcoreapp\d'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard\d'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net[5-7]'))">
+		<DefineConstants>$(DefineConstants);NET</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:11|20|35|40|403|40-client|45|451|452|46|461|462|47|471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET11_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:20|35|40|403|40-client|45|451|452|46|461|462|47|471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET20_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:35|40|403|40-client|45|451|452|46|461|462|47|471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET35_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:40|403|40-client|45|451|452|46|461|462|47|471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET40_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:45|451|452|46|461|462|47|471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET45_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:451|452|46|461|462|47|471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET451_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:452|46|461|462|47|471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET452_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:46|461|462|47|471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET46_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:461|462|47|471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET461_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:462|47|471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET462_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:47|471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET47_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:471|472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET471_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:472|48)$'))">
+		<DefineConstants>$(DefineConstants);NET472_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:48)$'))">
+		<DefineConstants>$(DefineConstants);NET48_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET20_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET11_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET35_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET20_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET40_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET35_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET45_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET40_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET451_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET45_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET452_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET451_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET46_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET452_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET461_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET46_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET462_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET461_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET47_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET462_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET471_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET47_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET472_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET471_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK')) And !$(DefineConstants.Contains('NET48_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET472_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETFRAMEWORK'))">
+		<DefineConstants>$(DefineConstants);NET48_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard(?:1\.0|1\.1|1\.2|1\.3|1\.4|1\.5|1\.6|2\.0|2\.1)$'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_0_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard(?:1\.1|1\.2|1\.3|1\.4|1\.5|1\.6|2\.0|2\.1)$'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_1_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard(?:1\.2|1\.3|1\.4|1\.5|1\.6|2\.0|2\.1)$'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_2_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard(?:1\.3|1\.4|1\.5|1\.6|2\.0|2\.1)$'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_3_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard(?:1\.4|1\.5|1\.6|2\.0|2\.1)$'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_4_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard(?:1\.5|1\.6|2\.0|2\.1)$'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_5_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard(?:1\.6|2\.0|2\.1)$'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_6_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard(?:2\.0|2\.1)$'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD2_0_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard(?:2\.1)$'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD2_1_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETSTANDARD')) And !$(DefineConstants.Contains('NETSTANDARD1_1_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_0_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETSTANDARD')) And !$(DefineConstants.Contains('NETSTANDARD1_2_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_1_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETSTANDARD')) And !$(DefineConstants.Contains('NETSTANDARD1_3_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_2_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETSTANDARD')) And !$(DefineConstants.Contains('NETSTANDARD1_4_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_3_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETSTANDARD')) And !$(DefineConstants.Contains('NETSTANDARD1_5_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_4_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETSTANDARD')) And !$(DefineConstants.Contains('NETSTANDARD1_6_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_5_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETSTANDARD')) And !$(DefineConstants.Contains('NETSTANDARD2_0_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD1_6_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETSTANDARD')) And !$(DefineConstants.Contains('NETSTANDARD2_1_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD2_0_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETSTANDARD'))">
+		<DefineConstants>$(DefineConstants);NETSTANDARD2_1_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^(?:netcoreapp(?:1\.0|1\.1|2\.0|2\.1|2\.2|3\.0|3\.1)$|net(?:5\.0|6\.0))'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP1_0_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^(?:netcoreapp(?:1\.1|2\.0|2\.1|2\.2|3\.0|3\.1)$|net(?:5\.0|6\.0))'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP1_1_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^(?:netcoreapp(?:2\.0|2\.1|2\.2|3\.0|3\.1)$|net(?:5\.0|6\.0))'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP2_0_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^(?:netcoreapp(?:2\.1|2\.2|3\.0|3\.1)$|net(?:5\.0|6\.0))'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP2_1_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^(?:netcoreapp(?:2\.2|3\.0|3\.1)$|net(?:5\.0|6\.0))'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP2_2_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^(?:netcoreapp(?:3\.0|3\.1)$|net(?:5\.0|6\.0))'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP3_0_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^(?:netcoreapp(?:3\.1)$|net(?:5\.0|6\.0))'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP3_1_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:5\.0|6\.0|7\.0)'))">
+		<DefineConstants>$(DefineConstants);NET5_0_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:6\.0|7\.0)'))">
+		<DefineConstants>$(DefineConstants);NET6_0_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+  <PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:7\.0)'))">
+		<DefineConstants>$(DefineConstants);NET7_0_OR_GREATER</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETCOREAPP')) And !$(DefineConstants.Contains('NETCOREAPP1_1_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP1_0_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETCOREAPP')) And !$(DefineConstants.Contains('NETCOREAPP2_0_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP1_1_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETCOREAPP')) And !$(DefineConstants.Contains('NETCOREAPP2_1_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP2_0_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETCOREAPP')) And !$(DefineConstants.Contains('NETCOREAPP2_2_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP2_1_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETCOREAPP')) And !$(DefineConstants.Contains('NETCOREAPP3_0_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP2_2_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETCOREAPP')) And !$(DefineConstants.Contains('NETCOREAPP3_1_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP3_0_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NETCOREAPP')) And !$(DefineConstants.Contains('NET5_0_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NETCOREAPP3_1_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NET')) And !$(DefineConstants.Contains('NET6_0_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET5_0_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+  <PropertyGroup Condition="$(DefineConstants.Contains('NET')) And !$(DefineConstants.Contains('NET7_0_OR_GREATER'))">
+		<DefineConstants>$(DefineConstants);NET6_0_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('NET'))">
+		<DefineConstants>$(DefineConstants);NET7_0_OR_LESSER</DefineConstants>
+	</PropertyGroup>
+	
+</Project>

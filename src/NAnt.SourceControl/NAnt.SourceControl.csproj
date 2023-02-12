@@ -12,20 +12,20 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="log4net">
-      <HintPath>..\..\lib\common\neutral\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpCvsLib">
+    <Reference Condition=" $(DefineConstants.Contains(NETFRAMEWORK))" Include="ICSharpCode.SharpCvsLib">
       <HintPath>..\..\lib\common\neutral\ICSharpCode.SharpCvsLib.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\..\lib\common\neutral\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SharpZipLib" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="NAnt.SourceControl.build" />
   </ItemGroup>
 </Project>

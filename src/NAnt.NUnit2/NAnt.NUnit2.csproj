@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>NAnt.NUnit2</RootNamespace>
+    <AssemblyName>NAnt.NUnit2Tasks</AssemblyName>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>NAnt2.NUnit2</PackageId>
+    <Description>$(NAnt2Description) This library provides NUnit2-related tasks.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.core">
+      <HintPath>..\..\lib\common\2.0\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.interfaces">
+      <HintPath>..\..\lib\common\2.0\nunit.core.interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\lib\common\2.0\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.util">
+      <HintPath>..\..\lib\common\2.0\nunit.util.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj" />
+    <ProjectReference Include="..\NAnt.DotNet\NAnt.DotNet.csproj" />
+    <ProjectReference Include="..\Nant.NUnit\NAnt.NUnit.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="AssemblyInfo.cs" />
+  </ItemGroup>
+</Project>

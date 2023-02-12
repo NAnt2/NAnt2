@@ -31,4 +31,7 @@
   <ItemGroup>
     <Compile Remove="AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="NDoc.Documenter.NAnt.build" />
+  </ItemGroup>
 </Project>

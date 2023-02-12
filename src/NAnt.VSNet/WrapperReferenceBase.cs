@@ -356,8 +356,10 @@ namespace NAnt.VSNet {
 
 #if NET20_OR_GREATER
             return Marshal.GetTypeLibName((ITypeLib) typeLib);
-#else
+#elif NET11_OR_LESSER
             return Marshal.GetTypeLibName((UCOMITypeLib) typeLib);
+#else
+            throw new PlatformNotSupportedException("Not supported on .NET standard / .NET core / .NET 5.0 or later");
 #endif
         }
 

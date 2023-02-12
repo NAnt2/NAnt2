@@ -16,20 +16,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 using System;
-using System.Collections;
 using System.Data;
 using System.Data.OleDb;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
-using System.Web.Mail;
-
+using NAnt.Contrib.Util;
 using NAnt.Core;
 using NAnt.Core.Attributes;
 using NAnt.Core.Util;
-
-using NAnt.Contrib.Util;
 
 namespace NAnt.Contrib.Tasks {
     /// <summary>

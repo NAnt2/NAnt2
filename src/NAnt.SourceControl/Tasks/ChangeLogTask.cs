@@ -44,6 +44,11 @@ namespace NAnt.SourceControl.Tasks {
     ///     ]]>
     ///   </code>
     /// </example>
+    /// <remarks>
+    /// <para>
+    /// Only available on .NET framework.
+    /// </para>
+    /// </remarks>
     [TaskName("cvs-changelog")]
     public class ChangeLogTask : AbstractCvsTask {
         #region Private Static Fields
@@ -145,6 +150,7 @@ namespace NAnt.SourceControl.Tasks {
         [TaskAttribute("cvsroot", Required=false)]
         public override string Root {
             get {
+                #if NET48_OR_LESSER
                 if (null == base.Root && this.DestinationDirectory.Exists) {
                     try {
                         ICSharpCode.SharpCvsLib.FileSystem.Manager manager = 
@@ -156,6 +162,8 @@ namespace NAnt.SourceControl.Tasks {
                         throw new BuildException (e.Message);
                     }
                 }
+                #endif
+
                 return base.Root;
             }
             set { base.Root = value; }

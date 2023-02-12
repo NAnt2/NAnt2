@@ -18,31 +18,61 @@
     <IncludeSymbols Condition=" '$(DebugType)' == 'portable' ">true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
+
   <PropertyGroup>
-    <!-- <TargetFrameworks>net20;net35;net40;net45;net462;net48;netstandard2.0</TargetFrameworks> -->
-    <TargetFramework>net20</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+    <Platforms>AnyCPU</Platforms>
+    <!-- dotnet: 'TargetFrameworks' property is ignored if 'TargetFramework' (singular) is specified. -->
+    <!-- MSBuild: doesn't know about 'TargetFrameworks' propertyCondition=" '$(TargetFrameworks)' == '' and '$(TargetFramework)' == ''"-->
+    <TargetFrameworks>net462;net6.0</TargetFrameworks>
+    <!-- <TargetFramework>net35</TargetFramework> -->
+    <Configurations>Debug;Release;Debug_net35;Debug_net462;Debug_net6.0;Release;Release_net35;Release_net462;Release_net6.0</Configurations>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <RestoreIgnoreFailedSource>true</RestoreIgnoreFailedSource> <!-- If true, ignores failing or missing package sources -->
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
     <NoWarn>$(NoWarn);NU5104</NoWarn>
   </PropertyGroup>
+
+  <!-- ensure all frameworks have the complete list of version-specific symbols, 
+      see https://github.com/dotnet/docs/blob/main/includes/preprocessor-symbols.md
+      and https://github.com/dotnet/designs/blob/main/accepted/2020/or-greater-defines/or-greater-defines.md -->
+  <Import Project="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'Constants.props'))" Condition="Exists($([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'Constants.props')))" />
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
+    
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-  </PackageReference>
+    </PackageReference>
+    
+    <PackageReference Include="log4net" />
+    <PackageReference Include="Nullable">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
-  <ItemGroup Condition=" $(DefineConstants.Contains(NET461_OR_GREATER)) ">
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406" PrivateAssets="All" />
-    <PackageReference Include="Roslynator.Analyzers" Version="4.1.0" PrivateAssets="All" />
+  
+  <ItemGroup Condition=" !$(DefineConstants.Contains(NET5_0_OR_GREATER)) ">
+    <PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" PrivateAssets="All" />
   </ItemGroup>
+  <ItemGroup Condition=" !$(DefineConstants.Contains(NET46_OR_LESSER)) ">
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" />
+    <PackageReference Include="Roslynator.Analyzers" PrivateAssets="All" />
+    <PackageReference Include="DotNetAnalyzers.DocumentationAnalyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
   <ItemGroup>
     <None Include="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'web', 'logo.gif'))" Pack="true" PackagePath="logo.gif"/>
   </ItemGroup>
-  <Import Project="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '.local.Build.props'))" Condition="Exists($([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '.local.Build.props')))" />
 </Project>

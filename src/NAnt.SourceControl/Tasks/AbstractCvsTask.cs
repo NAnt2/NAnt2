@@ -29,13 +29,20 @@ using NAnt.Core.Util;
 
 using NAnt.SourceControl.Types;
 
+#if NETFRAMEWORK
 using ICSharpCode.SharpCvsLib.FileSystem;
+#endif
 
 namespace NAnt.SourceControl.Tasks {
     /// <summary>
     /// A base class for creating tasks for executing CVS client commands on a
     /// CVS repository.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Only available on .NET framework.
+    /// </para>
+    /// </remarks>
     public abstract class AbstractCvsTask : AbstractSourceControlTask {
         #region Private Static Fields
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -274,10 +281,16 @@ namespace NAnt.SourceControl.Tasks {
         ///   :pserver:anonymous@cvs.sourceforge.net:/cvsroot/nant
         ///   </code>
         /// </example>
+        /// <remarks>
+        ///     <para>Not available on .NET standard / core / .NET 5.0 or later</para>
+        /// </remarks>
+        /// <exception cref="PlatformNotSupportedException">NAnt2 build is running on .NET standard / core / .NET 5.0 or later
+        /// where sharpcvslib library <see href="https://sourceforge.net/projects/sharpcvslib/" /> is not  available.</exception>
         [TaskAttribute("cvsroot", Required=false)]
         [StringValidator(AllowEmpty=false)]
         public override string Root {
             get {
+#if NETFRAMEWORK
                 if (null == base.Root) {
                     try {
                         ICSharpCode.SharpCvsLib.FileSystem.Root root = 
@@ -288,7 +301,11 @@ namespace NAnt.SourceControl.Tasks {
                             this.DestinationDirectory.FullName));
                     }
                 }
+                
                 return base.Root; 
+#else
+                throw new PlatformNotSupportedException("SharpCvsLib library is only available on .NET Framework"); 
+#endif
             }
             set { base.Root = StringUtils.ConvertEmptyToNull(value); }
         }
@@ -304,10 +321,16 @@ namespace NAnt.SourceControl.Tasks {
         ///   <para>In NAnt the module name would be:</para>
         ///   <code>nant</code>
         /// </example>
+        /// <remarks>
+        ///     <para>Not available on .NET standard / core / .NET 5.0 or later</para>
+        /// </remarks>
+        /// <exception cref="PlatformNotSupportedException">NAnt2 build is running on .NET standard / core / .NET 5.0 or later
+        /// where sharpcvslib library <see href="https://sourceforge.net/projects/sharpcvslib/" /> is not  available.</exception>
         [TaskAttribute("module", Required=false)]
         [StringValidator(AllowEmpty=true)]
         public virtual string Module {
             get {
+#if NETFRAMEWORK
                 if (null == _module) {
                     try {
                         Repository repository = Repository.Load(this.DestinationDirectory);
@@ -317,7 +340,11 @@ namespace NAnt.SourceControl.Tasks {
                             this.DestinationDirectory.FullName));
                     }
                 }
+                
                 return _module;
+#else
+                throw new PlatformNotSupportedException("SharpCvsLib library is only available on .NET Framework");
+#endif
             }
             set { _module = StringUtils.ConvertEmptyToNull(value); }
         }
@@ -452,6 +479,8 @@ namespace NAnt.SourceControl.Tasks {
         /// </summary>
         /// <param name="process">The process to prepare.</param>
         protected override void PrepareProcess (Process process) {
+            
+#if NETFRAMEWORK
             // Although a global property can be set, take the property closest
             //  to the task execution, which is the attribute on the task itself.
             if (!_isUseSharpCvsLibSet &&
@@ -520,6 +549,9 @@ namespace NAnt.SourceControl.Tasks {
             Log(Level.Verbose, "Working directory: {0}", process.StartInfo.WorkingDirectory);
             Log(Level.Verbose, "Executable: {0}", process.StartInfo.FileName);
             Log(Level.Verbose, "Arguments: {0}", process.StartInfo.Arguments);
+#else
+            Log(Level.Warning, "CVS client is not supported on .NET standard / Core / .NET 5.0 or later");
+#endif
         }
 
         /// <summary>

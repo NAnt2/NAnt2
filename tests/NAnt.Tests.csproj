@@ -26,8 +26,8 @@
     <ProjectReference Include="..\src\NAnt.Core\NAnt.Core.csproj" />
     <ProjectReference Include="..\src\NAnt.DotNet\NAnt.DotNet.csproj" />
     <ProjectReference Include="..\src\NAnt.NUnit\NAnt.NUnit.csproj" />
-    <ProjectReference Include="..\src\NAnt.NUnit\NUnit1\NAnt.NUnit1.csproj" />
-    <ProjectReference Include="..\src\NAnt.NUnit\NUnit2\NAnt.NUnit2.csproj" />
+    <ProjectReference Include="..\src\NAnt.NUnit1\NAnt.NUnit1.csproj" />
+    <ProjectReference Include="..\src\NAnt.NUnit2\NAnt.NUnit2.csproj" />
     <ProjectReference Include="..\src\NAnt.VisualCpp\NAnt.VisualCpp.csproj" />
   </ItemGroup>
   <ItemGroup>

@@ -67,6 +67,7 @@ namespace NAnt.Console {
         /// <returns>The result of the real execution</returns>
         [STAThread]
         public static int Main(string[] args) {
+#if NETFRAMEWORK
             AppDomain cd = AppDomain.CurrentDomain;
             AppDomain executionAD = cd;
 
@@ -199,6 +200,9 @@ namespace NAnt.Console {
 
                 return helper.ExitCode;
             }
+#else
+            throw new PlatformNotSupportedException("Only supported on .NET Framework, see https://learn.microsoft.com/en-us/dotnet/core/porting/net-framework-tech-unavailable#application-domains");
+#endif
         }
 
         #endregion Public Static Methods
@@ -213,7 +217,7 @@ namespace NAnt.Console {
         ///   For the common version directory, we do not use the framework version
         ///   as defined in the NAnt configuration file but the CLR version
         ///   since the assemblies in that directory are not specific to a 
-        ///   certain family and the framwork version might differ between
+        ///   certain family and the framework version might differ between
         ///   families (e.g. mono 1.0 == .NET 1.1).
         ///   </para>
         /// </remarks>
@@ -231,11 +235,18 @@ namespace NAnt.Console {
             }
 
             // add privatebinpath of current domain to privatebinpath 
-            if (AppDomain.CurrentDomain.SetupInformation.PrivateBinPath != null) {
+#if NETFRAMEWORK
+            string privateBinPath = AppDomain.CurrentDomain.SetupInformation.PrivateBinPath;
+#else
+            // FIXME: Might not work properly on .NET Standard / Core / .NET 5.0 or later due to missing AppDomain
+            // see https://learn.microsoft.com/en-us/dotnet/core/porting/net-framework-tech-unavailable#application-domains
+            string privateBinPath = AppDomain.CurrentDomain.RelativeSearchPath;
+#endif
+            if (privateBinPath != null) {
                 if (sb.Length > 0) {
                     sb.Append(Path.PathSeparator);
                 }
-                sb.Append(AppDomain.CurrentDomain.SetupInformation.PrivateBinPath);
+                sb.Append(privateBinPath);
             }
 
             return sb.ToString();
@@ -479,18 +490,27 @@ namespace NAnt.Console {
 
                 XmlNode nantNode = (XmlNode) ConfigurationManager.GetSection("nant");
                 if (nantNode == null) { 
+#if NETFRAMEWORK
                     System.Console.WriteLine("The \"nant\" section in the NAnt"
                         + " configuration file ({0}) is not available.",
                         AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+#else
+                    System.Console.WriteLine("The \"nant\" section in the NAnt configuration file is not available.");
+
+#endif
                     return null;
                 }
 
                 XmlElement frameworkNode = (XmlElement) nantNode.SelectSingleNode("frameworks/platform[@name='" + Platform + "']/framework[@family='" + FrameworkFamily + "' and @clrversion='" + Environment.Version.ToString(3) + "']");
                 if (frameworkNode == null) {
+                    #if NETFRAMEWORK
                     System.Console.WriteLine("The NAnt configuration file ({0})"
                         + " does not have a <framework> node for the current"
                         + " runtime framework.", 
                         AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+#else
+                    System.Console.WriteLine("The NAnt configuration file does not have a <framework> node for the current runtime framework.");
+#endif
                     System.Console.WriteLine(string.Empty);
                     System.Console.WriteLine("Please add a <framework> node"
                         + " with family '{0}' and clrversion '{1}' under the"

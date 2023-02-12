@@ -203,9 +203,11 @@ namespace NAnt.Compression.Tasks {
                     Directory.CreateDirectory(ZipFile.DirectoryName);
                 }
             
-                // set encoding to use for filenames and comment
+#if NET45_OR_LESSER
+                // set encoding of filenames and comment but only for SharpZipLib v.1.3.3 or lower
                 ZipConstants.DefaultCodePage = Encoding.CodePage;
-
+#endif
+                ZipStrings.CodePage = Encoding.CodePage;
                 zOutstream = new ZipOutputStream(ZipFile.Create());
 
                 // set compression level

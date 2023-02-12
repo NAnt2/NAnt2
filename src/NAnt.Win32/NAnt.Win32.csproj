@@ -8,11 +8,17 @@
     <PackageId>NAnt2.Win32</PackageId>
     <Description>$(NAnt2Description) This library provides low-level Windows tasks.</Description>
   </PropertyGroup>
+  <ItemGroup Condition=" !$(DefineConstants.Contains(NET46_OR_LESSER)) ">
+    <PackageReference Include="Microsoft.Win32.Registry" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj" />
     <ProjectReference Include="..\NAnt.DotNet\NAnt.DotNet.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="NAnt.Win32.build" />
   </ItemGroup>
 </Project>

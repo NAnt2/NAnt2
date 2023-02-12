@@ -33,9 +33,14 @@ using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.Runtime.Remoting.Lifetime;
 using System.Text;
-#if NET40_OR_GREATER
+
+#if NETFRAMEWORK
+using System.Runtime.Remoting.Lifetime;
+#endif
+
+#if (NET40_OR_GREATER || NETSTANDARD || NET)
+using System.Net.Mime;
 using System.Net.Mail;
 #else
 using System.Web.Mail;
@@ -949,9 +954,17 @@ namespace NAnt.Core {
                 }
 
                 // create message to send
+                string mailFrom = GetPropertyValue(properties, "from", null, true);
+                string mailTo = GetPropertyValue(properties, prefix + ".to", null, true);
+                
                 MailMessage mailMessage = new MailMessage();
+#if (NET40_OR_GREATER || NETSTANDARD || NET)
+                mailMessage.From = new MailAddress(mailFrom);
+                mailMessage.To.Add(new MailAddress(mailTo));
+#else
                 mailMessage.From = GetPropertyValue(properties, "from", null, true);
                 mailMessage.To = GetPropertyValue(properties, prefix + ".to", null, true);
+#endif
                 mailMessage.Subject = GetPropertyValue(properties, prefix + ".subject",
                     (success) ? "Build Success" : "Build Failure", false);
                 mailMessage.Body = _buffer.ToString();
@@ -1021,8 +1034,16 @@ namespace NAnt.Core {
                 }
 
                 // send the message
-                SmtpMail.SmtpServer = GetPropertyValue(properties, "mailhost", "localhost", false);
+                string mailServer = GetPropertyValue(properties, "mailhost", "localhost", false);
+#if (NET40_OR_GREATER || NETSTANDARD || NET)
+                using (SmtpClient client = new SmtpClient(mailServer))
+                {
+                    client.Send(mailMessage);
+                }
+#else
+                SmtpMail.SmtpServer = mailServer;
                 SmtpMail.Send(mailMessage);
+#endif
             } catch (Exception ex) {
                 Console.Error.WriteLine("[MailLogger] E-mail could not be sent!");
                 Console.Error.WriteLine(ex.ToString());
@@ -1083,7 +1104,7 @@ namespace NAnt.Core {
         }
 
         private void AttachFiles(MailMessage mail, Project project, string filesetID) {
-            if (String.IsNullOrEmpty(filesetID)) {
+            if (string.IsNullOrEmpty(filesetID)) {
                 return;
             }
 
@@ -1103,8 +1124,11 @@ namespace NAnt.Core {
                 }
 
                 // create attachment
-                MailAttachment attachment = new MailAttachment(fileName, 
-                    MailEncoding.UUEncode);
+#if (NET40_OR_GREATER || NETSTANDARD || NET)
+                Attachment attachment = new Attachment(fileName);
+#else
+                MailAttachment attachment = new MailAttachment(fileName, MailEncoding.UUEncode);
+#endif
                 // add attachment to mail
                 mail.Attachments.Add(attachment);
             }
@@ -1450,6 +1474,8 @@ namespace NAnt.Core {
 
         #region Override implementation of MarshalByRefObject
 
+        // FIXME: This needs proper resolving
+#if NETFRAMEWORK
         /// <summary>
         /// Obtains a lifetime service object to control the lifetime policy for 
         /// this instance.
@@ -1467,7 +1493,8 @@ namespace NAnt.Core {
             }
             return lease;
         }
-
+#endif
+        
         #endregion Override implementation of MarshalByRefObject
 
         #region Protected Instance Properties

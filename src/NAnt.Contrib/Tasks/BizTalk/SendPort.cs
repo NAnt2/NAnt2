@@ -135,7 +135,7 @@ namespace NAnt.Contrib.Tasks.BizTalk {
                 ObjectQuery query = new ObjectQuery("SELECT * FROM MSBTS_SendPort"
                     + " WHERE Name = " + SqlQuote(PortName));
 
-                EnumerationOptions enumerationOptions = new EnumerationOptions();
+                System.Management.EnumerationOptions enumerationOptions = new System.Management.EnumerationOptions();
                 enumerationOptions.ReturnImmediately = false;
 
                 using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(Scope, query, enumerationOptions)) {

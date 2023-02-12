@@ -293,20 +293,19 @@ namespace NAnt.Contrib.Tasks {
 
             try {
                 if (Unregister) {
-#if NET20_OR_GREATER
-                    ITypeLib typeLib = null;
-#else
+#if NET11_OR_LESSER
                     UCOMITypeLib typeLib = null;
+#else
+                    ITypeLib typeLib = null;
 #endif
 
                     try {
-#if NET20_OR_GREATER
-                        typeLib = (ITypeLib) Marshal.GetTypedObjectForIUnknown(
-                            Typelib, typeof(ITypeLib));
-
-#else
+#if NET11_OR_LESSER
                         typeLib = (UCOMITypeLib) Marshal.GetTypedObjectForIUnknown(
                             Typelib, typeof(UCOMITypeLib));
+#else
+                        typeLib = (ITypeLib) Marshal.GetTypedObjectForIUnknown(
+                            Typelib, typeof(ITypeLib));
 #endif
                         // check for for win32 error
                         error = Marshal.GetLastWin32Error();
@@ -437,6 +436,11 @@ namespace NAnt.Contrib.Tasks {
             /// <param name="dll"></param>
             /// <param name="entrypoint"></param>
             /// <returns></returns>
+            /// <remarks>
+            ///     <para>Not available on .NET standard / core / .NET 5.0 or later</para>
+            /// </remarks>
+            /// <exception cref="PlatformNotSupportedException">NAnt2 build is running on .NET standard / core / .NET 5.0 or later
+            /// where <see cref="AppDomain"/> is not  available.</exception>
             public static object DynamicDllFuncInvoke(string dll, string entrypoint) {
                 Type returnType = typeof(int);
                 Type [] parameterTypes = null;
@@ -446,11 +450,13 @@ namespace NAnt.Contrib.Tasks {
                 // Create a dynamic assembly and a dynamic module
                 AssemblyName asmName = new AssemblyName();
                 asmName.Name = "dllRegAssembly";
-                AssemblyBuilder dynamicAsm = 
-                AppDomain.CurrentDomain.DefineDynamicAssembly(asmName,
-                    AssemblyBuilderAccess.Run);
-                ModuleBuilder dynamicMod = dynamicAsm.DefineDynamicModule(
-                    "tempModule");
+#if NETFRAMEWORK
+                AssemblyBuilder dynamicAsm = AppDomain.CurrentDomain.DefineDynamicAssembly(asmName, AssemblyBuilderAccess.Run);
+#else
+                AssemblyBuilder dynamicAsm = null;
+                throw new PlatformNotSupportedException("Only available on .NET Framework");
+#endif
+                ModuleBuilder dynamicMod = dynamicAsm.DefineDynamicModule("tempModule");
 
                 // Dynamically construct a global PInvoke signature 
                 // using the input information

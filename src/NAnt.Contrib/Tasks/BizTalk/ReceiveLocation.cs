@@ -121,7 +121,7 @@ namespace NAnt.Contrib.Tasks.BizTalk {
                 ObjectQuery query = new ObjectQuery("SELECT * FROM MSBTS_ReceiveLocation"
                     + " WHERE Name = " + SqlQuote(LocationName));
 
-                EnumerationOptions enumerationOptions = new EnumerationOptions();
+                System.Management.EnumerationOptions enumerationOptions = new System.Management.EnumerationOptions();
                 enumerationOptions.ReturnImmediately = false;
 
                 using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(Scope, query, enumerationOptions)) {

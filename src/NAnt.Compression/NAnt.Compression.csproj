@@ -9,14 +9,15 @@
     <Description>$(NAnt2Description) This library provides compression tasks.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\..\lib\common\neutral\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
+    <PackageReference Include="SharpZipLib" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="NAnt.Compression.build" />
   </ItemGroup>
 </Project>

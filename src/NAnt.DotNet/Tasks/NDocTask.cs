@@ -212,7 +212,13 @@ namespace NAnt.DotNet.Tasks {
             // for documenters
             // by default, NDoc scans the startup path of the app, so we do not 
             // need to add this explicitly
+#if NETFRAMEWORK
             string privateBinPath = AppDomain.CurrentDomain.SetupInformation.PrivateBinPath;
+#else
+            // FIXME: Might not work properly on .NET Standard / Core / .NET 5.0 or later due to missing AppDomain
+            // see https://learn.microsoft.com/en-us/dotnet/core/porting/net-framework-tech-unavailable#application-domains
+            string privateBinPath = AppDomain.CurrentDomain.RelativeSearchPath;
+#endif
             if (privateBinPath != null) {
                 // have NDoc also probe for documenters in the privatebinpath
                 foreach (string relativePath in privateBinPath.Split(Path.PathSeparator)) {
