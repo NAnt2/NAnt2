@@ -106,10 +106,9 @@ namespace Tests.NAnt.DotNet.Tasks {
         /// string parameter.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void specifyingValueForAttrbuteWithNoConstructorTakingASingleParameterShouldCauseBuildException()
         {
-            RunBuild(_buildXmlError);
+            Assert.Throws<TestBuildException>(() => RunBuild(_buildXmlError));
         }
 
         /// <summary>
@@ -118,10 +117,9 @@ namespace Tests.NAnt.DotNet.Tasks {
         /// constructer with no parameters.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void attributeWithNoValueShouldCauseBuildExceptionWhenNoPublicDefaultConstructorExists()
         {
-            RunBuild(_buildXmlErrorTwo);
+            Assert.Throws<TestBuildException>(() => RunBuild(_buildXmlErrorTwo));
         }
     }
 }

@@ -21,6 +21,7 @@
 // William E. Caputo (wecaputo@thoughtworks.com | logosity@yahoo.com)
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using X = System.Xml;
@@ -142,9 +143,11 @@ namespace Tests.NAnt.Console {
             // try to find a build file with a bad pattern
             try {
                 // buildFileName has a full path while GetBuildFileName will only accept a filename/pattern or null.
-                ConsoleDriver.GetBuildFileName(subDirectory, buildFileName, true);
-                Assert.Fail("Exception not thrown.");
-            } catch {
+                Assert.DoesNotThrow(
+                    () => ConsoleDriver.GetBuildFileName(subDirectory, buildFileName, true),
+                    "Exception not thrown.");
+            } catch (Exception ex) {
+                Trace.Write(ex);
             }
 
             // try to find specific build file in sub directory (expect success)
@@ -162,10 +165,10 @@ namespace Tests.NAnt.Console {
             }
 
             // using a regular expression look for a plausible version number and valid copyright date
-            string expression = @"^NAnt (?<infoMajor>[0-9]+).(?<infoMinor>[0-9]+) "
-                 + @"\(Build (?<buildMajor>[0-9]+).(?<buildMinor>[0-9]+).(?<buildBuild>[0-9]+).(?<buildRevision>[0-9]+); "
-                 + @"(?<configuration>.*); (?<releasedate>.*)\)"
-                 + ".*\n" + @"Copyright \(C\) 2001-(?<year>20[0-9][0-9]) Gerry Shaw";
+            string expression = @"^NAnt2 (?<infoMajor>[0-9]+).(?<infoMinor>[0-9]+).(?<infoBuild>[0-9]+)[+]{1}(?<infoSha>[0-9A-Za-z]+) "
+                                + @"\(Build (?<buildMajor>[0-9]+).(?<buildMinor>[0-9]+).(?<buildBuild>[0-9]+).(?<buildRevision>[0-9]+); "
+                                + @"(?<configuration>.*); (?<releasedate>.*)\)"
+                                + ".*\n" + @"Copyright 2001 - (?<year>20[0-9][0-9])";
 
             Match match = Regex.Match(result, expression);
             Assert.IsTrue(match.Success, "Help text does not appear to be valid.");

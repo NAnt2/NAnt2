@@ -160,7 +160,6 @@ namespace Tests.NAnt.Compression.Tasks {
         /// specified for the "duplicate" attribute.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Duplicate_Invalid() {
             const string projectXML = @"<?xml version='1.0'?>
                 <project>
@@ -180,7 +179,7 @@ namespace Tests.NAnt.Compression.Tasks {
             CreateTempDir("folder2");
             CreateTempFile(Path.Combine("folder2", "test.txt"), "folder2");
 
-            RunBuild(projectXML);
+            Assert.Throws<TestBuildException>(() => RunBuild(projectXML));
         }
 
         /// <summary>
@@ -262,7 +261,6 @@ namespace Tests.NAnt.Compression.Tasks {
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Duplicate_Fail() {
             const string projectXML = @"<?xml version='1.0'?>
                 <project>
@@ -281,7 +279,7 @@ namespace Tests.NAnt.Compression.Tasks {
             CreateTempDir("folder2");
             CreateTempFile(Path.Combine("folder2", "test.txt"), "folder2");
 
-            RunBuild(projectXML);
+            Assert.Throws<TestBuildException>(() => RunBuild(projectXML));
         }
 
         /// <summary>

@@ -76,14 +76,13 @@ namespace Tests.NAnt.Core.Tasks {
         /// </summary>
         [Ignore("For now, we only output a warning message when read-only properties are overwritten.")]
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_ROSet() {
             string _xml = @"
                     <project name='PropTests'>
                         <property name='test' value='you' readonly='true' />
                         <property name='test' value='you2' />
                     </project>";
-            RunBuild(_xml);
+            Assert.Throws<TestBuildException>(() => RunBuild(_xml));
         }
 
         [Test]
@@ -115,7 +114,6 @@ namespace Tests.NAnt.Core.Tasks {
         /// </summary>
         [Ignore("For now, we only output a warning message when read-only properties are overwritten.")]
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_OverwriteReadOnlyProperty() {
             string _xml = @"
                     <project name='PropTests'>
@@ -123,7 +121,7 @@ namespace Tests.NAnt.Core.Tasks {
                         <property name='foo' value='me' overwrite='true' />
                         <echo message='I Love ${foo}'/>
                     </project>";
-            RunBuild(_xml);
+            Assert.Throws<TestBuildException>(() => RunBuild(_xml));
         }
 
         [Test]
@@ -140,18 +138,16 @@ namespace Tests.NAnt.Core.Tasks {
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_DynamicPropertyNotExisting() {
             string _xml = @"
                     <project name='PropTests'>
                         <property name='foo2' value='I love ${foo}' dynamic='true' />
                         <echo message='I Love ${foo}'/>
                     </project>";
-            RunBuild(_xml);
+            Assert.Throws<TestBuildException>(() => RunBuild(_xml));
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_DynamicPropertyCircularReference() {
             string _xml = @"
                     <project name='PropTests'>
@@ -159,7 +155,7 @@ namespace Tests.NAnt.Core.Tasks {
                         <property name='foo2' value='${foo}' dynamic='true' />
                         <echo message='${foo}' />
                     </project>";
-            RunBuild(_xml);
+            Assert.Throws<TestBuildException>(() => RunBuild(_xml));
         }
 
         [Test]

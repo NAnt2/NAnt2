@@ -90,13 +90,12 @@ namespace Tests.NAnt.Core.Tasks {
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_FailMessageAndInlineContent() {
             string _xml = @"
                     <project>
                         <fail message='Death Sucks!'>Death Sucks!</fail>
                     </project>";
-            RunBuild(_xml);
+            Assert.Throws<TestBuildException>(() => RunBuild(_xml));
         }
     }
 }

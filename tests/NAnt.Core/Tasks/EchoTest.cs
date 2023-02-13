@@ -113,13 +113,12 @@ namespace Tests.NAnt.Core.Tasks {
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_EchoInvalidLevel() {
             string _xml = @"
                     <project>
                         <echo message='Go Away!' level='Invalid' />
                     </project>";
-            RunBuild(_xml, Level.Error);
+            Assert.Throws<TestBuildException>(() => RunBuild(_xml, Level.Error));
         }
 
         [Test]
@@ -159,13 +158,12 @@ namespace Tests.NAnt.Core.Tasks {
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Encoding_Invalid() {
             string _xml = @"
                     <project>
                         <echo message='Go Away!' encoding='DoesNotExist'>Go Away!</echo>
                     </project>";
-            RunBuild(_xml, Level.Info);
+            Assert.Throws<TestBuildException>(() => RunBuild(_xml, Level.Info));
         }
 
         [Test]

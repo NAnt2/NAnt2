@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using NUnit.Framework;
@@ -303,7 +304,7 @@ namespace Tests.NAnt.Core.Tasks
 
         #region SetUp/TearDown Methods
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             // Assign the fake smtp port
@@ -334,7 +335,7 @@ namespace Tests.NAnt.Core.Tasks
 
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void Shutdown()
         {
             // Shuts down the fake smtp server.
@@ -780,7 +781,11 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
-            if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP || NET
+            if (_smtpServer.ReceivedEmail[0].Headers.AllKeys.Any(h => h == "Cc"))
+#else
+                if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#endif
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -815,7 +820,11 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP || NET
+            if (_smtpServer.ReceivedEmail[0].Headers.AllKeys.Any(h => h == "Cc"))
+#else
             if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#endif
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -850,7 +859,11 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP || NET
+            if (_smtpServer.ReceivedEmail[0].Headers.AllKeys.Any(h => h == "Cc"))
+#else
             if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#endif
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -885,7 +898,11 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP || NET
+            if (_smtpServer.ReceivedEmail[0].Headers.AllKeys.Any(h => h == "Cc"))
+#else
             if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#endif
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -920,7 +937,11 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP || NET
+            if (_smtpServer.ReceivedEmail[0].Headers.AllKeys.Any(h => h == "Cc"))
+#else
             if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#endif
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -955,7 +976,11 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP || NET
+            if (_smtpServer.ReceivedEmail[0].Headers.AllKeys.Any(h => h == "Cc"))
+#else
             if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#endif
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -990,7 +1015,11 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP || NET
+            if (_smtpServer.ReceivedEmail[0].Headers.AllKeys.Any(h => h == "Cc"))
+#else
             if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#endif
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -1025,7 +1054,11 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP || NET
+            if (_smtpServer.ReceivedEmail[0].Headers.AllKeys.Any(h => h == "Cc"))
+#else
             if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#endif
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -1060,7 +1093,11 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP || NET
+            if (_smtpServer.ReceivedEmail[0].Headers.AllKeys.Any(h => h == "Cc"))
+#else
             if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#endif
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -1095,7 +1132,11 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP || NET
+            if (_smtpServer.ReceivedEmail[0].Headers.AllKeys.Any(h => h == "Cc"))
+#else
             if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#endif
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -1518,7 +1559,6 @@ namespace Tests.NAnt.Core.Tasks
         /// Tests sending an email with a badly formatted email address.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(BuildException))]
         public void BadEmailTest()
         {
             string methodName = "BadEmailTest()";
@@ -1533,7 +1573,7 @@ namespace Tests.NAnt.Core.Tasks
             mailTask.Subject = String.Format(_subjectText, methodName);
             mailTask.Message = CreateSampleEmailMessage(methodName);
 
-            mailTask.Execute();
+            Assert.Throws<BuildException>(() => mailTask.Execute());
         }
 
         /// <summary>
@@ -1541,7 +1581,6 @@ namespace Tests.NAnt.Core.Tasks
         /// as Full Name &lt;address@abcxyz.com&gt;.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(BuildException))]
         public void BadAngleBracketNameEmailTest()
         {
             string methodName = "BadAngleBracketNameEmailTest()";
@@ -1556,7 +1595,7 @@ namespace Tests.NAnt.Core.Tasks
             mailTask.Subject = String.Format(_subjectText, methodName);
             mailTask.Message = CreateSampleEmailMessage(methodName);
 
-            mailTask.Execute();
+            Assert.Throws<BuildException>(() => mailTask.Execute());
         }
 
         /// <summary>
@@ -1564,7 +1603,6 @@ namespace Tests.NAnt.Core.Tasks
         /// as &lt;address@abcxyz.com&gt; Full Name.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(BuildException))]
         public void BadAngleBracketEmailNameTest()
         {
             string methodName = "BadAngleBracketEmailNameTest()";
@@ -1579,7 +1617,7 @@ namespace Tests.NAnt.Core.Tasks
             mailTask.Subject = String.Format(_subjectText, methodName);
             mailTask.Message = CreateSampleEmailMessage(methodName);
 
-            mailTask.Execute();
+            Assert.Throws<BuildException>(() => mailTask.Execute());
         }
 
         /// <summary>
@@ -1587,7 +1625,6 @@ namespace Tests.NAnt.Core.Tasks
         /// as (Full Name) address@abcxyz.com.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(BuildException))]
         public void BadParenthesisNameEmailTest()
         {
             string methodName = "BadParenthesisNameEmailTest()";
@@ -1602,7 +1639,7 @@ namespace Tests.NAnt.Core.Tasks
             mailTask.Subject = String.Format(_subjectText, methodName);
             mailTask.Message = CreateSampleEmailMessage(methodName);
 
-            mailTask.Execute();
+            Assert.Throws<BuildException>(() => mailTask.Execute());
         }
 
         /// <summary>
@@ -1610,7 +1647,6 @@ namespace Tests.NAnt.Core.Tasks
         /// as address@abcxyz.com (Full Name).
         /// </summary>
         [Test]
-        [ExpectedException(typeof(BuildException))]
         public void BadParenthesisEmailNameTest()
         {
             string methodName = "BadParenthesisEmailNameTest()";
@@ -1625,7 +1661,7 @@ namespace Tests.NAnt.Core.Tasks
             mailTask.Subject = String.Format(_subjectText, methodName);
             mailTask.Message = CreateSampleEmailMessage(methodName);
 
-            mailTask.Execute();
+            Assert.Throws<BuildException>(() => mailTask.Execute());
         }
 
         #endregion Exception Test Methods
@@ -1733,7 +1769,11 @@ namespace Tests.NAnt.Core.Tasks
         {
             if (_smtpServer.ReceivedEmailCount > 0)
             {
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP || NET
+                if (_smtpServer.ReceivedEmail[0].Headers.AllKeys.Any(h => h == "Cc"))
+#else
                 if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+#endif
                 {
                     string ccEmails = 
                         _smtpServer.ReceivedEmail[0].Headers["Cc"].ToString();

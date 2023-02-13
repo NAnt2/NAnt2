@@ -14,6 +14,7 @@
     <Reference Include="System.Xml" />
     <Reference Condition=" $(DefineConstants.Contains(NETFRAMEWORK))" Include="ICSharpCode.SharpCvsLib">
       <HintPath>..\..\lib\common\neutral\ICSharpCode.SharpCvsLib.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

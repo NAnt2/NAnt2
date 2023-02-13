@@ -291,7 +291,8 @@ namespace Tests.NAnt.Core {
             Assert.IsTrue(TaskExists(p, "mkdir"), "#11");
             Assert.IsTrue(TaskExists(p, "move"), "#12");
             Assert.IsTrue(TaskExists(p, "nant"), "#13");
-            Assert.IsTrue(TaskExists(p, "nunit2"), "#14");
+            // NUnit NAnt projects do not have tests so they are not included
+            //Assert.IsTrue(TaskExists(p, "nunit2"), "#14");
             Assert.IsTrue(TaskExists(p, "property"), "#15");
             Assert.IsTrue(TaskExists(p, "sleep"), "#16");
             Assert.IsTrue(TaskExists(p, "style"), "#17");

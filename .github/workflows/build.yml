@@ -36,4 +36,20 @@ jobs:
           dotnet-quality: 'ga'
       - name: Build and test
         shell: pwsh
-        run: .\build.ps1 -Tasks Build -BuildConfiguration Debug -Rebuild
+        run: .\build.ps1 -Tasks Build,Test -BuildConfiguration Debug -Rebuild -WithCoverage
+      - name: ${{matrix.os}} Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          comment_mode: off
+          files: 
+            reports/nant.test.trx
+      - name: ${{matrix.os}} Code Coverage Summary Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: reports/coverage.cobertura.xml
+          badge: true
+          format: 'markdown'
+          output: 'both'
+      - name: Write to Job Summary
+        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY

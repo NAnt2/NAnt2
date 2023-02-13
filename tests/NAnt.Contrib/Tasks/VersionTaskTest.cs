@@ -39,27 +39,23 @@ namespace Tests.NAnt.Contrib.Tasks
         public void TearDown() {}
 
         [Test]
-        [ExpectedException(typeof(FormatException))]
         public void TestBadMajorNumber() {
-            new Version("a.1.2.0");
+            Assert.Throws<FormatException>(() => new Version("a.1.2.0"));
         } 
 
         [Test]
-        [ExpectedException(typeof(FormatException))]
         public void TestBadMinorNumber() {
-            new Version("1.a.2.0");
+            Assert.Throws<FormatException>(() => new Version("1.a.2.0"));
         } 
 
         [Test]
-        [ExpectedException(typeof(FormatException))]
         public void TestBadBuildNumber() {
-            new Version("1.1.a.0");
+            Assert.Throws<FormatException>(() => new Version("1.1.a.0"));
         } 
 
         [Test]
-        [ExpectedException(typeof(FormatException))]
         public void TestBadrevisionNumber() {
-            new Version("1.1.2.a");
+            Assert.Throws<FormatException>(() => new Version("1.1.2.a"));
         }
 
         [Test]
@@ -69,33 +65,28 @@ namespace Tests.NAnt.Contrib.Tasks
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestVersionNumberToLong() {
-            new Version("1.1.2.0.0");
+            Assert.Throws<ArgumentException>(() => new Version("1.1.2.0.0"));
         }
 
         [Test]
-        [ExpectedException(typeof(FormatException))]
         public void TestMissingMajorNumber() {
-            new Version(".1.2.0");
+            Assert.Throws<FormatException>(() => new Version(".1.2.0"));
         }
 
         [Test]
-        [ExpectedException(typeof(FormatException))]
         public void TestMissingMinorNumber() {
-            new Version("1..2.0");
+            Assert.Throws<FormatException>(() => new Version("1..2.0"));
         }
 
         [Test]
-        [ExpectedException(typeof(FormatException))]
         public void TestMissingBuildNumber() {
-            new Version("1.1..0");
+            Assert.Throws<FormatException>(() => new Version("1.1..0"));
         }
         
         [Test]
-        [ExpectedException(typeof(FormatException))]
         public void TestMissingRevisionNumber() {
-            new Version("1.1.2.");
+            Assert.Throws<FormatException>(() => new Version("1.1.2."));
         }
 
         [Test]

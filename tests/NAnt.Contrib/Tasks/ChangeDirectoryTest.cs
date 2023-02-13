@@ -67,23 +67,21 @@ namespace Tests.NAnt.Contrib.Tasks {
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_NoDir() {
             string _xml = @"
                     <project>
                         <cd />
                     </project>";
-            RunBuild(_xml);
+            Assert.Throws<TestBuildException>(() => RunBuild(_xml));
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_NonExistingDirectory() {
             string _xml = @"
                     <project>
                         <cd dir=""doesnotexist"" />
                     </project>";
-            RunBuild(_xml);
+            Assert.Throws<TestBuildException>(() => RunBuild(_xml));
         }
     }
 }

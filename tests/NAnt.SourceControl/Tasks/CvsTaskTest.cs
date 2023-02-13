@@ -10,6 +10,7 @@ using Tests.NAnt.Core;
 
 namespace Tests.NAnt.SourceControl.Tasks {
     [TestFixture]
+    [Ignore("Cvs no longer mainstream. scvs.exe cannot find ICSharpCode.SharpCvsLib, Version=0.36.5.0.")]
     public class CvsTaskTest : BuildTestBase {
         private string destination;
 

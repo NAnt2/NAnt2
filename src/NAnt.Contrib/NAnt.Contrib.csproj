@@ -14,20 +14,27 @@
     <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj" />
     <ProjectReference Include="..\NAnt.DotNet\NAnt.DotNet.csproj" />
     <ProjectReference Include="..\NAnt.SourceControl\NAnt.SourceControl.csproj" />
+  </ItemGroup>    
+  <ItemGroup>
     <Reference Include="CollectionGen, Version=1.0.834.34691, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\lib\common\neutral\CollectionGen.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Interop.MsmMergeTypeLib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\lib\common\neutral\Interop.MsmMergeTypeLib.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Interop.StarTeam, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\lib\common\neutral\Interop.StarTeam.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Interop.WindowsInstaller, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\lib\common\neutral\Interop.WindowsInstaller.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SourceSafe.Interop, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\lib\common\neutral\SourceSafe.Interop.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

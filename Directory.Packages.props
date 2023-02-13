@@ -11,6 +11,10 @@
 
     <PackageVersion Include="log4net" Version="2.0.15" />
     <PackageVersion Include="Nullable" Version="1.3.1" />
+    <PackageVersion Include="NUnit" Version="3.13.3" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="4.3.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
+    <PackageVersion Include="coverlet.collector" Version="3.2.0" />
   </ItemGroup>
   
   <ItemGroup Condition=" !$(DefineConstants.Contains(NET5_0_OR_GREATER)) ">
@@ -22,7 +26,7 @@
     <!-- .NET Roslyn analyzers -->
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.406" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.1.0" />
-    <PackageVersion  Include="DotNetAnalyzers.DocumentationAnalyzers" Version="1.0.0-beta.59" />
+    <PackageVersion Include="DotNetAnalyzers.DocumentationAnalyzers" Version="1.0.0-beta.59" />
 
     <!-- .NET platform extensions -->
     <PackageVersion Include="System.Resources.Extensions" Version="6.0.0" />
@@ -36,11 +40,16 @@
     <PackageVersion Include="System.Security.Permissions" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="SharpZipLib" Version="1.4.0" Condition=" $(DefineConstants.Contains(NET472_OR_GREATER)) or $(DefineConstants.Contains(NETSTANDARD)) or $(DefineConstants.Contains(NETCOREAPP))  or $(DefineConstants.Contains(NET)) "/>
-    <PackageVersion Include="SharpZipLib" Version="1.3.3" Condition=" $(DefineConstants.Contains(NET45_OR_GREATER)) and $(DefineConstants.Contains(NET471_OR_LESSER)) "/>
+    <PackageVersion Include="SharpZipLib" Version="1.4.0" Condition=" $(DefineConstants.Contains(NET462_OR_GREATER)) or $(DefineConstants.Contains(NETSTANDARD)) or $(DefineConstants.Contains(NETCOREAPP))  or $(DefineConstants.Contains(NET)) "/>
+    <PackageVersion Include="SharpZipLib" Version="1.3.3" Condition=" $(DefineConstants.Contains(NET45_OR_GREATER)) and $(DefineConstants.Contains(NET461_OR_LESSER)) "/>
     <PackageVersion Include="SharpZipLib" Version="0.86.0" Condition=" $(DefineConstants.Contains(NET40_OR_LESSER)) "/>
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="System.CodeDom" Version="6.0.0" Condition=" !$(DefineConstants.Contains(NETFRAMEWORK)) " />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageVersion Include="netDumbster" Version="3.0.1" Condition=" $(DefineConstants.Contains(NET462_OR_GREATER)) or $(DefineConstants.Contains(NETSTANDARD)) or $(DefineConstants.Contains(NETCOREAPP))  or $(DefineConstants.Contains(NET)) "/>
+    <PackageVersion Include="netDumbster" Version="1.3.0.7" Condition=" $(DefineConstants.Contains(NET461_OR_LESSER)) and $(DefineConstants.Contains(NET40_OR_GREATER)) "/>
+    <PackageVersion Include="netDumbster" Version="1.2.0" Condition=" $(DefineConstants.Contains(NET35_OR_LESSER)) "/>
   </ItemGroup>
 </Project>

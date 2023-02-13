@@ -27,6 +27,7 @@ using Tests.NAnt.Core.Util;
 
 namespace Tests.NAnt.DotNet.Tasks {
     [TestFixture]
+    [Ignore("False positive from BitDefender when executing jsc tests")]
     public class JscTaskTest : BuildTestBase {
         #region Private Instance Fields
 
@@ -88,7 +89,7 @@ namespace Tests.NAnt.DotNet.Tasks {
         /// <summary>
         /// Test to make sure output can be created, even if the path does not exist yet.
         /// </summary>
-        [Test] 
+        [Test]
         public void Test_CreateParentDirectory() {
             _sourceFileName = Path.Combine(TempDirName, 
                 Path.Combine("bin", "HelloWorld.js"));

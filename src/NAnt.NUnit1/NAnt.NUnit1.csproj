@@ -11,6 +11,7 @@
   <ItemGroup>
     <Reference Include="NUnitCore">
       <HintPath>..\..\lib\common\neutral\NUnitCore.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

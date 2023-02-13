@@ -12,28 +12,132 @@
     <Reference Include="SourceSafe.Interop, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\lib\common\neutral\SourceSafe.Interop.dll</HintPath>
     </Reference>
-    <Reference Include="System.DirectoryServices" />
-    <Reference Include="nunit.framework">
+    <!-- <Reference Include="nunit.framework">
       <HintPath>..\lib\common\2.0\nunit.framework.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="netDumbster">
       <HintPath>..\lib\common\neutral\netDumbster.dll</HintPath>
-    </Reference>
+    </Reference> -->
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\NAnt.Compression\NAnt.Compression.csproj" />
+    <ProjectReference Include="..\src\NAnt.Console\NAnt.Console.csproj" />
     <ProjectReference Include="..\src\Nant.Contrib\NAnt.Contrib.csproj" />
     <ProjectReference Include="..\src\NAnt.Core\NAnt.Core.csproj" />
     <ProjectReference Include="..\src\NAnt.DotNet\NAnt.DotNet.csproj" />
-    <ProjectReference Include="..\src\NAnt.NUnit\NAnt.NUnit.csproj" />
-    <ProjectReference Include="..\src\NAnt.NUnit1\NAnt.NUnit1.csproj" />
-    <ProjectReference Include="..\src\NAnt.NUnit2\NAnt.NUnit2.csproj" />
+    <ProjectReference Include="..\src\NAnt.MSBuild\NAnt.MSBuild.csproj" />
+    <ProjectReference Include="..\src\NAnt.MSNet\NAnt.MSNet.csproj" />
     <ProjectReference Include="..\src\NAnt.VisualCpp\NAnt.VisualCpp.csproj" />
+    <ProjectReference Include="..\src\NAnt.VSNet\NAnt.VSNet.csproj" />
+    <ProjectReference Include="..\src\NAnt.Win32\NAnt.Win32.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="netDumbster" />
+    <PackageReference Include="System.DirectoryServices" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="NAnt.Compression\Tasks\TarTaskTest.cs" />
     <Compile Remove="NAnt.Core\Tasks\GetTaskTest.cs" />
     <Compile Remove="NAnt.DotNet\Tasks\VjcTaskTest.cs" />
     <Compile Remove="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="NAnt.Core\NAnt.Core.build" />
+    <None Include="..\lib\common\2.0\nunit-console.exe.config">
+      <Link>lib\common\2.0\nunit-console.exe.config</Link>
+    </None>
+    <None Include="..\src\NAnt.Console\App.config">
+      <Link>App.config</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="NAnt.Core\Framework.config" />
+    <EmbeddedResource Include="NAnt.Core\Framework.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\lib\common\2.0\nunit-console-runner.dll">
+      <Link>lib\common\2.0\nunit-console-runner.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\2.0\nunit-console.exe">
+      <Link>lib\common\2.0\nunit-console.exe</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\2.0\nunit.core.dll">
+      <Link>lib\common\2.0\nunit.core.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\2.0\nunit.core.interfaces.dll">
+      <Link>lib\common\2.0\nunit.core.interfaces.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\2.0\nunit.framework.dll">
+      <Link>lib\common\2.0\nunit.framework.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\2.0\nunit.util.dll">
+      <Link>lib\common\2.0\nunit.util.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\CollectionGen.dll">
+      <Link>lib\common\neutral\CollectionGen.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\ICSharpCode.SharpCvsLib.Console.dll">
+      <Link>lib\common\neutral\ICSharpCode.SharpCvsLib.Console.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\ICSharpCode.SharpCvsLib.dll">
+      <Link>lib\common\neutral\ICSharpCode.SharpCvsLib.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\ICSharpCode.SharpZipLib.dll">
+      <Link>lib\common\neutral\ICSharpCode.SharpZipLib.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\Interop.MsmMergeTypeLib.dll">
+      <Link>lib\common\neutral\Interop.MsmMergeTypeLib.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\Interop.StarTeam.dll">
+      <Link>lib\common\neutral\Interop.StarTeam.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\Interop.WindowsInstaller.dll">
+      <Link>lib\common\neutral\Interop.WindowsInstaller.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\NDoc.Core.dll">
+      <Link>lib\common\neutral\NDoc.Core.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\NDoc.Documenter.Msdn.dll">
+      <Link>lib\common\neutral\NDoc.Documenter.Msdn.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\NDoc.ExtendedUI.dll">
+      <Link>lib\common\neutral\NDoc.ExtendedUI.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\NUnitCore.dll">
+      <Link>lib\common\neutral\NUnitCore.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\scvs.exe">
+      <Link>lib\common\neutral\scvs.exe</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\lib\common\neutral\SourceSafe.Interop.dll">
+      <Link>lib\common\neutral\SourceSafe.Interop.dll</Link>
+      <CopyToOutputDirectory>True</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

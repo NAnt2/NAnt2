@@ -17,6 +17,7 @@
 
 // Scott Hernandez (ScottHernandez@hotmail.com)
 
+using System;
 using System.IO;
 using NUnit.Framework;
 
@@ -51,7 +52,6 @@ namespace Tests.NAnt.Compression.Tasks {
         /// attempts to extract a directory instead of a zip file.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void ExtractDirectory() {
             CreateTempDir("doc");
 
@@ -59,7 +59,7 @@ namespace Tests.NAnt.Compression.Tasks {
                 <unzip zipfile='doc'/>
             </project>";
 
-            RunBuild(projectXML);
+            Assert.Throws<TestBuildException>(() => RunBuild(projectXML));
         }
     }
 }

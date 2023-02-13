@@ -91,23 +91,29 @@ namespace Tests.NAnt.Core.Tasks {
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_InvalidFile() {
             string xml= @"
                 <project>
                     <available type='{0}' resource='{1}' property='file.exists'/>
                     <echo message='file.exists={2}'/>
                 </project>";
-            // unix accepts most characters ( except / ) so this test won't fail there.
-            // mono even on windows acts like unix here.
-            if (!(PlatformHelper.IsMono)) {
-                RunBuild(string.Format(CultureInfo.InvariantCulture, 
-                    xml, AvailableTask.ResourceType.File.ToString(CultureInfo.InvariantCulture), 
-                    "###-?", "${file.exists}"));
-            } else {
-                // throw the exception to keep the test happy
-                throw new TestBuildException();                 
-            }
+
+            Assert.Throws<TestBuildException>(() =>
+            {
+                // unix accepts most characters ( except / ) so this test won't fail there.
+                // mono even on windows acts like unix here.
+                if (!(PlatformHelper.IsMono))
+                {
+                    RunBuild(string.Format(CultureInfo.InvariantCulture,
+                        xml, AvailableTask.ResourceType.File.ToString(CultureInfo.InvariantCulture),
+                        "###-?", "${file.exists}"));
+                }
+                else
+                {
+                    // throw the exception to keep the test happy
+                    throw new TestBuildException();
+                }
+            });
         }
 
         [Test]
@@ -143,25 +149,30 @@ namespace Tests.NAnt.Core.Tasks {
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_InvalidDirectory() {
             string xml= @"
                 <project>
                     <available type='{0}' resource='{1}' property='dir.exists'/>
                     <echo message='dir.exists={2}'/>
                 </project>";
-            // unix accepts most characters ( except / ) so this test won't fail there.
-            if (! PlatformHelper.IsUnix ) {
-                RunBuild(string.Format(CultureInfo.InvariantCulture, 
-                    xml, AvailableTask.ResourceType.Directory.ToString(CultureInfo.InvariantCulture), 
-                    "|", "${dir.exists}"));
-            }   else {
-                throw new TestBuildException();    
-            }
+
+            Assert.Throws<TestBuildException>(() =>
+            {
+                // unix accepts most characters ( except / ) so this test won't fail there.
+                if (!PlatformHelper.IsUnix)
+                {
+                    RunBuild(string.Format(CultureInfo.InvariantCulture,
+                        xml, AvailableTask.ResourceType.Directory.ToString(CultureInfo.InvariantCulture),
+                        "|", "${dir.exists}"));
+                }
+                else
+                {
+                    throw new TestBuildException();
+                }
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_InvalidResourceType() {
             string xml= @"
                 <project>
@@ -169,8 +180,8 @@ namespace Tests.NAnt.Core.Tasks {
                     <echo message='file.exists={2}'/>
                 </project>";
             
-            RunBuild(string.Format(CultureInfo.InvariantCulture, 
-                xml, "InvalidResourceType", @"\\#(){/}.dddd", "${file.exists}"));
+            Assert.Throws<TestBuildException>(() => RunBuild(string.Format(CultureInfo.InvariantCulture, 
+                xml, "InvalidResourceType", @"\\#(){/}.dddd", "${file.exists}")));
         }
 
         #endregion Public Instance Methods

@@ -79,10 +79,9 @@ namespace Tests.NAnt.VSNet.Tasks {
         /// Checks whether solution task fails if solution file does not exist.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void TestSolutionFileDoesNotExist() {
             string build = FormatBuildFile(SolutionProject, new object[]{"doesnotexist.sln", "Debug", ""});
-            RunBuild(build, Level.Info);
+            Assert.Throws<TestBuildException>(() => RunBuild(build, Level.Info));
         }
 
         /// <summary>

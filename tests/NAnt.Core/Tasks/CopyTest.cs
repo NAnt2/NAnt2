@@ -582,7 +582,6 @@ namespace Tests.NAnt.Core.Tasks {
         /// task should not be combined.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_ToFile_ToDir() {
             const string xmlProjectTemplate = @"
             <project>
@@ -593,7 +592,7 @@ namespace Tests.NAnt.Core.Tasks {
                 </copy>
             </project>";
 
-            RunBuild(xmlProjectTemplate);
+            Assert.Throws<TestBuildException>(() => RunBuild(xmlProjectTemplate));
         }
 
         /// <summary>
@@ -601,7 +600,6 @@ namespace Tests.NAnt.Core.Tasks {
         /// be combined with a <c>&lt;fileset&gt;</c> element.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_ToFile_FileSet() {
             const string xmlProjectTemplate = @"
             <project>
@@ -612,7 +610,7 @@ namespace Tests.NAnt.Core.Tasks {
                 </copy>
             </project>";
 
-            RunBuild(xmlProjectTemplate);
+            Assert.Throws<TestBuildException>(() => RunBuild(xmlProjectTemplate));
         }
 
         /// <summary>
@@ -620,7 +618,6 @@ namespace Tests.NAnt.Core.Tasks {
         /// be combined with a <c>&lt;fileset&gt;</c> element.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_File_FileSet() {
             const string xmlProjectTemplate = @"
             <project>
@@ -631,7 +628,7 @@ namespace Tests.NAnt.Core.Tasks {
                 </copy>
             </project>";
 
-            RunBuild(xmlProjectTemplate);
+            Assert.Throws<TestBuildException>(() => RunBuild(xmlProjectTemplate));
         }
     }
 }

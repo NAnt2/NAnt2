@@ -44,15 +44,13 @@ namespace Tests.NAnt.Core.Tasks {
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_NegativeDurationFails() {
-            RunBuild(String.Format(_format, " milliseconds='-1'"));
+            Assert.Throws<TestBuildException>(() => RunBuild(String.Format(_format, " milliseconds='-1'")));
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_NegativePartialDurationFails() {
-            RunBuild(String.Format(_format, " seconds='1' milliseconds='-1'"));
+            Assert.Throws<TestBuildException>(() => RunBuild(String.Format(_format, " seconds='1' milliseconds='-1'")));
         }
     }
 }

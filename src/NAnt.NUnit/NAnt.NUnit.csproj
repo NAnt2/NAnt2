@@ -12,40 +12,6 @@
     <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="NUnit1\AssemblyInfo.cs" />
-    <Compile Remove="NUnit1\IResultFormatter.cs" />
-    <Compile Remove="NUnit1\IResultFormatterCollection.cs" />
-    <Compile Remove="NUnit1\LogFormatter.cs" />
-    <Compile Remove="NUnit1\NUnitTask.cs" />
-    <Compile Remove="NUnit1\NUnitTest.cs" />
-    <Compile Remove="NUnit1\NUnitTestCollection.cs" />
-    <Compile Remove="NUnit1\NUnitTestData.cs" />
-    <Compile Remove="NUnit1\NUnitTestRunner.cs" />
-    <Compile Remove="NUnit1\PlainTextFormatter.cs" />
-    <Compile Remove="NUnit1\RemoteNUnitTestRunner.cs" />
-    <Compile Remove="NUnit1\TestResultExtra.cs" />
-    <Compile Remove="NUnit1\XmlResultFormatter.cs" />
-    <Compile Remove="NUnit2\AssemblyInfo.cs" />
-    <Compile Remove="NUnit2\NUnit2Task.cs" />
-    <Compile Remove="NUnit2\NUnit2Test.cs" />
-    <Compile Remove="NUnit2\NUNit2TestCollection.cs" />
-    <Compile Remove="NUnit2\NUnit2TestDomain.cs" />
-    <Compile Remove="NUnit2\Types\Categories.cs" />
-    <Compile Remove="NUnit2\Types\Category.cs" />
-    <Compile Remove="NUnit2\Types\CategoryCollection.cs" />
-    <Compile Remove="AssemblyInfo.cs" />
-    <!-- <Compile Remove="NUnit1\**" />
-    <Compile Remove="NUnit2\**" /> -->
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="NAnt.NUnit.build" />
   </ItemGroup>
-  <!-- <ItemGroup>
-    <EmbeddedResource Remove="NUnit1\**" />
-    <EmbeddedResource Remove="NUnit2\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="NUnit1\**" />
-    <None Remove="NUnit2\**" />
-  </ItemGroup> -->
 </Project>

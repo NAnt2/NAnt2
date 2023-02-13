@@ -31,6 +31,7 @@ namespace Tests.NAnt.SourceControl.Tasks {
     /// file from the nant repository to the specified directory.
     /// </summary>
     [TestFixture]
+    [Ignore("Cvs no longer mainstream. No local exe.")]
     public class CheckoutTaskTest : BuildTestBase {
         #region Private Instance Fields
 
@@ -181,12 +182,11 @@ namespace Tests.NAnt.SourceControl.Tasks {
         /// correctly.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void TestModuleValidation_Bad() {
             object[] args = { string.Format("{0}/bad/module", TestModule), 
                                 TestCvsRoot, destination, "2003/08/16", "2003_08_16"};
 
-            RunBuild(FormatBuildFile(_checkoutByDateProjectXML, args), Level.Info);
+            Assert.Throws<TestBuildException>(() => RunBuild(FormatBuildFile(_checkoutByDateProjectXML, args), Level.Info));
         }
 
         #endregion Public Instance Methods

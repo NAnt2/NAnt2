@@ -3,24 +3,6 @@
     see https://github.com/clairernovotny/DeterministicBuilds
 -->
 <Project>
-  <!--  Debug and Release configs are implicit in the new csproj format; same settings should be applied to our custom ones -->
-  <!-- see https://github.com/pedrolamas/MSBuildConfigurationDefaults -->
-  <PropertyGroup Condition="$(Configuration.StartsWith('Debug_'))">
-    <TargetFramework>$(Configuration.Replace('Debug_', ''))</TargetFramework>
-    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
-    <DebugSymbols Condition="'$(DebugSymbols)' == ''">true</DebugSymbols>
-    <DebugType Condition="'$(DebugType)' == ''">full</DebugType>
-    <Optimize Condition="'$(Optimize)' == ''">false</Optimize>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="$(Configuration.StartsWith('Release_'))">
-    <TargetFramework>$(Configuration.Replace('Release_', ''))</TargetFramework>
-    <DefineConstants>$(DefineConstants);RELEASE;TRACE</DefineConstants>
-    <DebugSymbols Condition="'$(DebugSymbols)' == ''">false</DebugSymbols>
-    <DebugType Condition="'$(DebugType)' == ''">portable</DebugType>
-    <Optimize Condition="'$(Optimize)' == ''">true</Optimize>
-  </PropertyGroup>
-
   <Target Name="AfterPrepareForBuild" AfterTargets="PrepareForBuild">
     <Message Text="TargetFramework: $(TargetFramework); Constants: $(DefineConstants)" Importance="High" />
   </Target>

@@ -58,6 +58,7 @@ namespace Tests.NAnt.Core {
         #region Public Instance Methods
 
         [Test]
+        //[Ignore("Keeps failing with 'Item has already been added. Key in dictionary: 'sleep'  Key being added: 'sleep'' ")]
         public void IndependentTargetsExecuteInParallel() {
             // create new listener that allows us to track build events
             TestBuildListener listener = new TestBuildListener();

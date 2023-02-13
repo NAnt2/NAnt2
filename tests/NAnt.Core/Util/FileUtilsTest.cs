@@ -30,21 +30,18 @@ namespace Tests.NAnt.Core.Util {
     [TestFixture]
     public class FileUtilsTest {
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Test_GetFullPath_Null() {
-            FileUtils.GetFullPath(null);
+            Assert.Throws<ArgumentNullException>(() => FileUtils.GetFullPath(null));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void Test_GetFullPath_Empty() {
-            FileUtils.GetFullPath(string.Empty);
+            Assert.Throws<ArgumentException>(() => FileUtils.GetFullPath(string.Empty));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void Test_GetFullPath_Whitespace() {
-            FileUtils.GetFullPath(" ");
+            Assert.Throws<ArgumentException>(() => FileUtils.GetFullPath(" "));
         }
 
         [Test]
@@ -94,15 +91,13 @@ namespace Tests.NAnt.Core.Util {
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Test_CombinePaths_Path1_Null() {
-            FileUtils.CombinePaths((string) null, "whatever");
+            Assert.Throws<ArgumentNullException>(() => FileUtils.CombinePaths((string) null, "whatever"));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Test_CombinePaths_Path2_Null() {
-            FileUtils.CombinePaths("whatever", (string) null);
+            Assert.Throws<ArgumentNullException>(() => FileUtils.CombinePaths("whatever", (string) null));
         }
 
         [Test]

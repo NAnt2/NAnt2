@@ -148,7 +148,6 @@ namespace Tests.NAnt.Core.Tasks {
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_MessagePropertyScopeEmpty() {
             string _xml = @"
                     <project>
@@ -164,7 +163,7 @@ namespace Tests.NAnt.Core.Tasks {
                             </finally>
                         </trycatch>
                     </project>";
-            RunBuild(_xml);
+            Assert.Throws<TestBuildException>(() => RunBuild(_xml));
         }
     }
 }

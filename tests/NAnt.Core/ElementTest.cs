@@ -230,7 +230,7 @@ namespace Tests.NAnt.Core {
             Assert.IsTrue(result.IndexOf("OutputType is \"Exe\".") != -1);
         }
 
-        [ExpectedException(typeof(TestBuildException))]
+        [Test]
         public void Test_Enum_InvalidValue() {
             const string build = @"<?xml version='1.0' ?>
                 <project name='testing' default='test'>
@@ -239,7 +239,7 @@ namespace Tests.NAnt.Core {
                      </target>
                 </project>";
 
-            RunBuild(build);
+            Assert.Throws<TestBuildException>(() => RunBuild(build));
         }
 
         [Test]
@@ -318,7 +318,6 @@ namespace Tests.NAnt.Core {
         }
 
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_Uri_InvalidUri() {
             const string build = @"<?xml version='1.0' ?>
                 <project name='testing' default='test'>
@@ -327,12 +326,11 @@ namespace Tests.NAnt.Core {
                      </target>
                 </project>";
 
-            RunBuild(build);
+            Assert.Throws<TestBuildException>(() => RunBuild(build));
         }
 
         [Test]
         [Ignore ("Re-enable this test once we modified the <nantschema> task to generate a schema for a specified set of assemblies.")]
-        [ExpectedException(typeof(TestBuildException))]
         public void Test_Non_StronglyTyped_Element_Collection() {
             const string build = @"<?xml version='1.0' ?>
                 <project name='testing' default='test'>
@@ -345,7 +343,7 @@ namespace Tests.NAnt.Core {
                      </target>
                 </project>";
 
-            RunBuild(build);
+            Assert.Throws<TestBuildException>(() => RunBuild(build));
         }
 
         [TestCase("I did not inhale", true)]

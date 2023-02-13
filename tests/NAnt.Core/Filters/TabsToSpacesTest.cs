@@ -53,20 +53,20 @@ namespace Tests.NAnt.Core.Filters {
         /// Test with tab length that is lower than minimum length (which is 1)
         /// </summary>
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void TabLengthLow() {
             string filterXml = @"<" + _tagName + @" tablength=""0"" />";
-            base.FilterTest(filterXml, " ", " ");
+
+            Assert.Throws<TestBuildException>(() => base.FilterTest(filterXml, " ", " "));
         }
 
         /// <summary>
         /// Test with tab length that is higher than maximum length (which is 100)
         /// </summary>
         [Test]
-        [ExpectedException(typeof(TestBuildException))]
         public void TabLengthHigh() {
             string filterXml = @"<" + _tagName + @" tablength=""101"" />";
-            base.FilterTest(filterXml, " ", " ");
+
+            Assert.Throws<TestBuildException>(() => base.FilterTest(filterXml, " ", " "));
         }
 
         /// <summary>

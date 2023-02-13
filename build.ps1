@@ -51,9 +51,6 @@ param(
     [Parameter(HelpMessage = 'Calculate coverage when running tests')]
     [switch] $WithCoverage,
 
-    [Parameter(HelpMessage = 'Destination folder for the build artifacts. If not provided it is assumed to be ''.\build''')]
-    [string] $StagingDir,
-
     [Parameter(HelpMessage = 'Publish folder for the build artifacts. If not provided it is assumed to be ''.\publish''')]
     [string] $PublishDir,
 
@@ -90,6 +87,34 @@ function Set-PSModules{
     finally{
         Set-PSRepository PSGallery -InstallationPolicy $policy
     }
+}
+
+function Get-MsBuild{
+    <#
+    .SYNOPSIS 
+    Gets the path to latest 'MSBuild'
+    #>
+    param(
+        [Parameter(HelpMessage = 'Path to tools folder')]
+        [string] $ToolsDir
+    )
+
+    # for TFMs less than net462, use MSBuild (provided by .NET Framework or mono)
+    # see https://halfblood.pro/locate-msbuild-via-powershell-on-different-operating-systems-140757bb8e18
+    $msBuild_exe = "msbuild"
+    if($IsWindows) {
+        $vswhere_exe = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+        if(-not (Test-Path -LiteralPath $vswhere_exe)) {
+            $vswhere_exe = Join-Path $toolsDir "wswhere.exe"
+        }
+        $msBuild_exe = & $VSWHERE_EXE -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | Select-Object -first 1
+
+        #TODO: Detect Mono on Windows
+    }
+
+    #& $msBuild_exe /version
+
+    return $msBuild_exe
 }
 
 function Build-Matrix{
@@ -209,13 +234,6 @@ if ($MyInvocation.ScriptName -notlike '*Invoke-Build.ps1') {
 #####################################################
 #         initialization: global variables
 #####################################################
-if(-not $StagingDir) {
-    $StagingDir = Join-Path $BuildRoot "build"
-}
-if(-not (Test-Path -LiteralPath $StagingDir))
-{
-    New-Item $StagingDir -ItemType Directory -Force
-}
 if(-not $PublishDir) {
     $PublishDir = Join-Path $BuildRoot "publish"
 }
@@ -225,21 +243,12 @@ if(-not (Test-Path -LiteralPath $PublishDir))
 }
 
 $SRC_DIR = Join-Path $BuildRoot "src"
-$STAGING_DIR = $StagingDir
-$BOOTSTRAP_DIR = Join-Path $STAGING_DIR "bootstrap"
 $PUBLISH_DIR = $PublishDir
 
 $TOOLS_DIR = Join-Path $BuildRoot "tools"
 $REPORTS_DIR = Join-Path $BuildRoot "reports"
 
-$VSWHERE_EXE = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-if(-not (Test-Path -LiteralPath $VSWHERE_EXE)) {
-    $VSWHERE_EXE = Join-Path $TOOLS_DIR "wswhere.exe"
-}
-$MSBUILD_EXE = "msbuild"
-if($IsWindows) {
-    $MSBUILD_EXE = & $VSWHERE_EXE -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | Select-Object -first 1
-}
+$MSBUILD = Get-MsBuild -ToolsDir $TOOLS_DIR
 
 #MSBuild paralelism
 $parallelism = 3
@@ -252,37 +261,10 @@ $verbosity = 'm'
 Enter-Build {
     Write-Build Blue "
     Src directory: $SRC_DIR,
-    Staging directory: $STAGING_DIR,
-    Boostrap directory: $BOOTSTRAP_DIR,
     Publish directory: $PUBLISH_DIR,
     Tools directory: $TOOLS_DIR,
     Reports directory: $REPORTS_DIR,
-    vswhere.exe path: $VSWHERE_EXE,
-    msbuild.exe path: $MSBUILD_EXE"
-    
-    #determine MSBuild path if on Windows, see https://halfblood.pro/locate-msbuild-via-powershell-on-different-operating-systems-140757bb8e18
-    if($IsWindows)
-    {
-        Set-PSModules 'VSSetup'
-        $instance = Get-VSSetupInstance -All | Select-VSSetupInstance -Require 'Microsoft.Component.MSBuild' -Latest
-        $installDir = $instance.installationPath
-        Write-Host "Visual Studio is found at $installDir"
-        $MSBUILD = $installDir + '\MSBuild\Current\Bin\MSBuild.exe'
-        if (![System.IO.File]::Exists($MSBUILD))
-        {
-            $MSBUILD = (Get-ChildItem -Path $installDir -Filter MSBuild.exe -Recurse).FullName | Select-Object -First 1
-            #$msBuild = $installDir + '\MSBuild\15.0\Bin\MSBuild.exe'
-            if (![System.IO.File]::Exists($MSBUILD))
-            {
-                Write-Build Red "MSBuild could not be found. Build failed."
-                exit 1
-            }
-            & $MSBUILD /version
-        }
-    }
-    else{
-        & $MSBUILD /version
-    }
+    msbuild.exe path: $MSBUILD"
 }
 
 #####################################
@@ -294,12 +276,6 @@ task Init {
     Initialization of any folder structure of files required for a succesful build
     #>
     Write-Output '[Init] Preparing to run build script'
-
-    # Make sure staging folder exists
-    if ((Test-Path $BuildRoot) -and !(Test-Path $STAGING_DIR)) {
-        Write-Output "[Init] Creating staging directory..."
-        New-Item -Path $STAGING_DIR -Type Directory | Out-Null
-    }
 
     # Make sure publish folder exists
     if ((Test-Path $BuildRoot) -and !(Test-Path $PUBLISH_DIR)) {
@@ -320,16 +296,12 @@ task Clean {
     Executes any cleanup required before building the project.
     #>
 
-    Write-Output '[Clean] Cleaning staging directory and the obsolete boostrap folder'
-    Get-ChildItem -Path $STAGING_DIR | Remove-Item -Recurse -Force -ErrorAction Ignore 
-    Remove-Item (Join-Path $BuildRoot 'bootstrap') -Recurse -Force -ErrorAction Ignore 
-
     if (Test-Path $PUBLISH_DIR ) {
         Write-Output "[Clean] Cleaning publish directory..."
         Get-ChildItem -Path $PUBLISH_DIR | Remove-Item -Recurse -Force -ErrorAction Ignore
     }
 
-    Write-Output '[Clean] Cleaning reports folder'
+    Write-Output '[Clean] Cleaning reports folder except NDepend one'
     if (Test-Path $REPORTS_DIR ) {
         Write-Output -Message "[Clean] Cleaning reports directory..."
         Get-ChildItem -Path $REPORTS_DIR -Exclude NDependOut | Remove-Item -Recurse -Force -ErrorAction Ignore
@@ -347,30 +319,6 @@ task Deep-Clean Clean, {
     Get-ChildItem $TOOLS_DIR -Include bin,obj -Recurse | Remove-Item -Recurse -Force -ErrorAction Ignore
 }
 
-task Init-Bootstrap{
-    Write-Output '[Init-Bootstrap] Start task'
-
-    <#
-    New-Item -Path $BOOTSTRAP_DIR -ItemType Directory -Force
-    Copy-Item -Path (Join-Path $BuildRoot 'lib') -Destination (Join-Path $BOOTSTRAP_DIR 'lib') -Recurse
-    # Mono loads log4net before privatebinpath is set-up, so we need log4net in the same directory as NAnt.exe
-    Copy-Item -Path (Join-Path $BuildRoot 'lib' 'common' 'neutral' 'log4net.dll') -Destination $BOOTSTRAP_DIR
-    Copy-Item -Path (Join-Path $SRC_DIR 'NAnt.Console' 'App.config') -Destination $BOOTSTRAP_DIR
-    #>
-}
-
-### Build-Bootstrap ###
-task Build-Bootstrap {
-    Write-Output '[Build-Bootstrap] Start task'
-
-    $slnFile = switch ( $IsWindows ) {
-        $true    { $(Join-Path $BuildRoot "NAnt2.bootstrap.win.slnf") }
-        $false   { $(Join-Path $BuildRoot "NAnt2.bootstrap.slnf") }
-    }
-
-    Build-Matrix -SlnFile $slnFile -TargetFrameworks $TFM -MSBuildPath $MSBUILD -WithBuildConfiguration $BuildConfiguration -WithRebuild -WithParallelism $parallelism -WithVerbosity $verbosity
-}
-
 task Build Clean, Init, {
     <#
     .SYNOPSIS 
@@ -378,6 +326,76 @@ task Build Clean, Init, {
     #>
     $slnFile = Join-Path $BuildRoot "NAnt2.sln"
     Build-Matrix -SlnFile $slnFile -TargetFrameworks $TFM -MSBuildPath $MSBUILD -WithBuildConfiguration $BuildConfiguration -WithRebuild -WithParallelism $parallelism -WithVerbosity $verbosity
+}
+
+task Test {
+    <#
+    .SYNOPSIS 
+    Runs tests and optionally calculates coverage
+    #>
+    Write-Output '[Test] Running the Woomio API v2 tests. Does not rebuild the project.'
+    exec { & dotnet test --nologo --no-build --no-restore --framework net462 --configuration $BuildConfiguration --logger "console;verbosity=normal" --logger "trx;LogFileName=nant.test.trx" --results-directory $REPORTS_DIR -v n -- NUnit.TestOutputXml=$REPORTS_DIR }
+
+    Write-Output "Test task exit code: $LastExitCode"
+    assert($LastExitCode -eq 0) "At least one test failed"
+
+    if($WithCoverage){
+        Write-Output '[Test] Calculating code coverage. Does not rebuild the project.'
+        #get path to Tests.dll
+        $testsDll = Get-ChildItem -Filter NAnt.Tests.dll -Path tests\bin\$BuildConfiguration\net462 -Recurse -Depth 2
+        # coverlet requires the ending slash for --output parameter or it fails to generate the right path where to put the coverage files
+        $reportsPathWithEndingSlash = Join-Path $REPORTS_DIR $([IO.Path]::DirectorySeparatorChar)
+        if(Test-Path $testsDll)
+        {
+        exec { & dotnet coverlet $($testsDll.FullName) --target "dotnet" --targetargs "test --no-build --no-restore --framework net462   --configuration:$BuildConfiguration" --include "[NAnt.*]*" --include "[NAntContrib]*" --exclude-by-attribute "Obsolete" --exclude-by-attribute "GeneratedCode" --exclude-by-attribute "CompilerGenerated" --skipautoprops --output $reportsPathWithEndingSlash --format opencover --format json --format cobertura --verbosity Detailed }
+        }
+        else {
+            Write-Build Orange "[Test] No code coverage calculated. Tests dll not found in path tests\bin\$BuildConfiguration"
+        }
+
+        <#
+        0 - Success.
+        1 - If any test fails.
+        2 - Coverage percentage is below threshold.
+        3 - Test fails and also coverage percentage is below threshold.
+        101 - General exception occurred during coverlet process.
+        102 - Missing options or invalid arguments for coverlet process.#>
+        assert($LastExitCode -eq 0) "At least one test failed"
+    }    
+}
+
+task Stage {
+    <#
+    .SYNOPSIS 
+    Gathers build artefacts for publishing
+    #>
+
+    foreach($targetFramework in $TFM)
+    {
+        Write-Output "[Stage] Staging build artefacts for $targetFramework"
+        $stageDir = Join-Path $PUBLISH_DIR $targetFramework
+        New-Item -Path $stageDir -Type Directory -Force | Out-Null
+        
+        if ($targetFramework -gt 'net48')
+        {
+            dotnet publish -c $BuildConfiguration -f $targetFramework -o $stageDir --no-build --no-self-contained
+        }
+        else {
+            Copy-Item -Path (Join-Path $BuildRoot 'lib') -Exclude scvs.exe -Destination $stageDir -Recurse -Force
+            Copy-Item -Path (Join-Path $SRC_DIR 'NAnt.Console' 'bin' $BuildConfiguration $targetFramework '*') -Destination $stageDir -Force -Exclude log4net.dll,ICSharpCode.SharpZipLib.dll,NAnt.MSBuild.dll,NAnt.MSBuild.pdb
+
+            #override log4net and SharpZipLib from lib/common with latest from build
+            # the reason lib/common contains older versions is to support net35 build (if needed)
+            Copy-Item -Path (Join-Path $SRC_DIR 'NAnt.Console' 'bin' $BuildConfiguration $targetFramework '*') -Include log4net.dll,ICSharpCode.SharpZipLib.dll -Destination (Join-Path $stageDir 'lib' 'common' 'neutral') -Force
+            
+            #put NAnt.MSBuild in lib/extensions
+            New-Item -Path (Join-Path $stageDir 'lib' 'extensions' 'common' 'neutral') -Type Directory -Force | Out-Null
+            Copy-Item -Path (Join-Path $SRC_DIR 'NAnt.Console' 'bin' $BuildConfiguration $targetFramework 'NAnt.MSBuild.*') -Destination (Join-Path $stageDir 'lib' 'extensions' 'common' 'neutral') -Force
+
+            #copy scvs.exe to main dir from lib/common
+            Copy-Item -Path (Join-Path $BuildRoot 'lib' 'common' 'neutral' 'scvs.exe') -Destination $stageDir -Force
+        }
+    }
 }
 
 #region Default Task

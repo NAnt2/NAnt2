@@ -23,7 +23,10 @@ using System.Collections;
 using NAnt.Core;
 
 namespace Tests.NAnt.Core {
-    public class TestBuildListener : IBuildListener {
+    public class TestBuildListener : IBuildListener
+    {
+        private static object _syncRoot = new object();
+        
         #region Public Instance Constructors
         
         public TestBuildListener() {
@@ -50,11 +53,18 @@ namespace Tests.NAnt.Core {
             _targetStartedFired = true;
 
             if (e.Target != null) {
-                if (_executedTargets.ContainsKey(e.Target.Name)) {
-                    _executedTargets[e.Target.Name] = ((int) _executedTargets[e.Target.Name]) + 1;
-                } else {
-                    _executedTargets.Add(e.Target.Name, 1);
+                lock (_syncRoot)
+                {
+                    if (_executedTargets.ContainsKey(e.Target.Name))
+                    {
+                        _executedTargets[e.Target.Name] = ((int)_executedTargets[e.Target.Name]) + 1;
+                    }
+                    else
+                    {
+                        _executedTargets.Add(e.Target.Name, 1);
+                    }
                 }
+
                 _targetStartTimes[e.Target.Name] = DateTime.UtcNow;
             }
         }
@@ -72,10 +82,16 @@ namespace Tests.NAnt.Core {
             _taskStartedFired = true;
 
             if (e.Task != null) {
-                if (_executedTasks.ContainsKey(e.Task.Name)) {
-                    _executedTasks[e.Task.Name] = ((int) _executedTasks[e.Task.Name]) + 1;
-                } else {
-                    _executedTasks.Add(e.Task.Name, 1);
+                lock (_syncRoot)
+                {
+                    if (_executedTasks.ContainsKey(e.Task.Name))
+                    {
+                        _executedTasks[e.Task.Name] = ((int)_executedTasks[e.Task.Name]) + 1;
+                    }
+                    else
+                    {
+                        _executedTasks.Add(e.Task.Name, 1);
+                    }
                 }
             }
         }

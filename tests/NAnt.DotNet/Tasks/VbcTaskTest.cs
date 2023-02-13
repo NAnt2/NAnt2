@@ -166,7 +166,6 @@ namespace Tests.NAnt.DotNet.Tasks {
         }
 
         [Test]
-        [ExpectedException(typeof(BuildException))]
         public void Test_ManifestResourceName_NonExistingResource() {
             VbcTask vbcTask = new VbcTask();
             vbcTask.Project = CreateEmptyProject();
@@ -175,7 +174,7 @@ namespace Tests.NAnt.DotNet.Tasks {
             resources.BaseDirectory = TempDirectory;
             resources.DynamicPrefix = true;
 
-            vbcTask.GetManifestResourceName(resources, "I_dont_exist.txt");
+            Assert.Throws<BuildException>(() => vbcTask.GetManifestResourceName(resources, "I_dont_exist.txt"));
         }
 
         [Test]

@@ -45,6 +45,28 @@
       and https://github.com/dotnet/designs/blob/main/accepted/2020/or-greater-defines/or-greater-defines.md -->
   <Import Project="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'Constants.props'))" Condition="Exists($([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'Constants.props')))" />
 
+  <!--  Debug and Release configs are implicit in the new csproj format; same settings should be applied to our custom ones when building from IDE -->
+  <!-- see https://github.com/pedrolamas/MSBuildConfigurationDefaults -->
+  <PropertyGroup Condition="$(Configuration.StartsWith('Debug_'))">
+    <TargetFramework>$(Configuration.Replace('Debug_', ''))</TargetFramework>
+    <OutputPath>bin\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath>
+    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="$(Configuration.StartsWith('Release_'))">
+    <TargetFramework>$(Configuration.Replace('Release_', ''))</TargetFramework>
+    <OutputPath>bin\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath>
+    <DefineConstants>$(DefineConstants);RELEASE;TRACE</DefineConstants>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
     

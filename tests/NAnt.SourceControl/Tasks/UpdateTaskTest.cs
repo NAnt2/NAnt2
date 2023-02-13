@@ -31,6 +31,7 @@ namespace Tests.NAnt.SourceControl.Tasks {
     /// not return errors.
     /// </summary>
     [TestFixture]
+    [Ignore("Cvs no longer mainstream. No local exe.")]
     public class UpdateTaskTest : BuildTestBase {
         #region Private Instance Fields
 
@@ -50,7 +51,6 @@ namespace Tests.NAnt.SourceControl.Tasks {
                 <cvs-checkout   module='{1}' 
                                 cvsroot='{2}'
                                 destination='{3}'
-                                tag='{4}'
                                 usesharpcvslib='false' />
             </project>";
 
@@ -63,7 +63,6 @@ namespace Tests.NAnt.SourceControl.Tasks {
                 <cvs-update   module='{1}' 
                                 cvsroot='{2}'
                                 destination='{3}'
-                                tag='{4}'
                                 usesharpcvslib='false' />
             </project>";
 
@@ -152,8 +151,7 @@ namespace Tests.NAnt.SourceControl.Tasks {
             Assert.IsFalse(File.Exists(checkFilePath), "The check file should not be there.");
 
             // Run the update to bring the file back down.
-            object[] args = {TestUseSharpCvsLib.ToString(), TestModule, TestCvsRoot, checkoutPath, 
-                                string.Empty};
+            object[] args = {TestUseSharpCvsLib.ToString(), TestModule, TestCvsRoot, checkoutPath};
             this.RunBuild(FormatBuildFile(_updateXML, args), 
                 Level.Info);
 

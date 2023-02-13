@@ -28,7 +28,6 @@
     <ProjectReference Include="..\NAnt.NUnit1\NAnt.NUnit1.csproj" />
     <ProjectReference Include="..\NAnt.NUnit2\NAnt.NUnit2.csproj" />
     <ProjectReference Include="..\NAnt.SourceControl\NAnt.SourceControl.csproj" />
-    <ProjectReference Include="..\..\tests\NAnt.Tests.csproj" />
     <ProjectReference Include="..\NAnt.VisualCpp\NAnt.VisualCpp.csproj" />
     <ProjectReference Include="..\NAnt.VSNet\NAnt.VSNet.csproj" />
     <ProjectReference Include="..\NAnt.Win32\NAnt.Win32.csproj" />

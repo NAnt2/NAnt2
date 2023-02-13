@@ -533,36 +533,33 @@ namespace Tests.NAnt.Core {
         }
         
         [Test]
-        [ExpectedException(typeof(ExpressionParseException))]
         public void TestStandaloneEvaluatorFailure() {
             ExpressionEvaluator eval = new ExpressionEvaluator(_project, 
                 _project.Properties,
                 new Hashtable(), 
                 new Stack());
 
-            eval.Evaluate("1 + 2 * datetime::now(");
+            Assert.Throws<ExpressionParseException>(() => eval.Evaluate("1 + 2 * datetime::now("));
         }
         
         [Test]
-        [ExpectedException(typeof(ExpressionParseException))]
         public void TestStandaloneEvaluatorFailure2() {
             ExpressionEvaluator eval = new ExpressionEvaluator(_project, 
                 _project.Properties,
                 new Hashtable(),
                 new Stack());
 
-            eval.Evaluate("1 1");
+            Assert.Throws<ExpressionParseException>(() => eval.Evaluate("1 1"));
         }
         
         [Test]
-        [ExpectedException(typeof(ExpressionParseException))]
         public void TestStandaloneEvaluatorSyntaxCheckFailure() {
             ExpressionEvaluator eval = new ExpressionEvaluator(_project, 
                 _project.Properties,
                 new Hashtable(),
                 new Stack());
 
-            eval.CheckSyntax("1 + 2 * 3 1");
+            Assert.Throws<ExpressionParseException>(() => eval.CheckSyntax("1 + 2 * 3 1"));
         }
 
         #endregion Public Instance Methods
