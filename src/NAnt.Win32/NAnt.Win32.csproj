@@ -15,10 +15,4 @@
     <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj" />
     <ProjectReference Include="..\NAnt.DotNet\NAnt.DotNet.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="NAnt.Win32.build" />
-  </ItemGroup>
 </Project>

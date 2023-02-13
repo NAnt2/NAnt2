@@ -13,7 +13,6 @@
       <HintPath>..\..\lib\common\neutral\NDoc.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\common.xslt" />
@@ -28,11 +27,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="NDoc.Documenter.NAnt.build" />
   </ItemGroup>
 </Project>

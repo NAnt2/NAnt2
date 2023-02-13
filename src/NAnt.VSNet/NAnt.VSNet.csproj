@@ -14,10 +14,4 @@
     <ProjectReference Include="..\NAnt.VisualCpp\NAnt.VisualCpp.csproj" />
     <ProjectReference Include="..\NAnt.Win32\NAnt.Win32.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="NAnt.VSNet.build" />
-  </ItemGroup>
 </Project>

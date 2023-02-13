@@ -8,9 +8,6 @@
     <PackageId>NAnt2.Core</PackageId>
     <Description>$(NAnt2Description) This library provides core functionalities, including functions and tasks.</Description>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
   <ItemGroup Condition="$(DefineConstants.Contains(NET40_OR_GREATER))">
     <Reference Include="System.Net" />
   </ItemGroup>
@@ -39,11 +36,4 @@
 			<DesignTime>True</DesignTime>
 		</Compile>
 	</ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Functions\DnsFunctions.cs" />
-    <Compile Remove="AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="NAnt.Core.build" />
-  </ItemGroup>
 </Project>

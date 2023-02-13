@@ -9,9 +9,6 @@
     <Description>$(NAnt2Description) This library provides source control tasks.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Condition=" $(DefineConstants.Contains(NETFRAMEWORK))" Include="ICSharpCode.SharpCvsLib">
       <HintPath>..\..\lib\common\neutral\ICSharpCode.SharpCvsLib.dll</HintPath>
       <Private>False</Private>
@@ -22,11 +19,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="NAnt.SourceControl.build" />
   </ItemGroup>
 </Project>

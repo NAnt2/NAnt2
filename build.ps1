@@ -314,8 +314,9 @@ task Deep-Clean Clean, {
     Executes default cleanup (Staging, publish and reports directories) and also cleans /bin and /obj folders
     #>
 
-    Write-Output "[Deep-Clean] Cleaning /bin and /obj folders from $SRC_DIR and $TOOLS_DIR"
+    Write-Output "[Deep-Clean] Cleaning /bin and /obj folders from $SRC_DIR, tests and $TOOLS_DIR"
     Get-ChildItem $SRC_DIR -Include bin,obj -Recurse | Remove-Item -Recurse -Force -ErrorAction Ignore
+    Get-ChildItem (Join-Path $BuildRoot "tests") -Include bin,obj -Recurse | Remove-Item -Recurse -Force -ErrorAction Ignore
     Get-ChildItem $TOOLS_DIR -Include bin,obj -Recurse | Remove-Item -Recurse -Force -ErrorAction Ignore
 }
 

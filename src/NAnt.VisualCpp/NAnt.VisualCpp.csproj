@@ -11,10 +11,4 @@
   <ItemGroup>
     <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="NAnt.VisualCpp.build" />
-  </ItemGroup>
 </Project>

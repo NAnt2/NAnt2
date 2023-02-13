@@ -4,7 +4,8 @@
 -->
 <Project>
   <Target Name="AfterPrepareForBuild" AfterTargets="PrepareForBuild">
-    <Message Text="TargetFramework: $(TargetFramework); Constants: $(DefineConstants)" Importance="High" />
+    <!--  Constants: $(DefineConstants) -->
+    <Message Text="TargetFramework: $(TargetFramework);" Importance="High" />
   </Target>
 
     <!-- Removes /bin/Configuration and /obj folders to make sure no strange/previous artifacts are left before build -->

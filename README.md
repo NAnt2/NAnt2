@@ -6,7 +6,7 @@ Let's chat [![Join the chat at https://gitter.im/NAnt2/NAnt2](https://badges.git
 * [![NAnt2 build](https://github.com/NAnt2/NAnt2/actions/workflows/build.yml/badge.svg)](https://github.com/NAnt2/NAnt2/actions/workflows/build.yml)
 
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=nant2&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=nant2) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nant2&metric=coverage)](https://sonarcloud.io/dashboard?id=nant2)
-[![CodeScene general](https://codescene.io/images/analyzed-by-codescene-badge.svg)](https://codescene.io/projects/10108)
+[![CodeScene general](https://codescene.io/images/analyzed-by-codescene-badge.svg)](https://codescene.io/projects/34846)
 
 
 What is it? 
@@ -23,6 +23,21 @@ License
 -------
 NAnt2 is provided under included GPL license. Portions of it (NAnt2.Contrib) are provided under included LGPL license.  
 There is an effort to change license to Apache 2.0 / MIT. If you ever contributed to NAnt, NAnt.Contrib or NAnt2, please state your approval/disapproval on [ticket #14](https://github.com/NAnt2/NAnt2/issues/14)
+
+Build and run
+--------------
+Open the NAnt2 solution in VS2022 or latest Rider and build it. By default it targets net462 and net6.0.
+You can also build it in Powershell Core shell:
+```ps
+.\build.ps1 -Tasks Clean,Build,Test,Stage -BuildConfiguration Debug
+# to clean up all \bin and \obj folders
+.\build.ps1 -Tasks Clean,DeepClean
+```
+To run tests manually, using NUnit.ConsoleRunner (from Powershell Core):
+```ps
+.\tools\nuget.exe install NUnit.ConsoleRunner -DirectDownload -ExcludeVersion -OutputDirectory .\tools
+.\tools\NUnit.ConsoleRunner\tools\nunit3-console.exe .\tests\bin\Debug\net462\NAnt.Tests.dll
+```
 
 NAnt and NAnt.Contrib
 =====================

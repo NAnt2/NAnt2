@@ -9,11 +9,6 @@
     <Description>$(NAnt2Description) This library provides SLiNgshoT.Core tasks.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="AssemblyInfo.cs" />
   </ItemGroup>
 </Project>

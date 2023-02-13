@@ -13,8 +13,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SLiNgshoT.Core\SLiNgshoT.Core.csproj" />
-    <Reference Update="System" />
-    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />

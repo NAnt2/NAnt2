@@ -21,6 +21,7 @@ bld/
 [Rr]eports/
 .sonarqube/
 generatedJUnitFiles/
+tools/NUnit*
 #SolutionInfo.cs
 
 #non-distributable files

@@ -12,10 +12,4 @@
     <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj" />
     <ProjectReference Include="..\NAnt.VSNet\NAnt.VSNet.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="NAnt.MSBuild.build" />
-  </ItemGroup>
 </Project>

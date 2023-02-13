@@ -36,11 +36,7 @@
       <HintPath>..\..\lib\common\neutral\SourceSafe.Interop.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.ServiceProcess" Condition=" $(DefineConstants.Contains(NET46_OR_LESSER)) " />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
     <Reference Include="System.DirectoryServices" Condition=" $(DefineConstants.Contains(NET46_OR_LESSER)) " />
     <Reference Include="System.Management" Condition=" $(DefineConstants.Contains(NET46_OR_LESSER)) " />
   </ItemGroup>
@@ -60,18 +56,10 @@
     <EmbeddedResource Include="Tasks\NUnit2Report\xsl\NUnit-NoFrame.xsl" />
     <EmbeddedResource Include="Tasks\NUnit2Report\xsl\toolkit.xsl" />
   </ItemGroup>
-  <!-- <ItemGroup>
-    <PackageReference Include="System.DirectoryServices" Version="6.0.0" />
-    <PackageReference Include="System.Management" Version="6.0.0" />
-  </ItemGroup> -->
   <ItemGroup>
     <Compile Remove="Tasks\DependsTask.cs" />
     <Compile Remove="Tasks\IniReadTask.cs" />
     <Compile Remove="Tasks\IniWriteTask.cs" />
     <Compile Remove="Tasks\RegasmTask.cs" />
-    <Compile Remove="AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="NAnt.Contrib.build" />
   </ItemGroup>
 </Project>

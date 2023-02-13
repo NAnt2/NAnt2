@@ -31,7 +31,4 @@
     <ProjectReference Include="..\NAnt.DotNet\NAnt.DotNet.csproj" />
     <ProjectReference Include="..\Nant.NUnit\NAnt.NUnit.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="AssemblyInfo.cs" />
-  </ItemGroup>
 </Project>
