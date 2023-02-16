@@ -1052,6 +1052,10 @@
 		</exec>
 
         <!-- Run tests -->
+        <!-- ensure configuration file exists for test assembly -->
+        <if test="${not file::exists(path::combine(root.dir, 'build', msbuild.configuration, 'NAnt.Tests.dll.config'))}">
+            <copy file="${root.dir}\build\${msbuild.configuration}\NAnt.exe.config" tofile="${root.dir}\build\${msbuild.configuration}\NAnt.Tests.dll" />
+        </if>
         <exec program="${nant::scan-probing-paths('nunit-console.exe')}" workingdir="${root.dir}\build\${msbuild.configuration}" failonerror="false">
             <arg path="${root.dir}\build\${msbuild.configuration}\NAnt.Tests.dll"/>
             <arg value="/noshadow" />
