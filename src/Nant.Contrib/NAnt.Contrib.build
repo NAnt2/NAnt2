@@ -23,7 +23,8 @@
         <csc target="library" warnaserror="${build.warnaserror}" debug="${build.debug}"
              define="${current.build.defines}"
              output="${build.dir}/bin/${project::get-name()}Tasks.dll"
-             doc="${build.dir}/bin/${project::get-name()}Tasks.xml">
+             doc="${build.dir}/bin/${project::get-name()}Tasks.xml"
+             platform="anycpu">
             <nowarn>
                 <!-- do not report compiler warnings for ambiguous crefs until fixed in mono -->
                 <warning number="0419" if="${framework::get-family(framework::get-target-framework()) == 'mono'}" />
@@ -85,7 +86,7 @@
 
     <!-- Bootstrap the Xsd Task -->
     <target name="compile.schematask" description="compiles the Xsd task">
-        <csc target="library" warnaserror="true" debug="${build.debug}" define="${current.build.defines}" output="${build.dir}/bin/NAnt.Xsd.Tasks.dll">
+        <csc target="library" warnaserror="true" debug="${build.debug}" define="${current.build.defines}" output="${build.dir}/bin/NAnt.Xsd.Tasks.dll" platform="anycpu">
             <sources>
                 <include name="Tasks/XsdTask.cs" />
             </sources>

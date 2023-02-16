@@ -29,7 +29,7 @@
         <call target="SLiNgshoT" />
     </target>
     <target name="SLiNgshoT" depends="setup">
-        <csc target="exe" output="${output}" debug="${debug}" define="${define}" verbose="true">
+        <csc target="exe" output="${output}" debug="${debug}" define="${define}" verbose="true" platform="anycpu">
             <arg value="${unsafe}" />
             <arg value="${checked}" />
             <sources>
@@ -66,7 +66,7 @@
         <call target="SLiNgshoT.Core" />
     </target>
     <target name="SLiNgshoT.Core" depends="setup">
-        <csc target="library" output="${output}" debug="${debug}" define="${define}" verbose="true">
+        <csc target="library" output="${output}" debug="${debug}" define="${define}" verbose="true" platform="anycpu">
             <arg value="${unsafe}" />
             <arg value="${checked}" />
             <sources>

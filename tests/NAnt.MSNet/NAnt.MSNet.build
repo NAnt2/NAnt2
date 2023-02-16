@@ -8,7 +8,7 @@
     -->
     <target name="build" if="${framework::get-family(framework::get-target-framework()) == 'net'}"> 
         <!-- build test assembly -->
-        <csc target="library" define="${current.build.defines}" warnaserror="true" debug="${build.debug}" output="${build.dir}/bin/${project::get-name()}.Tests.dll">
+        <csc target="library" define="${current.build.defines}" warnaserror="true" debug="${build.debug}" output="${build.dir}/bin/${project::get-name()}.Tests.dll" platform="anycpu">
             <nowarn>
                 <!-- do not report warnings for missing XML comments -->
                 <warning number="1591" />

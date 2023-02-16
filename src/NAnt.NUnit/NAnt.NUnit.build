@@ -9,7 +9,7 @@
     -->
     <target name="build">
         <!-- build main assembly -->
-        <csc target="library" define="${current.build.defines}" warnaserror="${build.warnaserror}" debug="${build.debug}" output="${build.dir}/bin/NAnt.NUnit.dll" doc="${build.dir}/bin/NAnt.NUnit.xml">
+        <csc target="library" define="${current.build.defines}" warnaserror="${build.warnaserror}" debug="${build.debug}" output="${build.dir}/bin/NAnt.NUnit.dll" doc="${build.dir}/bin/NAnt.NUnit.xml" platform="anycpu">
             <sources>
                 <include name="*.cs"/>
                 <!-- common assembly-level attributes -->
@@ -19,7 +19,7 @@
                 <include name="${build.dir}/bin/NAnt.Core.dll" />
             </references>
         </csc>
-        <csc target="library" define="${current.build.defines}" warnaserror="${build.warnaserror}" debug="${build.debug}" output="${build.dir}/bin/NAnt.NUnit1Tasks.dll" doc="${build.dir}/bin/NAnt.NUnit1Tasks.xml">
+        <csc target="library" define="${current.build.defines}" warnaserror="${build.warnaserror}" debug="${build.debug}" output="${build.dir}/bin/NAnt.NUnit1Tasks.dll" doc="${build.dir}/bin/NAnt.NUnit1Tasks.xml" platform="anycpu">
             <nowarn>
                 <!-- do not report warnings for missing XML comments -->
                 <warning number="1591" />
@@ -40,7 +40,7 @@
                 <include name="*.resx"/>
             </resources>
         </csc>
-        <csc target="library" define="${current.build.defines}" warnaserror="${build.warnaserror}" debug="${build.debug}" output="${build.dir}/bin/NAnt.NUnit2Tasks.dll" doc="${build.dir}/bin/NAnt.NUnit2Tasks.xml">
+        <csc target="library" define="${current.build.defines}" warnaserror="${build.warnaserror}" debug="${build.debug}" output="${build.dir}/bin/NAnt.NUnit2Tasks.dll" doc="${build.dir}/bin/NAnt.NUnit2Tasks.xml" platform="anycpu">
             <nowarn>
                 <!-- do not report obsolete warnings until XslCompiledTransform works with NUnit2 output -->
                 <warning number="0612" />

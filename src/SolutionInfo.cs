@@ -14,14 +14,14 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisibleAttribute(false)]
 [assembly: CLSCompliantAttribute(true)]
-[assembly: AssemblyConfigurationAttribute("dev")]
+[assembly: AssemblyConfigurationAttribute("rc")]
 [assembly: AssemblyCompanyAttribute("")]
 [assembly: AssemblyProductAttribute("NAnt")]
-[assembly: AssemblyCopyrightAttribute("Copyright (C) 2001-2012 Gerry Shaw, 2019-2020 Simona Avornicesei")]
+[assembly: AssemblyCopyrightAttribute("Copyright (C) 2001-2012 Gerry Shaw, 2019-2023 Simona Avornicesei")]
 [assembly: AssemblyTrademarkAttribute("")]
 [assembly: AssemblyCultureAttribute("")]
-[assembly: AssemblyVersionAttribute("0.95.7413.0")]
-[assembly: AssemblyInformationalVersionAttribute("0.95")]
+[assembly: AssemblyVersionAttribute("0.93.0.0")]
+[assembly: AssemblyInformationalVersionAttribute("0.93")]
 [assembly: AssemblyDelaySignAttribute(false)]
 [assembly: AssemblyKeyNameAttribute("")]
 

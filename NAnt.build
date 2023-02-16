@@ -6,8 +6,8 @@
 
     <!-- global project settings -->
     <property name="project.name" value="nant" />
-    <property name="project.version" value="0.95" unless="${property::exists('project.version')}" />
-    <property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" /> <!-- nightly | dev | alpha | beta# | rc# | release -->
+    <property name="project.version" value="0.93" unless="${property::exists('project.version')}" />
+    <property name="project.release.type" value="rc" unless="${property::exists('project.release.type')}" /> <!-- nightly | dev | alpha | beta# | rc# | release -->
 
     <property name="root.dir" value="${project::get-base-directory()}" />
     <property name="src.dir" value="${path::combine(root.dir, 'src')}" />
@@ -383,7 +383,6 @@
         <if test="${not(help.uptodate)}">
             <ndoc>
                 <assemblies basedir="${build.dir}/bin">
-                    <include name="NAnt.Core.dll" />
                     <include name="*Tasks.dll" />
                     <include name="NAnt.NUnit.dll" />
                 </assemblies>
@@ -399,7 +398,7 @@
                         <!-- set the name and version of the product for which docs are generated -->
                         <property name="ProductName" value="NAnt" />
                         <property name="ProductVersion" value="${project.version.full}" />
-                        <property name="ProductUrl" value="http://nant.sourceforge.net" />
+                        <property name="ProductUrl" value="https://nant2.github.io/" />
                         <property name="Preliminary" value="${not(project.release.type == 'release')}" />
                         <property name="DocumentAttributes" value="True" />
                         <property name="IncludeAssemblyVersion" value="True" />
@@ -479,7 +478,7 @@
                         <property name="DocumentEmptyNamespaces" value="False" />
                         <property name="IncludeAssemblyVersion" value="False" />
                         <property name="CopyrightText" value="Copyright (C) 2001-${datetime::get-year(datetime::now())} Gerry Shaw" />
-                        <property name="CopyrightHref" value="http://nant.sourceforge.net" />
+                        <property name="CopyrightHref" value="https://nant2.github.io/" />
                         <property name="EditorBrowsableFilter" value="Off" />
                     </documenter>
                 </documenters>

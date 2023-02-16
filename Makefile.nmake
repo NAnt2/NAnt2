@@ -1,9 +1,9 @@
 #NAnt nmake makefile for building on windows
 CSC=csc
-RESGEN=resgen
+RESGEN=resgen.exe
 TARGET=net-4.5
 
-version=0.95
+version=0.93
 build=0
 
 !ifdef MONO
@@ -75,6 +75,9 @@ run-codequality: bootstrap
 	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build code.quality -D:project.version=$(version) -D:build.number=$(build) -verbose
 	
 bootstrap: setup bootstrap\NAnt.exe bootstrap\NAnt.Core.dll bootstrap\NAnt.DotNetTasks.dll bootstrap\NAnt.CompressionTasks.dll bootstrap\NAnt.Win32Tasks.dll
+
+release: all
+    $(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build test-examples userdoc schema package -verbose
 	
 setup:
 	if not exist bootstrap md bootstrap

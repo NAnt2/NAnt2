@@ -9,7 +9,7 @@
     -->
     <target name="build">
         <!-- build main assembly -->
-        <csc target="library" define="${current.build.defines}" warnaserror="${build.warnaserror}" debug="${build.debug}" output="${build.dir}/bin/${project::get-name()}.dll" doc="${build.dir}/bin/${project::get-name()}.xml">
+        <csc target="library" define="${current.build.defines}" warnaserror="${build.warnaserror}" debug="${build.debug}" output="${build.dir}/bin/${project::get-name()}.dll" doc="${build.dir}/bin/${project::get-name()}.xml" platform="anycpu">
             <nowarn>
                 <warning number="0612" />
                 <warning number="0618" />

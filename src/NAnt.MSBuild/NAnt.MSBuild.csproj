@@ -62,6 +62,7 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>SolutionInfo.cs</Link>
     </Compile>
+    <Reference Include="mscorlib" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BuildEngine\BuildItem.cs" />
     <Compile Include="BuildEngine\BuildItemGroup.cs" />

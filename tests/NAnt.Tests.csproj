@@ -10,7 +10,6 @@
     <OutputType>Library</OutputType>
     <RunPostBuildEvent>OnSuccessfulBuild</RunPostBuildEvent>
     <PreBuildEvent />
-    <PostBuildEvent />
     <NoConfig>false</NoConfig>
     <ProductVersion>8.0.50727</ProductVersion>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
@@ -69,6 +68,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\src\NAnt.Console\App.config">
+      <Link>App.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="NAnt.Compression\NAnt.Compression.build" />
     <Compile Include="..\src\SolutionInfo.cs">
       <Link>SolutionInfo.cs</Link>
@@ -252,4 +255,9 @@
   <ItemGroup>
     <None Include="Nant.Contrib\NAnt.Contrib.build" />
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+      pwsh -Command "Copy-Item -Path (Join-Path $(SolutionDir) 'src' 'NAnt.Console' 'App.config') -Destination (Join-Path $(TargetDir) 'NAnt.Tests.dll.config') -Force"
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>
