@@ -26,6 +26,7 @@ init:
 
 install:
   - choco install -y chocolatey-dotnetfx.extension
+  - choco install netfx-4.5.2-devpack
   - choco install -y sonarscanner-msbuild-net46
   - choco install -y opencover.portable
 
