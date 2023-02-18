@@ -41,7 +41,7 @@ before_build:
 build_script:
 #  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-2.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
 #  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-3.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
-  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+#  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
   - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
 
 #---------------------------------#
@@ -50,7 +50,7 @@ build_script:
 test_script:
 #  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-2.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
 #  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-3.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
-  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
+#  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
   - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
 
 after_test:
