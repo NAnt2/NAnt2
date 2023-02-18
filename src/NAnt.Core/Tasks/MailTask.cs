@@ -397,36 +397,44 @@ namespace NAnt.Core.Tasks {
             }
 
             // begin build message body
-            StringWriter bodyWriter = new StringWriter(CultureInfo.InvariantCulture);
-            
-            if (!String.IsNullOrEmpty(Message)) {
-                bodyWriter.WriteLine(Message);
-                bodyWriter.WriteLine();
-            }
+            using (StringWriter bodyWriter = new StringWriter(CultureInfo.InvariantCulture))
+            {
+                if (!String.IsNullOrEmpty(Message))
+                {
+                    bodyWriter.WriteLine(Message);
+                    bodyWriter.WriteLine();
+                }
 
-            // append file(s) to message body
-            foreach (string fileName in Files.FileNames) {
-                try {
-                    string content = ReadFile(fileName);
-                    if (!String.IsNullOrEmpty(content)) {
+                // append file(s) to message body
+                foreach (string fileName in Files.FileNames)
+                {
+                    try
+                    {
+                        string content = ReadFile(fileName);
+                        if (string.IsNullOrEmpty(content)) continue;
+                        
                         bodyWriter.Write(content);
                         bodyWriter.WriteLine(string.Empty);
                     }
-                } catch (Exception ex) {
-                    Log(Level.Warning, string.Format(CultureInfo.InvariantCulture,
-                        ResourceUtils.GetString("NA1135"), fileName, 
-                        ex.Message));
+                    catch (Exception ex)
+                    {
+                        Log(Level.Warning, string.Format(CultureInfo.InvariantCulture,
+                            ResourceUtils.GetString("NA1135"), fileName,
+                            ex.Message));
+                    }
+                }
+
+                // add message body to mailMessage
+                string bodyText = bodyWriter.ToString();
+                if (bodyText.Length != 0)
+                {
+                    mailMessage.Body = bodyText;
                 }
             }
 
-            // add message body to mailMessage
-            string bodyText = bodyWriter.ToString();
-            if (bodyText.Length != 0) {
-                mailMessage.Body = bodyText;
-            }
-
             // add attachments to message
-            foreach (string fileName in Attachments.FileNames) {
+            foreach (string fileName in Attachments.FileNames) 
+            {
                 try {
                     Attachment attachment = new Attachment(fileName);
                     mailMessage.Attachments.Add(attachment);
@@ -529,11 +537,18 @@ namespace NAnt.Core.Tasks {
         /// <returns>
         /// The content of the specified file.
         /// </returns>
-        private string ReadFile(string filename) {
-            using (StreamReader reader = new StreamReader(File.OpenRead(filename))) 
+        private string ReadFile(string filename) 
+        {
+            if (!File.Exists(filename))
+            {
+                return string.Empty;
+            }
+            
+            using (StreamReader reader = new StreamReader(filename))
             {
                 string result = reader.ReadToEnd();
                 reader.Close();
+
                 return result;
             }
         }
