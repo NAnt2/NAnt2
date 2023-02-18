@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.IO;
+using NUnit.Framework;
 using NAnt.Core;
 
 namespace Tests.NAnt.Core.Functions
@@ -11,10 +12,11 @@ namespace Tests.NAnt.Core.Functions
         [Test]
         public void Test_Combine_2Paths()
         {
+            string expectedPath = Path.Combine("C:", "Windows");
             string buildFragment = @"
                         <project default='A'>
                             <target name='A'>
-                                <property name='path1' value='C:\' />
+                                <property name='path1' value='C:' />
                                 <property name='path2' value='Windows' />
                                 <property name='path.combine' value='${path::combine(path1, path2)}' />
                             </target>
@@ -27,17 +29,18 @@ namespace Tests.NAnt.Core.Functions
             Assert.IsTrue(project.Properties.Contains("path.combine"), "Property \"path.combine\" does not exist.");
 
             // check values
-            Assert.AreEqual(@"C:\Windows", project.Properties["path.combine"], @"C:\Windows");
+            Assert.AreEqual(expectedPath, project.Properties["path.combine"], expectedPath);
             System.Console.WriteLine("Test_Combine_2Paths was successful");
         }
 
         [Test]
         public void Test_Combine_3Paths()
         {
+            string expectedPath = Path.Combine(Path.Combine("C:", "Windows"), "system32");
             string buildFragment = @"
                      <project default='A'>
                          <target name='A'>
-                             <property name='path1' value='C:\' />
+                             <property name='path1' value='C:' />
                              <property name='path2' value='Windows' />
                              <property name='path3' value='system32' />
                              <property name='path.combine' value='${path::combine(path1, path2, path3)}' />
@@ -51,16 +54,17 @@ namespace Tests.NAnt.Core.Functions
             Assert.IsTrue(project.Properties.Contains("path.combine"), "Property \"path.combine\" does not exist.");
 
             // check values
-            Assert.AreEqual(@"C:\Windows\system32", project.Properties["path.combine"], @"C:\Windows\system32");
+            Assert.AreEqual(expectedPath, project.Properties["path.combine"], expectedPath);
         }
 
         [Test]
         public void Test_Combine_4Paths()
         {
+            string expectedPath = Path.Combine(Path.Combine(Path.Combine("C:", "Windows"), "system32"), "drivers");
             string buildFragment = @"
              <project default='A'>
                  <target name='A'>
-                     <property name='path1' value='C:\' />
+                     <property name='path1' value='C:' />
                      <property name='path2' value='Windows' />
                      <property name='path3' value='system32' />
                      <property name='path4' value='drivers' />
@@ -75,16 +79,21 @@ namespace Tests.NAnt.Core.Functions
             Assert.IsTrue(project.Properties.Contains("path.combine"), "Property \"path.combine\" does not exist.");
 
             // check values
-            Assert.AreEqual(@"C:\Windows\system32\drivers", project.Properties["path.combine"], @"C:\Windows\system32\drivers");
+            Assert.AreEqual(expectedPath, project.Properties["path.combine"], expectedPath);
         }
 
         [Test]
         public void Test_Combine_VariousPaths()
         {
+            string expectedPath12 = Path.Combine("C:", "Windows");
+            string expectedPath123 = Path.Combine(Path.Combine("C:", "Windows"), "system32");
+            string expectedPath124 = Path.Combine(Path.Combine("C:", "Windows"), @"C:\Dev");
+            string expectedPath1243 = Path.Combine(Path.Combine(Path.Combine("C:", "Windows"), @"C:\Dev"), "system32");
+            string expectedPath123a4 = Path.Combine(Path.Combine(Path.Combine("C:", "Windows"), @"D:\Dev"), @"C:\Dev");
             string buildFragment = @"
                 <project default='all'>
                     <target name='all'>
-                        <property name='path1' value='C:\' />
+                        <property name='path1' value='C:' />
                         <property name='path2' value='Windows' />
                         <property name='path3' value='system32' />
                         <property name='path3a' value='D:\Dev' />
@@ -115,11 +124,11 @@ namespace Tests.NAnt.Core.Functions
             Assert.IsTrue(project.Properties.Contains("path.combine123a4"), "Property \"path.combine123a4\" does not exist.");
 
             // check values
-            Assert.AreEqual(@"C:\Windows", project.Properties["path.combine12"], @"C:\Windows\system32\drivers");
-            Assert.AreEqual(@"C:\Windows\system32", project.Properties["path.combine123"], @"C:\Windows\system32\drivers");
-            Assert.AreEqual(@"C:\Dev", project.Properties["path.combine124"], @"C:\Windows\system32\drivers");
-            Assert.AreEqual(@"C:\Dev\system32", project.Properties["path.combine1243"], @"C:\Windows\system32\drivers");
-            Assert.AreEqual(@"C:\Dev", project.Properties["path.combine123a4"], @"C:\Windows\system32\drivers");
+            Assert.AreEqual(expectedPath12, project.Properties["path.combine12"], expectedPath12);
+            Assert.AreEqual(expectedPath123, project.Properties["path.combine123"], expectedPath123);
+            Assert.AreEqual(expectedPath124, project.Properties["path.combine124"], expectedPath124);
+            Assert.AreEqual(expectedPath1243, project.Properties["path.combine1243"], expectedPath1243);
+            Assert.AreEqual(expectedPath123a4, project.Properties["path.combine123a4"], expectedPath123a4);
         }
 
         #endregion

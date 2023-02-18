@@ -461,21 +461,17 @@ namespace Tests.NAnt.Core.Tasks {
         public void NoOverwrite_Destination_UpToDate() {
             string tempFileDest = CreateTempFile(Path.Combine(_tempDirDest, "foo.xml"), "DEST");
             // ensure destination file has same write time than source file
+            // as override = false means file will not be override if the destination file is newer.
             File.SetLastWriteTime(tempFileDest, File.GetLastWriteTime (_tempFileSrc));
 
             string result = RunBuild(string.Format(CultureInfo.InvariantCulture,
                 _xmlProjectTemplate, _tempFileSrc, tempFileDest, "false"));
 
-            Assert.IsTrue (File.Exists (_tempFileSrc), "#1:" + result);
+            Assert.IsFalse(File.Exists (_tempFileSrc), "#1:" + result);
             Assert.IsTrue (File.Exists (tempFileDest), "#2:" + result);
 
-            using (StreamReader sr = new StreamReader (_tempFileSrc, Encoding.UTF8, true)) {
-                Assert.AreEqual ("SRC", sr.ReadToEnd (), "#3");
-            }
-
-            using (StreamReader sr = new StreamReader (tempFileDest, Encoding.UTF8, true)) {
-                Assert.AreEqual ("DEST", sr.ReadToEnd (), "#4");
-            }
+            string destContent = File.ReadAllText(tempFileDest, Encoding.UTF8);
+            Assert.AreEqual ("SRC", destContent, "#4"); //file was overwritten
         }
 
         [Test]

@@ -283,15 +283,15 @@
         </exec>
     </target>
     <target name="prepare-self-test" depends="init">
-        <copy file="${path::combine(nant::get-base-directory(), 'NAnt.exe.config')}" tofile="${path::combine(nant::get-base-directory(), 'nant.tests.config')}" />
+        <copy file="${path::combine(nant::get-base-directory(), 'NAnt.exe.config')}" tofile="${path::combine(nant::get-base-directory(), 'NAnt.Tests.dll.config')}" />
         <!-- make sure the config file is writable -->
-        <attrib file="${path::combine(nant::get-base-directory(), 'nant.tests.config')}" readonly="false" />
+        <attrib file="${path::combine(nant::get-base-directory(), 'NAnt.Tests.dll.config')}" readonly="false" />
         <!-- ensure the tests target the current framework -->
-        <xmlpoke file="${path::combine(nant::get-base-directory(), 'nant.tests.config')}"
+        <xmlpoke file="${path::combine(nant::get-base-directory(), 'NAnt.Tests.dll.config')}"
                  xpath="//configuration/nant/frameworks/platform[@name='${platform::get-name()}']/@default"
                  value="${framework::get-target-framework()}"/>
         <!-- output the config file that will be used to run the tests -->
-        <echo message="testing with config '${path::combine(nant::get-base-directory(), 'nant.tests.config')}'" />
+        <echo message="testing with config '${path::combine(nant::get-base-directory(), 'NAnt.Tests.dll.config')}'" />
     </target>
     <target name="self-test-core" depends="prepare-self-test">
         <nant target="test">
@@ -917,7 +917,7 @@
                 <include name="bin/**/*" />
                 <include name="doc/**/*" />
 
-                <exclude name="bin/nant.tests.config" />
+                <exclude name="bin/NAnt.Tests.dll.config" />
                 <exclude name="bin/*.Tests.*" />
             </fileset>
         </copy>
@@ -952,7 +952,7 @@
             <fileset basedir="${build.dir}">
                 <include name="bin/**/*" />
 
-                <exclude name="bin/nant.tests.config" />
+                <exclude name="bin/NAnt.Tests.dll.config" />
                 <exclude name="bin/*.Tests.*" />
             </fileset>
         </copy>

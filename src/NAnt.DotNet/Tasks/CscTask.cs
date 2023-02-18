@@ -398,9 +398,9 @@ namespace NAnt.DotNet.Tasks {
             // -sdk: option to the argument list.
             if (PlatformHelper.IsMono) 
             {
-                if (ExeName.Equals("mcs", StringComparison.InvariantCultureIgnoreCase) && _mcsSdk > 0) 
+                if (ExeName.Equals("mcs", StringComparison.InvariantCultureIgnoreCase) && _mcsSdk > 0)
                 {
-                    WriteOption(writer, "sdk", _mcsSdk.ToString());
+                    WriteOption(writer, "sdk", _mcsSdk.ToString(CultureInfo.InvariantCulture));
                 }
             }
 

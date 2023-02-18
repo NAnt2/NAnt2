@@ -87,7 +87,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\NAnt.Core\NAnt.Core.csproj">
       <Project>{8F5F8375-4097-4952-B860-784EB9961ABE}</Project>

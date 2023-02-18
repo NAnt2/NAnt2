@@ -76,7 +76,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAnt.Contrib", "src\Nant.Contrib\NAnt.Contrib.csproj", "{CFBA0DE3-2B01-4C75-B615-4ACBA502F71C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAnt.Contrib", "src\NAnt.Contrib\NAnt.Contrib.csproj", "{CFBA0DE3-2B01-4C75-B615-4ACBA502F71C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{204432A9-BA41-41AA-883D-78EA2D659448}"
 EndProject
