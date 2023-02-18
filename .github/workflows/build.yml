@@ -16,7 +16,7 @@ env:
   # Project name to pack and publish
   PROJECT_NAME: NAnt2
   #Project version
-  PROJECT_VERSION: 0.95
+  PROJECT_VERSION: 0.93
 
 jobs:
   win-build:
@@ -58,6 +58,7 @@ jobs:
       - name: Ensure mono is found using pkg-config
         run: |
               if [ "${RUNNER_OS}" == "macOS" ]; then
+                brew install pkg-config
                 export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
               fi
         shell: bash
@@ -73,5 +74,5 @@ jobs:
                 if [ "${RUNNER_OS}" == "macOS" ]; then
                   export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
                 fi
-                make clean run-tests TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
+                make clean run-test TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
         shell: bash
