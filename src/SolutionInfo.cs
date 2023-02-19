@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyrightAttribute("Copyright (C) 2001-2012 Gerry Shaw, 2019-2023 Simona Avornicesei")]
 [assembly: AssemblyTrademarkAttribute("")]
 [assembly: AssemblyCultureAttribute("")]
-[assembly: AssemblyVersionAttribute("0.93.8449.0")]
+[assembly: AssemblyVersionAttribute("0.93.0.0")]
 [assembly: AssemblyInformationalVersionAttribute("0.93")]
 [assembly: AssemblyDelaySignAttribute(false)]
 [assembly: AssemblyKeyNameAttribute("")]

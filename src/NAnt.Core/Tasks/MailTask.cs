@@ -367,7 +367,7 @@ namespace NAnt.Core.Tasks {
             // ReplyToList.
             if (!String.IsNullOrEmpty(ReplyTo))
             {
-#if NET_4_0
+#if NET40_OR_GREATER
                 MailAddressCollection replyAddrs = ParseAddresses(ReplyTo);
                 
                 if (replyAddrs.Count > 0) {
@@ -452,7 +452,7 @@ namespace NAnt.Core.Tasks {
             Log(Level.Verbose, "Subject: {0}", mailMessage.Subject);
 
             // Initialize a new SmtpClient object to sent email through.
-#if NET_4_0
+#if NET40_OR_GREATER
             // Starting with .NET 4.0, SmtpClient implements IDisposable.
             using (SmtpClient smtp = new SmtpClient(this.Mailhost)) {
 #else
@@ -520,7 +520,7 @@ namespace NAnt.Core.Tasks {
                 throw new BuildException("Error sending mail:" + Environment.NewLine 
                     + msg.ToString(), Location, ex);
             }
-#if NET_4_0
+#if NET40_OR_GREATER
             }
 #endif
         }

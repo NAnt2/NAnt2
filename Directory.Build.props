@@ -1,0 +1,42 @@
+<Project> 
+  <PropertyGroup> <!-- General project and packages info -->
+    <Product>NAnt2</Product>
+    <Copyright>Copyright 2001 - $([System.DateTime]::Now.Year) © NAnt &amp; NAnt2 Contributors</Copyright>
+    <Authors>Simona Avornicesei, NAnt2, and contributors</Authors>
+    <PackageLicenseExpression>GPL</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageIcon>logo.gif</PackageIcon>
+    <PackageIconUrl>https://github.com/NAnt2/NAnt2/blob/master/web/logo.gif</PackageIconUrl>
+    <NAnt2Description>NAnt2 is a free .NET build tool, updated and enhanced from original NAnt project. Easy to use even by non-programmers to automate their daily tasks.</NAnt2Description>
+    <PackageTags>NAnt NAnt2 NAntContrib cross-platform automation build dotnet</PackageTags>
+    <PackageProjectUrl>https://nant2.github.io</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/NAnt2/NAnt2.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+  <PropertyGroup> <!-- SourceLink props, see https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/ -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols Condition=" '$(DebugType)' == 'portable' ">true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- <LangVersion>8.0</LangVersion> -->
+    <Platforms>AnyCPU</Platforms>
+    <TargetFramework>net45</TargetFramework>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
+  </PropertyGroup>
+
+  <!-- ensure all frameworks have the complete list of version-specific symbols, 
+      see https://github.com/dotnet/docs/blob/main/includes/preprocessor-symbols.md
+      and https://github.com/dotnet/designs/blob/main/accepted/2020/or-greater-defines/or-greater-defines.md -->
+  <Import Project="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'Constants.props'))" Condition="Exists($([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'Constants.props')))" />
+
+  <ItemGroup>
+    <None Include="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'web', 'logo.gif'))" Pack="true" PackagePath="logo.gif"/>
+  </ItemGroup>
+</Project>

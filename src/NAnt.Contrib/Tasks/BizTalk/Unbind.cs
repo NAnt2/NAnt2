@@ -24,11 +24,9 @@ using System.IO;
 using System.Management;
 using System.Reflection;
 using System.Text;
-
+using NAnt.Contrib.Types.BizTalk;
 using NAnt.Core;
 using NAnt.Core.Attributes;
-
-using NAnt.Contrib.Types.BizTalk;
 
 namespace NAnt.Contrib.Tasks.BizTalk {
     /// <summary>
@@ -93,10 +91,10 @@ namespace NAnt.Contrib.Tasks.BizTalk {
             }
         }
 
-        private EnumerationOptions EnumerationOptions {
+        private  System.Management.EnumerationOptions EnumerationOptions {
             get {
                 if (_enumerationOptions == null) {
-                    _enumerationOptions = new EnumerationOptions();
+                    _enumerationOptions = new  System.Management.EnumerationOptions();
                     _enumerationOptions.ReturnImmediately = false;
                 }
                 return _enumerationOptions;
@@ -154,7 +152,7 @@ namespace NAnt.Contrib.Tasks.BizTalk {
         private void UnbindSendPorts() {
             ObjectQuery query = new ObjectQuery("SELECT * FROM MSBTS_SendPort");
 
-            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher (Scope, query, EnumerationOptions)) {
+            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher (Scope, query,  EnumerationOptions)) {
                 foreach (ManagementObject sendPort in searcher.Get()) {
                     string sendPipeline = (string) sendPort["SendPipeline"];
                     if (sendPipeline.Length != 0) {
@@ -302,7 +300,7 @@ namespace NAnt.Contrib.Tasks.BizTalk {
         private string _receivePipeline;
         private string _sendPipeline;
         private ManagementScope _scope;
-        private EnumerationOptions _enumerationOptions;
+        private System.Management.EnumerationOptions _enumerationOptions;
         private AssemblyName _assemblyName;
 
         #endregion Private Instance Fields

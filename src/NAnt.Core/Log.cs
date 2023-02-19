@@ -896,9 +896,7 @@ namespace NAnt.Core {
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">A <see cref="BuildEventArgs" /> object that contains the event data.</param>
         public override void BuildFinished(object sender, BuildEventArgs e) {
-#if (NET_1_1)
             const string cdoNamespaceURI = "http://schemas.microsoft.com/cdo/configuration/";
-#endif
 
             base.BuildFinished(sender, e);
 
@@ -956,55 +954,29 @@ namespace NAnt.Core {
                 string smtpPort = GetPropertyValue(properties, "smtp.port", null, false);
                 string smtpEnableSSL = GetPropertyValue(properties, "smtp.enablessl", null, false);
 
-#if (NET_1_1)
                 // when either a user name or a specific port is specified, or
                 // SSL is enabled, then send the message must be sent using the 
                 // network (instead of using the local SMTP pickup directory)
                 if (smtpUsername != null || smtpPort != null || IsSSLEnabled(properties)) {
                     mailMessage.Fields[cdoNamespaceURI + "sendusing"] = 2; // cdoSendUsingPort
                 }
-#endif
 
                 if (smtpUsername != null) {
-#if (NET_1_1)
                     mailMessage.Fields[cdoNamespaceURI + "smtpauthenticate"] = 1;
                     mailMessage.Fields[cdoNamespaceURI + "sendusername"] = smtpUsername;
-#else
-                    Console.Error.WriteLine("[MailLogger] MailLogger.smtp.username"
-                        + " is not supported if NAnt is built targeting .NET"
-                        + " Framework 1.0.");
-#endif
                 }
 
                 string smtpPassword = GetPropertyValue(properties, "smtp.password", null, false);
                 if (smtpPassword != null) {
-#if (NET_1_1)
                     mailMessage.Fields[cdoNamespaceURI + "sendpassword"] = smtpPassword;
-#else
-                    Console.Error.WriteLine("[MailLogger] MailLogger.smtp.password"
-                        + " is not supported if NAnt is built targeting .NET"
-                        + " Framework 1.0.");
-#endif
                 }
 
                 if (smtpPort != null) {
-#if (NET_1_1)
                     mailMessage.Fields[cdoNamespaceURI + "smtpserverport"] = smtpPort;
-#else
-                    Console.Error.WriteLine("[MailLogger] MailLogger.smtp.port"
-                        + " is not supported if NAnt is built targeting .NET"
-                        + " Framework 1.0.");
-#endif
                 }
 
                 if (smtpEnableSSL != null) {
-#if (NET_1_1)
                     mailMessage.Fields[cdoNamespaceURI + "smtpusessl"] = smtpEnableSSL;
-#else
-                    Console.Error.WriteLine("[MailLogger] MailLogger.smtp.enablessl"
-                        + " is not supported if NAnt is built targeting .NET"
-                        + " Framework 1.0.");
-#endif
                 }
                 
                 // attach files in fileset to message

@@ -420,7 +420,7 @@ namespace NAnt.DotNet.Tasks {
                 }
             } else {
                 // create new domain
-#if (NET_4_0)
+#if NET40_OR_GREATER
                 AppDomain newDomain = AppDomain.CreateDomain("LicenseGatheringDomain");
                 LicenseGatherer licenseGatherer = (LicenseGatherer)
                     newDomain.CreateInstanceAndUnwrap(typeof(LicenseGatherer).Assembly.FullName,

@@ -561,12 +561,9 @@ namespace NAnt.VSNet {
             }
 
             try {
-#if NET_2_0
                 Uri uri = null;
                 Uri.TryCreate(translatedPath, UriKind.Absolute, out uri);
-#else
-                Uri uri = new Uri(translatedPath);
-#endif
+
                 if(uri==null) {
                     translatedPath = FileUtils.GetFullPath(FileUtils.CombinePaths( 
                         solutionDir, translatedPath));

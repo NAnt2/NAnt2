@@ -32,16 +32,12 @@ jobs:
               call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
               where resgen
         shell: cmd
-      - name: Build on .NET framework with nmake
-        run: |
-              call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-              nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
-        shell: cmd
-      - name: Run tests on .NET framework with nmake
-        run: |
-              call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
-              nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
-        shell: cmd
+      - name: Build on .NET framework
+        run: ./build.ps1 -Tasks Build-NAnt -BuildTarget 'net-4.5' -Version ${{env.PROJECT_VERSION}} -BuildNumber ${{github.run_number}}
+        shell: pwsh
+      - name: Run tests on .NET framework
+        run: ./build.ps1 -Tasks Build-NAnt -BuildTarget 'net-4.5' -Version ${{env.PROJECT_VERSION}} -BuildNumber ${{github.run_number}}
+        shell: pwsh
   nix-build:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -62,17 +58,9 @@ jobs:
                 export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
               fi
         shell: bash
-      - name: Build with make
-        run: |
-                if [ "${RUNNER_OS}" == "macOS" ]; then
-                  export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
-                fi
-                make clean build-nant TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
-        shell: bash
-      - name: Run tests with make
-        run: |
-                if [ "${RUNNER_OS}" == "macOS" ]; then
-                  export PKG_CONFIG_PATH=/opt/local/lib/pkgconfig:/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/
-                fi
-                make clean run-test TARGET=mono-4.5 MCS="mcs -sdk:4.5" build=${{github.run_number}} version=${{env.PROJECT_VERSION}}
-        shell: bash
+      - name: Build
+        run: ./build.ps1 -Tasks Build-NAnt -BuildTarget 'net-4.5' -Version ${{env.PROJECT_VERSION}} -BuildNumber ${{github.run_number}}
+        shell: pwsh
+      - name: Run tests
+        run: ./build.ps1 -Tasks Run-Test -BuildTarget 'net-4.5' -Version ${{env.PROJECT_VERSION}} -BuildNumber ${{github.run_number}}
+        shell: pwsh

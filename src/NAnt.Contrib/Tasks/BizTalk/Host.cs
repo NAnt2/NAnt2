@@ -20,9 +20,7 @@
 
 using System;
 using System.Globalization;
-using System.IO;
 using System.Management;
-
 using NAnt.Core;
 using NAnt.Core.Attributes;
 using NAnt.Core.Util;

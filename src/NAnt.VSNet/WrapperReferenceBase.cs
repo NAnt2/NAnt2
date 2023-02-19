@@ -25,9 +25,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-#if NET_2_0
 using System.Runtime.InteropServices.ComTypes;
-#endif
 using System.Xml;
 
 using Microsoft.Win32;
@@ -354,11 +352,7 @@ namespace NAnt.VSNet {
                     Location.UnknownLocation);
             }
 
-#if NET_2_0
             return Marshal.GetTypeLibName((ITypeLib) typeLib);
-#else
-            return Marshal.GetTypeLibName((UCOMITypeLib) typeLib);
-#endif
         }
 
         #endregion Protected Instance Methods
