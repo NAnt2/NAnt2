@@ -43,7 +43,7 @@ build_script:
 #  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-3.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
 #  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
 #  - nmake -f Makefile.nmake build-nant prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
-  - ps: .\build.ps1 -Tasks Build-NAnt -BuildTarget 'net-4.5' -Version $env:NEXT_VERSION -BuildNumber $env:APPVEYOR_BUILD_NUMBER
+  - pwsh: .\build.ps1 -Tasks Build-NAnt -BuildTarget 'net-4.5' -Version $env:NEXT_VERSION -BuildNumber $env:APPVEYOR_BUILD_NUMBER
 
 #---------------------------------#
 #       tests configuration       #
@@ -53,14 +53,14 @@ test_script:
 #  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-3.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
 #  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.0 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
 #  - nmake -f Makefile.nmake run-test prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER% version=%NEXT_VERSION%
-  - ps: .\build.ps1 -Tasks Run-Test -BuildTarget 'net-4.5' -Version $env:NEXT_VERSION -BuildNumber $env:APPVEYOR_BUILD_NUMBER
+  - pwsh: .\build.ps1 -Tasks Run-Test -BuildTarget 'net-4.5' -Version $env:NEXT_VERSION -BuildNumber $env:APPVEYOR_BUILD_NUMBER
 
 after_test:
-  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /o:"nant2" /k:"NAnt2_NAnt2" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SQTOKEN" /d:sonar.github.repository="https://github.com/NAnt2/NAnt2" /d:sonar.analysis.mode="preview" /d:sonar.pullrequest.key="$env:APPVEYOR_PULL_REQUEST_NUMBER" /d:sonar.branch.name="$env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH" /d:sonar.cs.nunit.reportsPaths="reports\NAnt.nunit2.xml" /d:sonar.cs.opencover.reportsPaths="reports\NAnt.coverage.xml" }
-  - ps: if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /o:"nant2" /k:"NAnt2_NAnt2" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SQTOKEN" /d:sonar.github.repository="https://github.com/NAnt2/NAnt2" /d:"sonar.branch.name=$env:APPVEYOR_REPO_BRANCH" /d:sonar.cs.nunit.reportsPaths="reports\NAnt.nunit2.xml" /d:sonar.cs.opencover.reportsPaths="reports\NAnt.coverage.xml" /v:"$env:NEXT_VERSION$env:RELEASE_TYPE" }
+  - pwsh: if ($env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /o:"nant2" /k:"NAnt2_NAnt2" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SQTOKEN" /d:sonar.github.repository="https://github.com/NAnt2/NAnt2" /d:sonar.analysis.mode="preview" /d:sonar.pullrequest.key="$env:APPVEYOR_PULL_REQUEST_NUMBER" /d:sonar.branch.name="$env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH" /d:sonar.cs.nunit.reportsPaths="reports\NAnt.nunit2.xml" /d:sonar.cs.opencover.reportsPaths="reports\NAnt.coverage.xml" }
+  - pwsh: if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /o:"nant2" /k:"NAnt2_NAnt2" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SQTOKEN" /d:sonar.github.repository="https://github.com/NAnt2/NAnt2" /d:"sonar.branch.name=$env:APPVEYOR_REPO_BRANCH" /d:sonar.cs.nunit.reportsPaths="reports\NAnt.nunit2.xml" /d:sonar.cs.opencover.reportsPaths="reports\NAnt.coverage.xml" /v:"$env:NEXT_VERSION$env:RELEASE_TYPE" }
 #  - nmake -f Makefile.nmake run-codequality prefix="" TARGET=net-4.5 build=%APPVEYOR_BUILD_NUMBER%
-  - ps: .\build.ps1 -Tasks Run-Test -BuildTarget 'net-4.5' -Version $env:NEXT_VERSION -BuildNumber $env:APPVEYOR_BUILD_NUMBER
-  - SonarScanner.MSBuild.exe end /d:sonar.login="%SQTOKEN%"
+  - pwsh: .\build.ps1 -Tasks Run-Test -BuildTarget 'net-4.5' -Version $env:NEXT_VERSION -BuildNumber $env:APPVEYOR_BUILD_NUMBER
+  - pwsh: SonarScanner.MSBuild.exe end /d:sonar.login="$env:SQTOKEN"
 
 #---------------------------------#
 #      artifacts configuration    #

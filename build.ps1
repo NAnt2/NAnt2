@@ -314,7 +314,7 @@ Enter-Build {
     if($IsWindows)
     {
         #set environment variables from VsDevCmd without creating a nested prompt 
-        $installationPath = (Join-Path $TOOLS_DIR 'vswhere.exe') -prerelease -latest -property installationPath
+        & $installationPath = $(Join-Path $TOOLS_DIR 'vswhere.exe') -prerelease -latest -property installationPath
         if ($installationPath -and (Test-Path "$installationPath\Common7\Tools\vsdevcmd.bat")) {
         & "${env:COMSPEC}" /s /c "`"$installationPath\Common7\Tools\vsdevcmd.bat`" -no_logo && set" | foreach-object {
             $name, $value = $_ -split '=', 2
