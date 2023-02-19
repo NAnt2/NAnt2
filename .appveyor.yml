@@ -42,15 +42,15 @@ for:
     - set PATH=%JAVA_HOME%\bin;%PATH%
 
   build_script:
-    - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"NAnt2_NAnt2" /o:"nant2" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SQTOKEN" /d:sonar.analysis.mode="preview" /d:sonar.pullrequest.key="$env:APPVEYOR_PULL_REQUEST_NUMBER" /d:sonar.github.repository="https://github.com/NAnt2/NAnt2" /d:sonar.cs.nunit.reportsPaths="reports\NAnt.Tests.xml" /d:sonar.cs.opencover.reportsPaths="reports\coverage.opencover.xml" }
-    - ps: if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"NAnt2_NAnt2" /o:"nant2" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SQTOKEN" /d:sonar.github.repository="https://github.com/NAnt2/NAnt2" /d:sonar.branch.name="$env:APPVEYOR_REPO_BRANCH" /v:$env:NEXT_VERSION /d:sonar.cs.nunit.reportsPaths="reports\NAnt.Tests.xml" /d:sonar.cs.opencover.reportsPaths="reports\coverage.opencover.xml" }
+    #- ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"NAnt2_NAnt2" /o:"nant2" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SQTOKEN" /d:sonar.analysis.mode="preview" /d:sonar.pullrequest.key="$env:APPVEYOR_PULL_REQUEST_NUMBER" /d:sonar.github.repository="https://github.com/NAnt2/NAnt2" /d:sonar.cs.nunit.reportsPaths="reports\NAnt.Tests.xml" /d:sonar.cs.opencover.reportsPaths="reports\coverage.opencover.xml" }
+    #- ps: if (-Not $env:APPVEYOR_PULL_REQUEST_NUMBER) { SonarScanner.MSBuild.exe begin /k:"NAnt2_NAnt2" /o:"nant2" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$env:SQTOKEN" /d:sonar.github.repository="https://github.com/NAnt2/NAnt2" /d:sonar.branch.name="$env:APPVEYOR_REPO_BRANCH" /v:$env:NEXT_VERSION /d:sonar.cs.nunit.reportsPaths="reports\NAnt.Tests.xml" /d:sonar.cs.opencover.reportsPaths="reports\coverage.opencover.xml" }
     - ps: .\build.ps1 -Tasks Build -BuildConfiguration {Debug} -Rebuild
 
   test_script:
     - ps: .\build.ps1 -Tasks Test -BuildConfiguration {Debug} -WithCoverage
 
   after_test:
-    - SonarScanner.MSBuild.exe end /d:"sonar.login=%SQTOKEN%"
+    #- SonarScanner.MSBuild.exe end /d:"sonar.login=%SQTOKEN%"
     - ps: |
         $wc = New-Object 'System.Net.WebClient'
         $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path reports\NAnt.Tests.xml))

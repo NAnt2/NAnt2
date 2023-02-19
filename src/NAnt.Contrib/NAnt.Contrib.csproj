@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RootNamespace>NAnt.Contrib</RootNamespace>
-    <AssemblyName>NAntContrib</AssemblyName>
+    <AssemblyName>NAnt.ContribTasks</AssemblyName>
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <PropertyGroup>
