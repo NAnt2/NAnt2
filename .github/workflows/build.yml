@@ -59,8 +59,8 @@ jobs:
               fi
         shell: bash
       - name: Build
-        run: ./build.ps1 -Tasks Build-NAnt -BuildTarget 'net-4.5' -Version ${{env.PROJECT_VERSION}} -BuildNumber ${{github.run_number}}
+        run: ./build.ps1 -Tasks Build-NAnt -BuildTarget 'mono-4.5' -Version ${{env.PROJECT_VERSION}} -BuildNumber ${{github.run_number}}
         shell: pwsh
       - name: Run tests
-        run: ./build.ps1 -Tasks Run-Test -BuildTarget 'net-4.5' -Version ${{env.PROJECT_VERSION}} -BuildNumber ${{github.run_number}}
+        run: ./build.ps1 -Tasks Run-Test -BuildTarget 'mono-4.5' -Version ${{env.PROJECT_VERSION}} -BuildNumber ${{github.run_number}}
         shell: pwsh
