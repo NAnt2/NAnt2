@@ -24,8 +24,8 @@
   <PropertyGroup>
     <!-- <LangVersion>8.0</LangVersion> -->
     <Platforms>AnyCPU</Platforms>
-    <TargetFramework>net45</TargetFramework>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <!-- <TargetFramework>net45</TargetFramework> -->
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
     <NoWarn>$(NoWarn);NU5104</NoWarn>

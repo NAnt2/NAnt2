@@ -212,12 +212,11 @@ function Get-BuildConfiguration {
         }
     }
     $result.CompilationFlags = $($compilationFlags -join ';')
-    $result.CompilerLanguage = 5 # .NET 4.5 compiler, see https://github.com/philippgille/docs-1/blob/master/docs/csharp/language-reference/compiler-options/langversion-compiler-option.md
+    $result.CompilerLanguage = 7.3 # max supported by .NET 4.5 compiler, see https://github.com/philippgille/docs-1/blob/master/docs/csharp/language-reference/compiler-options/langversion-compiler-option.md
 
     if($result.Platform -in ("net", "mono") -and $result.Version -lt [System.Version]'5.0') {
         #Still on .NET framework
-        $result.Compiler = "csc" #Available since Mono v5, see https://halfblood.pro/the-rough-history-of-the-so-many-c-compilers-f3a85500707c        
-        $result.DotNetRunner = $IsWindows ? "" : "mono"
+        $result.Compiler = "csc" #Available since Mono v5, see https://halfblood.pro/the-rough-history-of-the-so-many-c-compilers-f3a85500707c
         $result.ResgenExe = $IsWindows ? "resgen.exe" : "resgen"
     }
 
@@ -227,6 +226,51 @@ function Get-BuildConfiguration {
     }
 
     return $result
+}
+
+function Invoke-NAnt {
+    <#
+    Invokes NAnt to execute the given target
+    #>
+    param (
+        [Parameter(HelpMessage = "Path to NAnt build file.")]  
+        [string] $BuildFile,
+        [Parameter(HelpMessage = "NAnt target framework.")]  
+        [string] $Framework,
+        [Parameter(HelpMessage = "Project version.")]  
+        [string] $PrjVersion,
+        [Parameter(HelpMessage = "Project build number.")]  
+        [string] $PrjBuildNumber,
+        [Parameter(HelpMessage = "MSBuild configuration. Valid choices are Debug and Release.")]  
+        [string] $BuildMode,
+        [Parameter(HelpMessage = "NAnt target.")]  
+        [string] $NAntTarget
+    )
+
+    assert(Test-Path -LiteralPath $BuildFile) "Provided NAnt build file $BuildFile does not exist"
+
+    if($IsWindows) {
+        & $(Join-Path $BOOTSTRAP_DIR 'NAnt.exe') `
+            -j $(($BuildMode -eq 'Debug') ? '-debug+' : '') `
+            -t:$Framework `
+            -D:project.version=$PrjVersion `
+            -D:build.number=$PrjBuildNumber `
+            -D:project.config=$($BuildMode.ToLower()) `
+            -verbose `
+            -f:$BuildFile `
+            $NAntTarget
+    }
+    else {
+        & mono $(Join-Path $BOOTSTRAP_DIR 'NAnt.exe') `
+            -j $(($BuildMode -eq 'Debug') ? '-debug+' : '') `
+            -t:$Framework `
+            -D:project.version=$PrjVersion `
+            -D:build.number=$PrjBuildNumber `
+            -D:project.config=$($BuildMode.ToLower()) `
+            -verbose `
+            -f:$BuildFile `
+            $NAntTarget
+    }
 }
 
 #####################################################
@@ -307,14 +351,14 @@ Enter-Build {
     Build configuration - compilation flags: $($BUILD_CONFIGURATION.CompilationFlags),
     Build configuration - compiler: $($BUILD_CONFIGURATION.Compiler),
     Build configuration - compiler language: $($BUILD_CONFIGURATION.CompilerLanguage),
-    Build configuration - .net runner: $($BUILD_CONFIGURATION.DotNetRunner),
     Build configuration - resgen executable: $($BUILD_CONFIGURATION.ResgenExe),
     Build configuration - compiler debug flag: $($BUILD_CONFIGURATION.CompilerDebug)"
 
     if($IsWindows)
     {
         #set environment variables from VsDevCmd without creating a nested prompt 
-        & $(Join-Path $TOOLS_DIR 'vswhere.exe') -prerelease -latest -property installationPath | Tee-Object -Variable installationPath
+        $installationPath = & $(Join-Path $TOOLS_DIR 'vswhere.exe') -prerelease -latest -property installationPath
+        Write-Output "Tools install folder: $installationPath"
         if ($installationPath -and (Test-Path "$installationPath\Common7\Tools\vsdevcmd.bat")) {
         & "${env:COMSPEC}" /s /c "`"$installationPath\Common7\Tools\vsdevcmd.bat`" -no_logo && set" | foreach-object {
             $name, $value = $_ -split '=', 2
@@ -322,8 +366,7 @@ Enter-Build {
             }
         }
 
-        exec { & where resgen }
-        exec { & where csc }
+        csc /version
     }
 }
 
@@ -526,7 +569,9 @@ task Build-NAnt Bootstrap, {
     #>
 
     Write-Output "[Build-NAnt] Building all NAnt projects"
-    & $($BUILD_CONFIGURATION.DotNetRunner) $(Join-Path $BOOTSTRAP_DIR 'NAnt.exe') `
+    Invoke-NAnt -BuildFile NAnt.build -Framework $BuildTarget -BuildMode $BuildMode -PrjVersion $Version -PrjBuildNumber $BuildNumber -NAntTarget build
+    <#
+    & $(($BUILD_CONFIGURATION.Platform -eq 'mono') ? 'mono ' : '') `
             -j $(($BuildMode -eq 'Debug') ? '-debug+' : '') `
             -t:$BuildTarget `
             -D:project.version=$Version `
@@ -534,6 +579,8 @@ task Build-NAnt Bootstrap, {
             -verbose `
             -f:NAnt.build `
             build
+    #>
+    assert($LastExitCode -eq 0) "Running NAnt2 with target ''build'' failed"        
     #	$(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build build
 }
 
@@ -544,14 +591,19 @@ task Run-Test Bootstrap, {
     #>
 
     Write-Output "[Run-Test] Building and runing all tests for all NAnt projects"
-    & $($BUILD_CONFIGURATION.DotNetRunner) $(Join-Path $BOOTSTRAP_DIR 'NAnt.exe') `
+    Invoke-NAnt -BuildFile NAnt.build -Framework $BuildTarget -BuildMode $BuildMode -PrjVersion $Version -PrjBuildNumber $BuildNumber -NAntTarget test
+    <#
+    & $($nantRunner + $(Join-Path $BOOTSTRAP_DIR 'NAnt.exe'))  `
             -j $(($BuildMode -eq 'Debug') ? '-debug+' : '') `
             -t:$BuildTarget `
             -D:project.version=$Version `
             -D:build.number=$BuildNumber `
+            -D:project.config=$($BuildMode.ToLower()) `
             -verbose `
             -f:NAnt.build `
             test
+    #>
+    assert($LastExitCode -eq 0) "Running NAnt2 with target ''test'' failed"
     #   $(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build test
 }
 
@@ -562,14 +614,19 @@ task Run-CodeQuality Bootstrap, {
     #>
 
     Write-Output "[Run-Test] Code quality analysis of NAnt projects"
-    & $($BUILD_CONFIGURATION.DotNetRunner) $(Join-Path $BOOTSTRAP_DIR 'NAnt.exe') `
+    Invoke-NAnt -BuildFile NAnt.build -Framework $BuildTarget -BuildMode $BuildMode -PrjVersion $Version -PrjBuildNumber $BuildNumber -NAntTarget run-codequality
+    <#
+    & $(($BUILD_CONFIGURATION.Platform -eq 'mono') ? 'mono ' : '') `
             -j $(($BuildMode -eq 'Debug') ? '-debug+' : '') `
             -t:$BuildTarget `
             -D:project.version=$Version `
             -D:build.number=$BuildNumber `
+            -D:project.config=$($BuildMode.ToLower()) `
             -verbose `
             -f:NAnt.build `
             run-codequality
+    #>
+    assert($LastExitCode -eq 0) "Running NAnt2 with target ''run-codequality'' failed"
     #   $(NANT) $(TARGET_FRAMEWORK) -f:NAnt.build test
 }
 

@@ -7,7 +7,7 @@
 		https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives
 	-->
 
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net[1-4]'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net[1-4]')) or '$(TargetFrameworkVersion)' != ''">
 		<DefineConstants>$(DefineConstants);NETFRAMEWORK</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netcoreapp\d'))">
@@ -20,46 +20,46 @@
 		<DefineConstants>$(DefineConstants);NET</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:11|20|35|40|403|40-client|45|451|452|46|461|462|47|471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:11|20|35|40|403|40-client|45|451|452|46|461|462|47|471|472|48)$')) or '$(TargetFrameworkVersion)' != ''">
 		<DefineConstants>$(DefineConstants);NET11_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:20|35|40|403|40-client|45|451|452|46|461|462|47|471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:20|35|40|403|40-client|45|451|452|46|461|462|47|471|472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:2.0|3.5|4.0|4.5|4.5.1|4.5.2|4.6|4.6.1|4.6.2|4.7|4.7.1|4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET20_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:35|40|403|40-client|45|451|452|46|461|462|47|471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:35|40|403|40-client|45|451|452|46|461|462|47|471|472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:3.5|4.0|4.5|4.5.1|4.5.2|4.6|4.6.1|4.6.2|4.7|4.7.1|4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET35_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:40|403|40-client|45|451|452|46|461|462|47|471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:40|403|40-client|45|451|452|46|461|462|47|471|472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:4.0|4.5|4.5.1|4.5.2|4.6|4.6.1|4.6.2|4.7|4.7.1|4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET40_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:45|451|452|46|461|462|47|471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:45|451|452|46|461|462|47|471|472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:4.5|4.5.1|4.5.2|4.6|4.6.1|4.6.2|4.7|4.7.1|4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET45_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:451|452|46|461|462|47|471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:451|452|46|461|462|47|471|472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:4.5.1|4.5.2|4.6|4.6.1|4.6.2|4.7|4.7.1|4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET451_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:452|46|461|462|47|471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:452|46|461|462|47|471|472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:4.5.2|4.6|4.6.1|4.6.2|4.7|4.7.1|4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET452_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:46|461|462|47|471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:46|461|462|47|471|472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:4.6|4.6.1|4.6.2|4.7|4.7.1|4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET46_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:461|462|47|471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:461|462|47|471|472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:4.6.1|4.6.2|4.7|4.7.1|4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET461_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:462|47|471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:462|47|471|472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:4.6.2|4.7|4.7.1|4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET462_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:47|471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:47|471|472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:4.7|4.7.1|4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET47_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:471|472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:471|472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:4.7.1|4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET471_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:472|48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:472|48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:4.7.2|4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET472_OR_GREATER</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:48)$'))">
+	<PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net(?:48)$')) or $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFrameworkVersion)', '^v(?:4.8)$'))">
 		<DefineConstants>$(DefineConstants);NET48_OR_GREATER</DefineConstants>
 	</PropertyGroup>
 
