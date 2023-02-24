@@ -20,6 +20,7 @@ bld/
 [Oo]bj/
 [Rr]eports/
 .sonarqube/
+.sarif/
 generatedJUnitFiles/
 #SolutionInfo.cs
 

@@ -786,6 +786,12 @@
         </if>
         <call target="set-${framework::get-target-framework()}-framework-configuration" />
     </target>
+    <target name="set-net-4.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="net-4.0" />
+        <property name="current.build.defines" value="${build.defines}NETFRAMEWORK;NET40;NET40_OR_GREATER;NET40_OR_LESSER;NET45_OR_LESSER;NET451_OR_LESSER;NET452_OR_LESSER;NET46_OR_LESSER;NET461_OR_LESSER;NET462_OR_LESSER;NET47_OR_LESSER;NET471_OR_LESSER;NET472_OR_LESSER;NET48_OR_LESSER" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
     <target name="set-net-4.5-framework-configuration">
         <property name="nant.settings.currentframework" value="net-4.5" />
         <property name="current.build.defines" value="${build.defines}NETFRAMEWORK;NET45;NET40_OR_GREATER;NET45_OR_GREATER;NET45_OR_LESSER;NET451_OR_LESSER;NET452_OR_LESSER;NET46_OR_LESSER;NET461_OR_LESSER;NET462_OR_LESSER;NET47_OR_LESSER;NET471_OR_LESSER;NET472_OR_LESSER;NET48_OR_LESSER" dynamic="true" />
@@ -843,6 +849,12 @@
     <target name="set-net-4.8-framework-configuration">
         <property name="nant.settings.currentframework" value="net-4.8" />
         <property name="current.build.defines" value="${build.defines}NETFRAMEWORK;NET48;NET40_OR_GREATER;NET45_OR_GREATER;NET451_OR_GREATER;NET452_OR_GREATER;NET46_OR_GREATER;NET461_OR_GREATER;NET462_OR_GREATER;NET47_OR_GREATER;NET472_OR_GREATER;NET48_OR_GREATER;NET48_OR_LESSER" dynamic="true" />
+        <property name="link.sdkdoc.version" value="SDK_v1_1" />
+        <property name="link.sdkdoc.web" value="true" />
+    </target>
+    <target name="set-mono-4.0-framework-configuration">
+        <property name="nant.settings.currentframework" value="mono-4.0" />
+        <property name="current.build.defines" value="${build.defines}MONO;NETFRAMEWORK;NET40;NET40_OR_GREATER;NET40_OR_LESSER;NET45_OR_LESSER;NET451_OR_LESSER;NET452_OR_LESSER;NET46_OR_LESSER;NET461_OR_LESSER;NET462_OR_LESSER;NET47_OR_LESSER;NET471_OR_LESSER;NET472_OR_LESSER;NET48_OR_LESSER" dynamic="true" />
         <property name="link.sdkdoc.version" value="SDK_v1_1" />
         <property name="link.sdkdoc.web" value="true" />
     </target>

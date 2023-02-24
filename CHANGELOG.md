@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.93 Unreleased]
+## v0.93 - Unreleased
 
 ### Added 
 - **NAnt.Contrib** is now part of NAnt2 project [NAnt2#77](https://github.com/NAnt2/NAnt2/issues/77)
@@ -93,4 +93,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-## [0.92] - 2012-06-09
+## v0.92 - 2012-06-09
