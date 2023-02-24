@@ -368,9 +368,9 @@ task Run-CodeQuality Bootstrap, {
         -BuildMode $BuildMode `
         -PrjVersion $Version `
         -PrjBuildNumber $BuildNumber `
-        -NAntTarget run-codequality
+        -NAntTarget code.quality
     
-    assert($LastExitCode -eq 0) "Running NAnt2 with target ''run-codequality'' failed"
+    assert($LastExitCode -eq 0) "Running NAnt2 with target ''code.quality'' failed"
 }
 
 task Stage {
