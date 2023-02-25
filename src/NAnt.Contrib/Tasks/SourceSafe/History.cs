@@ -1,4 +1,5 @@
 #region GNU General Public License 
+
 //
 // NAntContrib
 // Copyright (C) 2001-2004 Gerry Shaw
@@ -19,7 +20,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
 // Jay Vilalta (jvilalta@users.sourceforge.net)
-//
+// Simona Avornicesei (simona@avornicesei.com)
+
 #endregion
 
 using System;
@@ -205,6 +207,9 @@ namespace NAnt.Contrib.Tasks.SourceSafe {
 
                 //Setup the XmlOutput File
                 _outputDoc = new XmlDocument();
+#if NET451_OR_LESSER
+                _outputDoc.XmlResolver = null;
+#endif
                 XmlElement root = _outputDoc.CreateElement("VssHistory");
                 XmlAttribute attrib = _outputDoc.CreateAttribute("FromLabel");
                 attrib.Value = _fromLabel;

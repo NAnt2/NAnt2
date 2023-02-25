@@ -19,6 +19,7 @@
 // Scott Hernandez (ScottHernandez@hotmail.com)
 // William E. Caputo (wecaputo@thoughtworks.com | logosity@yahoo.com)
 // Gert Driesen (drieseng@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections.Specialized;
@@ -313,9 +314,15 @@ namespace NAnt.Core {
             }
 
             XmlTextReader reader = new XmlTextReader(xsltStream, XmlNodeType.Document,null);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+            reader.DtdProcessing = DtdProcessing.Prohibit;
+#endif
 
             //first load in an XmlDocument so we can set the appropriate nant-namespace
             XmlDocument xsltDoc = new XmlDocument();
+#if NET451_OR_LESSER
+            xsltDoc.XmlResolver = null;
+#endif
             xsltDoc.Load(reader);
             xsltDoc.DocumentElement.SetAttribute("xmlns:nant",buildDoc.DocumentElement.NamespaceURI);
 

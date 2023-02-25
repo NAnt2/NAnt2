@@ -17,6 +17,7 @@
 //
 // Scott Hernandez (ScottHernandez@hotmail.com)
 // Jaroslaw Kowalski (jkowalski@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -240,6 +241,9 @@ namespace NAnt.Core.Tasks {
 
         protected static XmlNode[] TextToNodeArray(string text) {
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
 
             return new XmlNode[1] {doc.CreateTextNode(text)};
         }

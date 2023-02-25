@@ -16,6 +16,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Globalization;
@@ -223,6 +224,9 @@ namespace NAnt.Contrib.Tasks.StarTeam {
             try {
                 //load xml document find versions and save incremented version 
                 XmlDocument xmlDoc = new XmlDocument();
+#if NET451_OR_LESSER
+                xmlDoc.XmlResolver = null;
+#endif
                 xmlDoc.Load(stFile.FullName);
                 XmlNode nodeVersion = xmlDoc.DocumentElement.SelectSingleNode("version");
                 if (_versionMajor < 0) {

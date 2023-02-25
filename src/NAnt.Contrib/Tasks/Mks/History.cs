@@ -19,6 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
 // Paul Francis, Edenbrook. (paul.francis@edenbrook.co.uk)
+// Simona Avornicesei (simona@avornicesei.com)
 
 #endregion
 
@@ -89,6 +90,9 @@ namespace NAnt.Contrib.Tasks.Mks {
 
             try {
                 XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+                doc.XmlResolver = null;
+#endif
                 XmlNode root = doc.CreateElement("changes");
                 doc.AppendChild(root);
 
@@ -145,7 +149,7 @@ namespace NAnt.Contrib.Tasks.Mks {
             Open();
 
             try {
-                string cmd = "rlog  --filter=changed --headerFormat='¬' --trailerformat='' --format=¦au^{author}~dt^{date}~de^{description}~mn^{membername}~mr^{memberrev}~rn^{revision} -S '" + _sandbox + "'";
+                string cmd = "rlog  --filter=changed --headerFormat='ï¿½' --trailerformat='' --format=ï¿½au^{author}~dt^{date}~de^{description}~mn^{membername}~mr^{memberrev}~rn^{revision} -S '" + _sandbox + "'";
 
                 string output = MKSExecute(cmd);
                 if (output != "") {
@@ -153,7 +157,7 @@ namespace NAnt.Contrib.Tasks.Mks {
                     HistoryItem hi = new HistoryItem();
                     ChangeHistory memberHistory=new ChangeHistory();
 
-                    string[] memberArray = output.Split("¬".ToCharArray());
+                    string[] memberArray = output.Split("ï¿½".ToCharArray());
 
                     for (int x=1; x<memberArray.Length; x++) {
                         string memberLine = memberArray[x];
@@ -161,7 +165,7 @@ namespace NAnt.Contrib.Tasks.Mks {
                         memberHistory = new ChangeHistory();
                         memberFiles.Add(memberHistory);
 
-                        string[] revisionArray = memberLine.Split("¦".ToCharArray());
+                        string[] revisionArray = memberLine.Split("ï¿½".ToCharArray());
                         for(int y=1; y < revisionArray.Length; y++) {
                             hi = new HistoryItem();
                             memberHistory.RevisionHistory.Add(hi);

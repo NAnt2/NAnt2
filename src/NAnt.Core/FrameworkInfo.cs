@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Ian MacLean (imaclean@gmail.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -748,6 +749,9 @@ namespace NAnt.Core {
 
             // create XmlDocument from project node
             XmlDocument projectDoc = new XmlDocument();
+#if NET451_OR_LESSER
+            projectDoc.XmlResolver = null;
+#endif
             projectDoc.LoadXml(projectNode.OuterXml);
 
             // create and execute project

@@ -18,6 +18,7 @@
 // Gerry Shaw (gerry_shaw@yahoo.com)
 // Ian MacLean (ian_maclean@another.com)
 // Giuseppe Greco (giuseppe.greco@agamura.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections.Specialized;
@@ -260,6 +261,9 @@ namespace NAnt.DotNet.Tasks {
                 // write out the namespace summary nodes
                 try {
                     XmlTextReader tr = new XmlTextReader(summaryPath);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+                    tr.DtdProcessing = DtdProcessing.Prohibit;
+#endif
                     tr.MoveToContent();   // skip XmlDeclaration  and Processing Instructions                                               
                     sb.Append(tr.ReadOuterXml());
                     tr.Close();

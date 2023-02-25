@@ -17,6 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
 // Richard Adleta (richardadleta@yahoo.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -62,6 +63,9 @@ namespace Tests.NAnt.Contrib.Tasks.SourceSafe {
 
             //make the DeleteTask happy by giving it a dummy project file to reference
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.LoadXml("<project name='test'/>");
             _deleteTask.Project = new Project(doc, Level.Info, 0);
         }

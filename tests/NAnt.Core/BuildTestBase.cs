@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Gerry Shaw (gerry_shaw@yahoo.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.IO;
@@ -241,6 +242,9 @@ namespace Tests.NAnt.Core {
         /// </returns>
         protected Project CreateEmptyProject() {
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.AppendChild(doc.CreateElement("project"));
             return new Project(doc, Level.Info, 0);
         }

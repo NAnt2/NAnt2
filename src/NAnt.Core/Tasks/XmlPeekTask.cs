@@ -18,6 +18,7 @@
 // Ian McLean (ianm@activestate.com)
 // Mitch Denny (mitch.denny@monash.net)
 // Charles Chan (cchan_qa@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Globalization;
@@ -187,6 +188,9 @@ namespace NAnt.Core.Tasks {
 
             try {
                 document = new XmlDocument();
+#if NET451_OR_LESSER
+                document.XmlResolver = null;
+#endif
                 document.Load(fileName);
                 return document;
             } catch (Exception ex) {

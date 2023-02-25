@@ -17,6 +17,7 @@
 
 // Ian MacLean (ian_maclean@another.com)
 // Gerry Shaw (gerry_shaw@yahoo.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Globalization;
@@ -38,6 +39,9 @@ namespace NAnt.NUnit1.Types {
         /// </summary>
         public XmlResultFormatter() {
             _document = new XmlDocument();
+#if NET451_OR_LESSER
+            _document.XmlResolver = null;
+#endif
         }
 
         #endregion Public Instance Constructors

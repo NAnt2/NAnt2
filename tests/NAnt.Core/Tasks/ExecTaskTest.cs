@@ -14,8 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+//
 // Gerry Shaw (gerry_shaw@yahoo.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections.Generic;
@@ -288,6 +289,9 @@ namespace Tests.NAnt.Core.Tasks {
         {
             // Create buildfile
             XmlDocument buildFile = new XmlDocument();
+#if NET451_OR_LESSER
+            buildFile.XmlResolver = null;
+#endif
             XmlElement element = buildFile.CreateElement("project");
             XmlAttribute projectName = buildFile.CreateAttribute("name");
             projectName.Value = this.TestProjectName;

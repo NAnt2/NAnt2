@@ -18,6 +18,7 @@
 // Mike Two (2@thoughtworks.com or mike2@nunit.org)
 // Tomas Restrepo (tomasr@mvps.org)
 // Ryan Boggs (rmboggs@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections.Generic;
@@ -466,6 +467,9 @@ namespace NAnt.NUnit2.Tasks {
                 ResourceManager resourceManager = new ResourceManager("NUnit.Util.Transform", assembly);
                 string xmlData = (string) resourceManager.GetObject("Summary.xslt", CultureInfo.InvariantCulture);
                 transformReader = new XmlTextReader(new StringReader(xmlData));
+#if NET40_OR_GREATER && NET451_OR_LESSER
+                transformReader.DtdProcessing = DtdProcessing.Prohibit;
+#endif
             } else {
                 if (!test.XsltFile.Exists) {
                     throw new BuildException(string.Format(CultureInfo.InvariantCulture, 
@@ -473,6 +477,9 @@ namespace NAnt.NUnit2.Tasks {
                         Location);
                 }
                 transformReader = new XmlTextReader(test.XsltFile.FullName);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+                transformReader.DtdProcessing = DtdProcessing.Prohibit;
+#endif
             }
             
             return transformReader;

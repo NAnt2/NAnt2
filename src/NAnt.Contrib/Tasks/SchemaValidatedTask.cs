@@ -17,6 +17,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -103,6 +104,9 @@ namespace NAnt.Contrib.Tasks {
                 // load schema resource
                 XmlTextReader tr = new XmlTextReader(
                     schemaStream, XmlNodeType.Element, null);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+                tr.DtdProcessing = DtdProcessing.Prohibit;
+#endif
                 
                 // Add the schema to a schema collection
                 XmlSchema schema = XmlSchema.Read(tr, null);
@@ -122,6 +126,9 @@ namespace NAnt.Contrib.Tasks {
                 taskXml.SetAttribute("xmlns", xmlNamespace);
                 XmlTextReader textReader = new XmlTextReader(taskXml.OuterXml, 
                     XmlNodeType.Element, ctx);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+                textReader.DtdProcessing = DtdProcessing.Prohibit;
+#endif
 
                 // Copy the node from the TextReader and indent it (for error
                 // reporting, since NAnt does not retain formatting during a load)
@@ -134,6 +141,9 @@ namespace NAnt.Contrib.Tasks {
                 //textWriter.Close();
                 XmlTextReader formattedTextReader = new XmlTextReader(
                     stringWriter.ToString(), XmlNodeType.Document, ctx);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+                formattedTextReader.DtdProcessing = DtdProcessing.Prohibit;
+#endif
 
                 // Validate the Task's XML against its schema
                 XmlValidatingReader validatingReader = new XmlValidatingReader(
@@ -169,6 +179,9 @@ namespace NAnt.Contrib.Tasks {
 
                 XmlTextReader taskSchemaReader = new XmlTextReader(
                     taskXml.OuterXml, XmlNodeType.Element, context);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+                taskSchemaReader.DtdProcessing = DtdProcessing.Prohibit;
+#endif
 
                 // Deserialize from the Task's XML to the schema wrapper object
                 _schemaObject = taskSerializer.Deserialize(taskSchemaReader);

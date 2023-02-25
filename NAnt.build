@@ -785,6 +785,7 @@
             <fail message="The '${framework::get-target-framework()}' framework is not supported by this version of NAnt." />
         </if>
         <call target="set-${framework::get-target-framework()}-framework-configuration" />
+        <echo>Compilation flags for selected framework: ${current.build.defines}</echo>
     </target>
     <target name="set-net-4.0-framework-configuration">
         <property name="nant.settings.currentframework" value="net-4.0" />

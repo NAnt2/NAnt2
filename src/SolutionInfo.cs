@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfigurationAttribute("rc")]
 [assembly: AssemblyCompanyAttribute("")]
 [assembly: AssemblyProductAttribute("NAnt")]
-[assembly: AssemblyCopyrightAttribute("Copyright (C) 2001-2012 Gerry Shaw, 2019-2023 Simona Avornicesei")]
+[assembly: AssemblyCopyrightAttribute("Copyright (C) 2001-2012 Gerry Shaw, 2019-2023 Simona Avornicesei & contributors")]
 [assembly: AssemblyTrademarkAttribute("")]
 [assembly: AssemblyCultureAttribute("")]
 [assembly: AssemblyVersionAttribute("0.93.0.0")]

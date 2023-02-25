@@ -17,6 +17,7 @@
 //
 // Ian MacLean (ian_maclean@another.com)
 // Gerry Shaw (gerry_shaw@yahoo.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Globalization;
@@ -143,6 +144,9 @@ namespace NAnt.NUnit1.Tasks {
                     // look inside results to see if there were failures or errors
                     try {
                         XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+                        doc.XmlResolver = null;
+#endif
                         doc.Load(logFileName);
 
                         // check for errors or failures

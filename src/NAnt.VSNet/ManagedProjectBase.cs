@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Matthew Mastracci (matt@aclaro.com)
+// Simona Avornicesei (simona@avornicesei.com
 
 using System;
 using System.CodeDom.Compiler;
@@ -1152,6 +1153,9 @@ namespace NAnt.VSNet {
             try {
                 using (StreamReader sr = new StreamReader(fileName, Encoding.Default, true)) {
                     XmlTextReader xtr = new XmlTextReader(sr);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+                    xtr.DtdProcessing = DtdProcessing.Prohibit;
+#endif
                     xtr.MoveToContent();
                     if (xtr.NodeType == XmlNodeType.Element && xtr.LocalName == "EFPROJECT") {
                         return true;

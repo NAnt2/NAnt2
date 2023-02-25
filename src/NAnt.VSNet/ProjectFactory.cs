@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Dmitry Jemerov <yole@yole.ru>
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Xml;
@@ -72,6 +73,9 @@ namespace NAnt.VSNet {
         public XmlDocument LoadProjectXml(string path) {
             if (!_cachedProjectXml.Contains(path)) {
                 XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+                doc.XmlResolver = null;
+#endif
 
                 if (!ProjectFactory.IsUrl(path)) {
                     using (StreamReader sr = new StreamReader(path, Encoding.Default, true)) {

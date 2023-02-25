@@ -19,6 +19,7 @@
 // Ian MacLean (imaclean@gmail.com)
 // Scott Hernandez (ScottHernandez@hotmail.com)
 // William E. Caputo (wecaputo@thoughtworks.com | logosity@yahoo.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -1606,6 +1607,9 @@ namespace NAnt.Core {
             }
 
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
 
             try {
                 doc.Load(path);

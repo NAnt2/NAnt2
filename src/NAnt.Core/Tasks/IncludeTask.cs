@@ -18,6 +18,7 @@
 // Ian MacLean (ian@maclean.ms)
 // Gerry Shaw (gerry_shaw@yahoo.com)
 // Scott Hernandez (ScottHernandez@_yeah_not_really_@hotmail.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -154,6 +155,9 @@ namespace NAnt.Core.Tasks {
                 return;
             } else {
                 XmlDocument mapDoc = new XmlDocument();
+#if NET451_OR_LESSER
+                mapDoc.XmlResolver = null;
+#endif
                 mapDoc.Load(includedFileName);
                 Project.LocationMap.Add(mapDoc);
                 mapDoc = null;
@@ -194,6 +198,10 @@ namespace NAnt.Core.Tasks {
                 // and one to pass to the project class (loadDoc).
                 XmlDocument doc = new XmlDocument();
                 XmlDocument loadDoc = new XmlDocument();
+#if NET451_OR_LESSER
+                doc.XmlResolver = null;
+                loadDoc.XmlResolver = null;
+#endif
                 
                 // Gets the namespace from the main project.
                 string projectNamespaceURI = Project.Document.DocumentElement.NamespaceURI;
@@ -205,6 +213,9 @@ namespace NAnt.Core.Tasks {
                 // into an XmlTextReader so any NamespaceURI may be stripped out before proceeding
                 // further.
                 XmlTextReader includeXmlReader = new XmlTextReader(includedFileName);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+                includeXmlReader.DtdProcessing = DtdProcessing.Prohibit;
+#endif
                 
                 // Turn the namespaces off
                 includeXmlReader.Namespaces = false;

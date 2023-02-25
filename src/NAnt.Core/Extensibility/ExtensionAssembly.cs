@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Gert Driesen (drieseng@users.sourceforge.net.be)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -59,6 +60,9 @@ namespace NAnt.Core.Extensibility {
                     if (s != null) {
                         try {
                             XmlDocument doc = new XmlDocument ();
+#if NET451_OR_LESSER
+                            doc.XmlResolver = null;
+#endif
                             doc.Load (s);
                             _configurationSection = doc.DocumentElement;
                         } finally {
