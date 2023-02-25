@@ -16,6 +16,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -121,6 +122,9 @@ namespace NAnt.Contrib.Tasks {
 
             foreach ( string file in XmlFileSet.FileNames ) {
                 XmlDocument source = new XmlDocument();
+#if NET451_OR_LESSER
+                source.XmlResolver = null;
+#endif
                 source.Load(file);
                 XmlNode node = summary.ImportNode(source.DocumentElement, true);
                 summary.DocumentElement.AppendChild(node);
@@ -144,6 +148,9 @@ namespace NAnt.Contrib.Tasks {
         /// <returns></returns>
         private XmlDocument CreateSummaryXmlDoc() {
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             XmlElement root = doc.CreateElement("testsummary");
             root.SetAttribute("created", DateTime.Now.ToString());
             doc.AppendChild(root);
@@ -185,6 +192,9 @@ namespace NAnt.Contrib.Tasks {
                 Stream stream = 
                     (Stream)resolver.GetEntity(new Uri(XSL_DEF_FILE), null, null);
                 XmlTextReader reader = new XmlTextReader(XSL_DEF_FILE, stream);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+                reader.DtdProcessing = DtdProcessing.Prohibit;
+#endif
                 xslt.Load(reader, resolver);
             }
             return xslt;

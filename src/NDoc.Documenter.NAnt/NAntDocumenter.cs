@@ -202,6 +202,9 @@ namespace NDoc.Documenter.NAnt {
                 // create a xml document that will be transformed using xslt
                 using (FileStream fs = new FileStream(tempFile, FileMode.Open, FileAccess.Read, FileShare.Read)) {
                     _xmlDocumentation = new XmlDocument();
+#if NET451_OR_LESSER
+                    _xmlDocumentation.XmlResolver = null;
+#endif
                     _xmlDocumentation.Load(fs);
                 }
             } finally {

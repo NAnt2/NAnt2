@@ -17,6 +17,7 @@
 //
 // Ian MacLean (imaclean@gmail.com)
 // Gerry Shaw (gerry_shaw@yahoo.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -92,6 +93,9 @@ namespace NAnt.Core {
 
             // Load text reader.
             XmlTextReader reader = new XmlTextReader(fileName);
+//#if NET40_OR_GREATER && NET451_OR_LESSER
+            reader.DtdProcessing = DtdProcessing.Parse;
+//#endif
             try {
                 map.Add((object) "/", (object) new TextPosition(1, 1));
 

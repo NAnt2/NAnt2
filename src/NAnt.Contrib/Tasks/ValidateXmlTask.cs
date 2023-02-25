@@ -16,6 +16,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System.Globalization;
 using System.Xml;
@@ -127,8 +128,10 @@ namespace NAnt.Contrib.Tasks {
 
         private void ValidateFile(string file, XmlSchemaCollection schemas) {
             // load xml file
-            XmlReader xmlReader = new XmlTextReader(file);
-
+            XmlTextReader xmlReader = new XmlTextReader(file);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+            xmlReader.DtdProcessing = DtdProcessing.Prohibit;
+#endif
             // create validating reader
             XmlValidatingReader valReader = new XmlValidatingReader(xmlReader);
 

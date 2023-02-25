@@ -19,6 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
 // Brant Carter (brantcarter@hotmail.com)
+// Simona Avornicesei (simona@avornicesei.com)
 #endregion
 
 using System;
@@ -80,6 +81,9 @@ namespace NAnt.Contrib.Tasks.SourceSafe {
 
                 //Setup the XmlOutput File
                 _outputDoc = new XmlDocument();
+#if NET451_OR_LESSER
+                _outputDoc.XmlResolver = null;
+#endif
                 XmlElement root = _outputDoc.CreateElement("vssdiff");
                 XmlAttribute attrib = _outputDoc.CreateAttribute ("label");
                 attrib.Value = Label;

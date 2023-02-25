@@ -17,6 +17,7 @@
 //
 // Ian McLean (ianm@activestate.com)
 // Mitch Denny (mitch.denny@monash.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Globalization;
@@ -221,6 +222,9 @@ namespace NAnt.Core.Tasks {
                     + " in file '{0}'.", fileName);
 
                 document = new XmlDocument();
+#if NET451_OR_LESSER
+                document.XmlResolver = null;
+#endif
                 document.PreserveWhitespace = preserveWhitespace;
                 document.Load(fileName);
 

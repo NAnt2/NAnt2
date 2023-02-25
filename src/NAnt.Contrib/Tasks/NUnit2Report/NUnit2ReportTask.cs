@@ -26,6 +26,7 @@
 // Gilles Bayon (gilles.bayon@laposte.net)
 // Ian Maclean (imaclean@gmail.com)
 // Gert Driesen (drieseng@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -202,6 +203,9 @@ namespace NAnt.Contrib.Tasks.NUnit2Report {
     
             foreach (string file in XmlFileSet.FileNames) {
                 XmlDocument source = new XmlDocument();
+#if NET451_OR_LESSER
+                source.XmlResolver = null;
+#endif
                 source.Load(file);
                 XmlNode node = _fileSetSummary.ImportNode(source.DocumentElement, true);
                 _fileSetSummary.DocumentElement.AppendChild(node);
@@ -390,6 +394,9 @@ namespace NAnt.Contrib.Tasks.NUnit2Report {
             }
 
             XmlTextReader xtr = new XmlTextReader(xsltStream, XmlNodeType.Document, null);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+            xtr.DtdProcessing = DtdProcessing.Prohibit;
+#endif
             return new XPathDocument(xtr);
         }
 
@@ -402,6 +409,9 @@ namespace NAnt.Contrib.Tasks.NUnit2Report {
                 FileAccess.Read);
 
             XmlTextReader xtr = new XmlTextReader(stream);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+            xtr.DtdProcessing = DtdProcessing.Prohibit;
+#endif
             return new XPathDocument(xtr);
         }
 
@@ -412,6 +422,9 @@ namespace NAnt.Contrib.Tasks.NUnit2Report {
         /// <returns></returns>
         private XmlDocument CreateSummaryXmlDoc() {
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             XmlElement root = doc.CreateElement("testsummary");
             root.SetAttribute("created", DateTime.Now.ToString());
             doc.AppendChild(root);
@@ -454,6 +467,9 @@ namespace NAnt.Contrib.Tasks.NUnit2Report {
 
             // Load the XmlTextReader from the stream
             reader = new XmlTextReader(stream);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+            reader.DtdProcessing = DtdProcessing.Prohibit;
+#endif
             XslTransform xslTransform = new XslTransform();
             XmlResolver resolver = new LocalResXmlResolver();
 

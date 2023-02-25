@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Gert Driesen (drieseng@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.IO;
@@ -55,6 +56,9 @@ namespace Tests.NAnt.Contrib.Tasks {
 
             using (FileStream fs = new FileStream(Path.Combine(TempDirName, "test.xml"), FileMode.Open, FileAccess.Read)) {
                 XmlDocument xmlDoc = new XmlDocument();
+#if NET451_OR_LESSER
+                xmlDoc.XmlResolver = null;
+#endif
                 xmlDoc.Load(fs);
 
                 XmlElement lineCountElement = (XmlElement) xmlDoc.SelectSingleNode(

@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+//
 // William E. Caputo (wecaputo@thoughtworks.com | logosity@yahoo.com)
 // Owen Rogers (orogers@thoughtworks.com | exortech@gmail.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Globalization;
@@ -309,6 +310,9 @@ namespace Tests.NAnt.Core.Util {
 
         private Project CreateProject() {
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.LoadXml(FormatBuildFile("", "", "testproject"));
             return new Project(doc, Level.Info, 0);
         }

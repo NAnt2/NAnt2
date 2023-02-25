@@ -151,6 +151,9 @@ reefer.maddness",
         public void Test_Includes_List() {
             FileSet.IncludesFile elem = new FileSet.IncludesFile();
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.LoadXml( "<includesList name=\"" + Path.Combine(_fileSet.BaseDirectory.FullName, "include.list") + "\" />" );
             elem.Project = CreateFilebasedProject("<project/>" );
             elem.Initialize(doc.DocumentElement);
@@ -162,6 +165,9 @@ reefer.maddness",
         public void Test_Includes_File() {
             FileSet.IncludesFile elem = new FileSet.IncludesFile();
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.LoadXml( "<includesfile name=\"" + Path.Combine(_fileSet.BaseDirectory.FullName, "include.list") + "\" />" );
             elem.Project = CreateFilebasedProject("<project/>" );
             elem.Initialize(doc.DocumentElement);

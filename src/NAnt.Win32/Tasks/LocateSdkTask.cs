@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Ryan Boggs (rmboggs@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using Microsoft.Win32;
 using NAnt.Core;
@@ -316,6 +317,9 @@ namespace NAnt.Win32.Tasks
 
                             // If the full file path exists, load the gacutil.exe.config xml file
                             XmlDocument gacXmlDoc = new XmlDocument();
+#if NET451_OR_LESSER
+                            gacXmlDoc.XmlResolver = null;
+#endif
                             gacXmlDoc.Load(netFxXmlFile);
 
                             // Get the supported runtime version from the version attribute

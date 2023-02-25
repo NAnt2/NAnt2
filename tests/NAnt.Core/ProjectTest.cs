@@ -18,6 +18,7 @@
 // Gerry Shaw (gerry_shaw@yahoo.com)
 // Scott Hernandez (ScottHernandez@hotmail.com)
 // William E. Caputo (wecaputo@thoughtworks.com | logosity@yahoo.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.IO;
@@ -81,6 +82,9 @@ namespace Tests.NAnt.Core {
         [Test]
         public void Test_Initialization_DOMBuildFile() {
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.LoadXml(FormatBuildFile("", ""));
             Project p = new Project(doc, Level.Error, 0);
 
@@ -100,6 +104,9 @@ namespace Tests.NAnt.Core {
             MockBuildEventListener b = new MockBuildEventListener();
 
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.LoadXml(FormatBuildFile("", ""));
             Project p = new Project(doc, Level.Info, 0);
 
@@ -114,6 +121,9 @@ namespace Tests.NAnt.Core {
             MockBuildEventListener b = new MockBuildEventListener();
 
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.LoadXml(FormatBuildFile("", ""));
             Project p = new Project(doc, Level.Info, 0);
 
@@ -129,6 +139,9 @@ namespace Tests.NAnt.Core {
             MockBuildEventListener b = new MockBuildEventListener();
 
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.LoadXml(FormatBuildFile("", ""));
             Project p = new Project(doc, Level.Info, 0);
 
@@ -143,6 +156,9 @@ namespace Tests.NAnt.Core {
             MockBuildEventListener b = new MockBuildEventListener();
 
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.LoadXml(FormatBuildFile("", ""));
             Project p = new Project(doc, Level.Info, 0);
 
@@ -157,6 +173,9 @@ namespace Tests.NAnt.Core {
             MockBuildEventListener b = new MockBuildEventListener();
 
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.LoadXml(FormatBuildFile("", ""));
             Project p = new Project(doc, Level.Info, 0);
 
@@ -171,6 +190,9 @@ namespace Tests.NAnt.Core {
             MockBuildEventListener b = new MockBuildEventListener();
 
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             doc.LoadXml(FormatBuildFile("", ""));
             Project p = new Project(doc, Level.Info, 0);
 

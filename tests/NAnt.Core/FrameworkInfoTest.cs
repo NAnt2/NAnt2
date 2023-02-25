@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Gert Driesen (drieseng@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.IO;
@@ -187,6 +188,9 @@ namespace Tests.NAnt.Core {
                 </project>";
 
             XmlDocument configDoc = new XmlDocument ();
+#if NET451_OR_LESSER
+            configDoc.XmlResolver = null;
+#endif
             using (Stream cs = Assembly.GetExecutingAssembly().GetManifestResourceStream("NAnt.Core.Tests.Framework.config")) {
                 configDoc.Load (cs);
             }

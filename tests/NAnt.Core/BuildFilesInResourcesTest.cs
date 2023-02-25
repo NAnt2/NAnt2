@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Scott Hernandez (ScottHernandez@hotmail.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.IO;
@@ -71,6 +72,9 @@ namespace Tests.NAnt.Core {
 
                 try {
                     XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+                    doc.XmlResolver = null;
+#endif
                     doc.Load(buildFile);
                     Project p = new Project(doc, Level.Info, 0);
                     string output = BuildTestBase.ExecuteProject(p);

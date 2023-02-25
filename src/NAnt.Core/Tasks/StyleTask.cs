@@ -20,6 +20,7 @@
 // Scott Hernandez (ScottHernandez@hotmail.com)
 // Tim Noll (tim.noll@gmail.com)
 // Giuseppe Greco (giuseppe.greco@agamura.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections.Specialized;
@@ -438,6 +439,9 @@ namespace NAnt.Core.Tasks {
             }
 
             XmlTextReader xmlReader = new XmlTextReader(uri.ToString(), stream);
+#if NET40_OR_GREATER && NET451_OR_LESSER
+            xmlReader.DtdProcessing = DtdProcessing.Prohibit;
+#endif
             xmlReader.XmlResolver = resolver;
             return new XmlValidatingReader(xmlReader);
         }

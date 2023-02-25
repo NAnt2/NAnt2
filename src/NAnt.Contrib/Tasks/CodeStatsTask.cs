@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
 // Brant Carter (brantcarter@hotmail.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -157,6 +158,9 @@ namespace NAnt.Contrib.Tasks {
 
         protected override void ExecuteTask() {
             XmlDocument doc = new XmlDocument();
+#if NET451_OR_LESSER
+            doc.XmlResolver = null;
+#endif
             XmlNode codeSummaries = null;
 
             // if the output file is specified then write to it

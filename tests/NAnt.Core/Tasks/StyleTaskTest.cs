@@ -14,8 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+//
 // Michael Aird (mike@airdian.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.IO;
@@ -342,6 +343,9 @@ namespace Tests.NAnt.Core.Tasks {
             // ensure output file contains expected content
             using (FileStream fs = File.OpenRead(outputFile)) {
                 XmlDocument xmlDoc = new XmlDocument();
+#if NET451_OR_LESSER
+                xmlDoc.XmlResolver = null;
+#endif
                 xmlDoc.Load(fs);
                 XmlNode textNode = xmlDoc.SelectSingleNode("//a/text()");
                 Assert.IsNotNull(textNode, "XPath expression \"//a/text()\" did not result in a matching node: " + xmlDoc.OuterXml);
@@ -426,6 +430,9 @@ namespace Tests.NAnt.Core.Tasks {
             // ensure output file contains expected content
             using (FileStream fs = File.OpenRead(outputFile)) {
                 XmlDocument xmlDoc = new XmlDocument();
+#if NET451_OR_LESSER
+                xmlDoc.XmlResolver = null;
+#endif
                 xmlDoc.Load(fs);
                 XmlNode textNode = xmlDoc.SelectSingleNode("//text/text()");
                 Assert.IsNotNull(textNode, "XPath expression \"//text/text()\" did not result in a matching node: " + xmlDoc.OuterXml);
