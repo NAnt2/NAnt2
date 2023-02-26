@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <!-- continue loading the rest of Directory.Build.targets files in the directory hierarchy -->
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)..\'))" />
+
+    <PropertyGroup>
+      <!-- generate documentation file just for projects in /src folder -->    
+      <DocumentationFile>$([System.IO.Path]::Combine($(OutputPath), '$(AssemblyName).xml'))</DocumentationFile>
+    </PropertyGroup>
+</Project>

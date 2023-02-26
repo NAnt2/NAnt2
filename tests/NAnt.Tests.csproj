@@ -2,31 +2,12 @@
 <Project ToolsVersion="Current" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F77EA08E-9473-436A-BBA3-880139A341B1}</ProjectGuid>
     <RootNamespace>Tests</RootNamespace>
     <AssemblyName>NAnt.Tests</AssemblyName>
     <OutputType>Library</OutputType>
     <RunPostBuildEvent>OnSuccessfulBuild</RunPostBuildEvent>
     <PreBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <OutputPath>..\..\build\Debug\</OutputPath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\build\Release\</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SourceSafe.Interop, Version=5.1.0.0, Culture=neutral, PublicKeyToken=null">
@@ -195,6 +176,14 @@
       <Project>{B50A1067-785B-4686-8FFC-5AF424BEF163}</Project>
       <Name>NAnt.DotNet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\src\NAnt.MSBuild\NAnt.MSBuild.csproj">
+      <Project>{318c04b2-d982-4243-9c6a-ca7e035e927d}</Project>
+      <Name>NAnt.MSBuild</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\NAnt.MSNet\NAnt.MSNet.csproj">
+      <Project>{ed13c268-36de-49ce-b347-c2be03f814b9}</Project>
+      <Name>NAnt.MSNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\src\NAnt.NUnit\NAnt.NUnit.csproj">
       <Project>{00F5C075-9874-4BCE-909A-99C1F600E047}</Project>
       <Name>NAnt.NUnit</Name>
@@ -207,17 +196,66 @@
       <Project>{47503BEE-27D9-4D1C-B8E1-6C9CCC19AEAA}</Project>
       <Name>NAnt.NUnit2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\src\NAnt.SourceControl\NAnt.SourceControl.csproj">
+      <Project>{6b2ec648-8d69-4096-b4f9-6edc0b2f98ef}</Project>
+      <Name>NAnt.SourceControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\src\NAnt.VisualCpp\NAnt.VisualCpp.csproj">
       <Project>{A154DB17-7263-44E3-838E-1E4C4946B7D8}</Project>
       <Name>NAnt.VisualCpp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\NAnt.VSNet\NAnt.VSNet.csproj">
+      <Project>{dd434690-b4df-4bf9-91fe-f139a41e2474}</Project>
+      <Name>NAnt.VSNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\NAnt.Win32\NAnt.Win32.csproj">
+      <Project>{c66545a2-6fec-4a38-937a-5b25e61ee8a1}</Project>
+      <Name>NAnt.Win32</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Nant.Contrib\NAnt.Contrib.build" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NAnt.Core\Resources\Build.Files\Invalid\BadRoot.xml">
+      <LogicalName>XML_.Build.Files.Invalid.BadRoot.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NAnt.Core\Resources\Build.Files\Invalid\If-NoCondition.xml" >
+      <LogicalName>XML_.Build.Files.Invalid.If-NoCondition.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NAnt.Core\Resources\Build.Files\Invalid\MismatchedNS.xml" >
+      <LogicalName>XML_.Build.Files.Invalid.MismatchedNS.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NAnt.Core\Resources\Build.Files\Invalid\mixedroot.xml" >
+      <LogicalName>XML_.Build.Files.Invalid.mixedroot.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NAnt.Core\Resources\Build.Files\Valid\Comments.xml" >
+      <LogicalName>XML_.Build.Files.Valid.Comments.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NAnt.Core\Resources\Build.Files\Valid\CommentsWithNS.xml" >
+      <LogicalName>XML_.Build.Files.Valid.CommentsWithNS.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NAnt.Core\Resources\Build.Files\Valid\DocType.xml" >
+      <LogicalName>XML_.Build.Files.Valid.DocType.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NAnt.Core\Resources\Build.Files\Valid\NamespacePrefix1.xml" >
+      <LogicalName>XML_.Build.Files.Valid.NamespacePrefix1.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NAnt.Core\Resources\Build.Files\Valid\NamespacePrefix2.xml" >
+      <LogicalName>XML_.Build.Files.Valid.NamespacePrefix2.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NAnt.Core\Resources\Build.Files\Valid\Namespaces.xml" >
+      <LogicalName>XML_.Build.Files.Valid.Namespaces.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NAnt.Core\Resources\Build.Files\Valid\Namespaces2.xml" >
+      <LogicalName>XML_.Build.Files.Valid.Namespaces2.xml</LogicalName>
+    </EmbeddedResource>
+    <Content Include="NAnt.Core\Resources\readme.txt" />
+  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>
       pwsh -Command "Copy-Item -Path (Join-Path $(SolutionDir) 'src' 'NAnt.Console' 'App.config') -Destination (Join-Path $(TargetDir) 'NAnt.Tests.dll.config') -Force"
+      pwsh -Command "Copy-Item -Path (Join-Path $(SolutionDir) 'tools' 'cvs.exe') -Destination $(TargetDir) -Force"
     </PostBuildEvent>
   </PropertyGroup>
 </Project>

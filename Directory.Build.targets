@@ -2,6 +2,7 @@
   <Target Name="AfterPrepareForBuild" AfterTargets="PrepareForBuild">
     <!--  Constants: $(DefineConstants) -->
     <Message Text="Product: $(Product),TargetFramework: $(TargetFramework); Compilation Flags: $(DefineConstants)" Importance="High" />
+    <Message Text="Documentation file: $(DocumentationFile)" Importance="High" />
   </Target>
 
     <!-- Removes /bin/Configuration and /obj folders to make sure no strange/previous artifacts are left before build -->
