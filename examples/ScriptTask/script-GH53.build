@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<project xmlns="http://nant.sf.net/release/0.86-beta1/nant.xsd">
+    <script language="C#" prefix="timski">
+        <code />
+    </script>
+</project>

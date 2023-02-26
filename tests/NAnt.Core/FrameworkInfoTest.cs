@@ -191,13 +191,13 @@ namespace Tests.NAnt.Core {
 #if NET451_OR_LESSER
             configDoc.XmlResolver = null;
 #endif
-            using (Stream cs = Assembly.GetExecutingAssembly().GetManifestResourceStream("NAnt.Core.Tests.Framework.config")) {
+            using (Stream cs = Assembly.GetExecutingAssembly().GetManifestResourceStream("Tests.NAnt.Core.Framework.config")) {
                 configDoc.Load (cs);
             }
 
             Project project = CreateFilebasedProject(xml, Level.Info,
                 configDoc.DocumentElement);
-            FrameworkInfo tf = project.Frameworks ["testnet-1.0"];
+            FrameworkInfo tf = project.Frameworks["testnet-1.0"];
             if (!tf.IsValid) {
                 Assert.Ignore(tf.Description + " is not available.");
             }

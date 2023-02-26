@@ -3,31 +3,9 @@
   <PropertyGroup>
     <ProjectGuid>{3F533CCA-9C8F-4D84-8C1A-1F6D89CB5912}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyName>SLiNgshoT.Core</AssemblyName>
-    <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
     <RootNamespace>SLiNgshoT.Core</RootNamespace>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile />
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>false</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile />
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>true</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>pdbonly</DebugType>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">

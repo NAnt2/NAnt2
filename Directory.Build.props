@@ -36,6 +36,25 @@
       and https://github.com/dotnet/designs/blob/main/accepted/2020/or-greater-defines/or-greater-defines.md -->
   <Import Project="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'Constants.props'))" Condition="Exists($([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'Constants.props')))" />
 
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <WarningLevel>4</WarningLevel>
+    <OutputPath>bin\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath>
+    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <WarningLevel>4</WarningLevel>
+    <OutputPath>bin\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath>
+    <DefineConstants>$(DefineConstants);RELEASE;TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'web', 'logo.gif'))" Pack="true" PackagePath="logo.gif"/>
   </ItemGroup>

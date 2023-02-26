@@ -3,30 +3,10 @@
   <PropertyGroup>
     <ProjectGuid>{7B7D512B-FDF9-4F39-9FA2-6986D76F6C13}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>App.ico</ApplicationIcon>
     <AssemblyName>SLiNgshoT</AssemblyName>
-    <DelaySign>false</DelaySign>
     <OutputType>Exe</OutputType>
     <RootNamespace>SLiNgshoT</RootNamespace>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>false</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>true</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>pdbonly</DebugType>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SLiNgshoT.Core\SLiNgshoT.Core.csproj">

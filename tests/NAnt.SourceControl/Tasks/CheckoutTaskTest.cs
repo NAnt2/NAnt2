@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Clayton Harbour (claytonharbour@sporadicism.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System.Globalization;
 using System.IO;
@@ -31,6 +32,7 @@ namespace Tests.NAnt.SourceControl.Tasks {
     /// file from the nant repository to the specified directory.
     /// </summary>
     [TestFixture]
+    [Ignore("Integration tests. Require internet access and a cvs server (currently sf.net is used.")]
     public class CheckoutTaskTest : BuildTestBase {
         #region Private Instance Fields
 

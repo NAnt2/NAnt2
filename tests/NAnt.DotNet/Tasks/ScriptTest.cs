@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 // Scott Hernandez (ScottHernandez@hotmail.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using NAnt.Core;
@@ -104,7 +105,9 @@ namespace Tests.NAnt.Core.Tasks {
                     <testtask1 />
                     <testtask2 />
                 </project>";
-            RunBuild(_xml);
+            //RunBuild(_xml);
+            
+            Assert.DoesNotThrow(() => RunBuild(_xml), "Script with tasks should run");
         }
 
         [Test]
@@ -183,7 +186,8 @@ namespace Tests.NAnt.Core.Tasks {
                     <fail unless=""${schema.type=='System.Xml.Schema.XmlSchemaType'}"" />
                 </project>";
 
-            RunBuild(xml);
+            //RunBuild(xml);
+            Assert.DoesNotThrow(() => RunBuild(xml), "Script with namespace imports should run");
         }
 
         [Test]
@@ -216,7 +220,24 @@ namespace Tests.NAnt.Core.Tasks {
                 </script>
             </project>";
 
-            RunBuild(_xml);
+            //RunBuild(_xml);
+            Assert.DoesNotThrow(() => RunBuild(_xml), "Script with ScriptMain should run");
+        }
+        
+        /// <summary>
+        /// Test for bug #1187957.
+        /// </summary>
+        [Test]
+        public void Test_GH_53() {
+            const string _xml = @"<?xml version=""1.0""?>
+                <project xmlns=""http://nant.sf.net/release/0.92/nant.xsd"">
+                <script language=""C#"" prefix=""timski"">
+                <code />
+                </script>
+                </project>";
+            //RunBuild(_xml);
+            
+            Assert.DoesNotThrow(() => RunBuild(_xml), "Script for GH-53 should run");
         }
     }
 }

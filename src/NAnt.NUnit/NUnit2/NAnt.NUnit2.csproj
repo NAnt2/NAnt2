@@ -2,7 +2,6 @@
 <Project ToolsVersion="Current" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{47503BEE-27D9-4D1C-B8E1-6C9CCC19AEAA}</ProjectGuid>
     <RootNamespace>NAnt.NUnit2</RootNamespace>
     <AssemblyName>NAnt.NUnit2Tasks</AssemblyName>
@@ -10,26 +9,6 @@
     <RunPostBuildEvent>OnSuccessfulBuild</RunPostBuildEvent>
     <PreBuildEvent />
     <PostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <OutputPath>..\..\build\Debug\</OutputPath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DocumentationFile>..\..\build\Debug\NAnt.NUnit2Tasks.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\build\Release\</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>..\..\build\Release\NAnt.NUnit2Tasks.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Xml" />

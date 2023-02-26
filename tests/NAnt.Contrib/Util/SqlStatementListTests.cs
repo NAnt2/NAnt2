@@ -16,6 +16,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 //
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -47,6 +48,7 @@ namespace Tests.NAnt.Contrib.Util {
                 <target name='test' />
             </project>";
 
+        [Test]
         public void TestLoadFromString() {
             string statements = STATEMENT_1 + "\n  " + DELIMITER + STATEMENT_2
                 + DELIMITER + "   \n " + STATEMENT_3;
@@ -60,6 +62,7 @@ namespace Tests.NAnt.Contrib.Util {
             Assert.AreEqual(STATEMENT_3 + Environment.NewLine, list[2]);
         }
 
+        [Test]
         public void TestCommentStripping() {
             string statements = STATEMENT_1 + DELIMITER + "\n //" + STATEMENT_2
                 + DELIMITER + "   \n --" + STATEMENT_3
@@ -73,6 +76,7 @@ namespace Tests.NAnt.Contrib.Util {
             Assert.AreEqual(STATEMENT_1 + Environment.NewLine, list[1]);
         }
 
+        [Test]
         public void TestIgnoreEmptyLines() {
             string statements = STATEMENT_1 + DELIMITER + "\n \n";
 
@@ -83,6 +87,7 @@ namespace Tests.NAnt.Contrib.Util {
             Assert.AreEqual(STATEMENT_1 + Environment.NewLine, list[0]);
         }
 
+        [Test]
         public void TestGoLineBatch() {
             string goDelimiter = "go";
 
@@ -106,6 +111,7 @@ namespace Tests.NAnt.Contrib.Util {
             Assert.AreEqual("-- " + STATEMENT_3 + Environment.NewLine, list[3], "Comment");
         }
 
+        [Test]
         public void TestDifferentGoDelimiters() {
             string goDelimiter1 = "go";
             string goDelimiter2 = "gO";
@@ -130,6 +136,7 @@ namespace Tests.NAnt.Contrib.Util {
             Assert.AreEqual("-- " + STATEMENT_3 + Environment.NewLine, list[3], "Comment");
         }
 
+        [Test]
         public void TestLineSpawningDelimiter() {
             string delimiter = "#";
 
@@ -149,6 +156,7 @@ namespace Tests.NAnt.Contrib.Util {
             Assert.AreEqual("ABC" + Environment.NewLine, list[2], "Statement 3");
         }
 
+        [Test]
         public void TestKeepLineFormatting() {
             string goDelimiter = "go";
 
@@ -163,6 +171,7 @@ namespace Tests.NAnt.Contrib.Util {
             Assert.AreEqual(statements, list[0]);
         }
 
+        [Test]
         public void TestPropertyReplacement() {
             string sqlWithPropertyTags = @"use ${dbName}";
             string expectedSqlStatement = @"use master";
@@ -203,6 +212,7 @@ namespace Tests.NAnt.Contrib.Util {
             }
         }
 
+        [Test]
         public void TestGoSeparatorMustNotSplitGoto() {
             string goDelimiter = "go";
 
