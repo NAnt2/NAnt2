@@ -779,8 +779,9 @@ namespace Tests.NAnt.Core.Tasks
             mailTask.Execute();
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
-            
-            if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+
+            string ccAddresses = _smtpServer.ReceivedEmail[0].Headers.Get("Cc"); 
+            if (!string.IsNullOrEmpty(ccAddresses))
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -815,7 +816,8 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
-            if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+            string ccAddresses = _smtpServer.ReceivedEmail[0].Headers.Get("Cc"); 
+            if (!string.IsNullOrEmpty(ccAddresses))
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -850,7 +852,8 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
-            if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+            string ccAddresses = _smtpServer.ReceivedEmail[0].Headers.Get("Cc"); 
+            if (!string.IsNullOrEmpty(ccAddresses))
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -885,7 +888,8 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
-            if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+            string ccAddresses = _smtpServer.ReceivedEmail[0].Headers.Get("Cc"); 
+            if (!string.IsNullOrEmpty(ccAddresses))
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -920,7 +924,8 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
-            if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+            string ccAddresses = _smtpServer.ReceivedEmail[0].Headers.Get("Cc"); 
+            if (!string.IsNullOrEmpty(ccAddresses))
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -955,7 +960,8 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
-            if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+            string ccAddresses = _smtpServer.ReceivedEmail[0].Headers.Get("Cc"); 
+            if (!string.IsNullOrEmpty(ccAddresses))
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -990,7 +996,8 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
-            if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+            string ccAddresses = _smtpServer.ReceivedEmail[0].Headers.Get("Cc"); 
+            if (!string.IsNullOrEmpty(ccAddresses))
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -1025,7 +1032,8 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
-            if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+            string ccAddresses = _smtpServer.ReceivedEmail[0].Headers.Get("Cc"); 
+            if (!string.IsNullOrEmpty(ccAddresses))
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -1060,7 +1068,8 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
-            if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+            string ccAddresses = _smtpServer.ReceivedEmail[0].Headers.Get("Cc"); 
+            if (!string.IsNullOrEmpty(ccAddresses))
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -1095,7 +1104,8 @@ namespace Tests.NAnt.Core.Tasks
 
             Assert.AreEqual(1, _smtpServer.ReceivedEmailCount);
             
-            if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+            string ccAddresses = _smtpServer.ReceivedEmail[0].Headers.Get("Cc"); 
+            if (!string.IsNullOrEmpty(ccAddresses))
             {
                 string[] ccEmails = GetCcAddressesFromSentMail();
                 
@@ -1733,7 +1743,8 @@ namespace Tests.NAnt.Core.Tasks
         {
             if (_smtpServer.ReceivedEmailCount > 0)
             {
-                if (_smtpServer.ReceivedEmail[0].Headers.ContainsKey("Cc"))
+                string ccAddresses = _smtpServer.ReceivedEmail[0].Headers.Get("Cc"); 
+                if (!string.IsNullOrEmpty(ccAddresses))
                 {
                     string ccEmails = 
                         _smtpServer.ReceivedEmail[0].Headers["Cc"].ToString();
