@@ -1036,11 +1036,11 @@
 
         <!-- Run tests -->
         <!-- ensure configuration file exists for test assembly -->
-        <if test="${not file::exists(path::combine(root.dir, 'build', msbuild.configuration, 'NAnt.Tests.dll.config'))}">
-            <copy file="${root.dir}\build\${msbuild.configuration}\NAnt.exe.config" tofile="${root.dir}\build\${msbuild.configuration}\NAnt.Tests.dll" />
+        <if test="${not file::exists(path::combine(tests.dir, 'bin', msbuild.configuration, 'NAnt.Tests.dll.config'))}">
+            <copy file="${tests.dir}\bin\${msbuild.configuration}\NAnt.exe.config" tofile="${tests.dir}\bin\${msbuild.configuration}\NAnt.Tests.dll" />
         </if>
-        <exec program="${nant::scan-probing-paths('nunit-console.exe')}" workingdir="${root.dir}\build\${msbuild.configuration}" failonerror="false">
-            <arg path="${root.dir}\build\${msbuild.configuration}\NAnt.Tests.dll"/>
+        <exec program="${nant::scan-probing-paths('nunit-console.exe')}" workingdir="${tests.dir}\bin\${msbuild.configuration}" failonerror="false">
+            <arg path="${tests.dir}\bin\${msbuild.configuration}\NAnt.Tests.dll"/>
             <arg value="/noshadow" />
             <arg value="/xml:&quot;${path::combine(reports.dir, 'NAnt.nunit2.xml')}&quot;"	/>
         </exec>
@@ -1051,9 +1051,9 @@
             <arg value="-register:path64"/>
             <arg value="-hideskipped:Filter;Attribute"/>
             <arg value="-mergebyhash"/>
-            <arg value="-targetargs:&quot;\&quot;${root.dir}\build\${msbuild.configuration}\NAnt.Tests.dll\&quot; /noshadow /xml:\&quot;${path::combine(reports.dir, 'NAnt.nunit2.xml')}\&quot;&quot;" />
-            <arg value="-targetdir:&quot;${root.dir}\build\${msbuild.configuration}&quot;"/>
-            <arg value="-searchdirs:&quot;${root.dir}\build\${msbuild.configuration}&quot;" />
+            <arg value="-targetargs:&quot;\&quot;${tests.dir}\bin\${msbuild.configuration}\NAnt.Tests.dll\&quot; /noshadow /xml:\&quot;${path::combine(reports.dir, 'NAnt.nunit2.xml')}\&quot;&quot;" />
+            <arg value="-targetdir:&quot;${tests.dir}\bin\${msbuild.configuration}&quot;"/>
+            <arg value="-searchdirs:&quot;${tests.dir}\bin\${msbuild.configuration}&quot;" />
             <arg value="-filter:+[NAnt.*]* -[*.Tests]* -[*.IntegrationTests]*"/>
             <arg value="-output:&quot;${path::combine(reports.dir, 'NAnt.coverage.xml')}&quot;" />
         </exec>
