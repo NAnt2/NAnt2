@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<project name="MSBuild task examples" default="">
+
+    <target name="build-webforms">
+        <msbuild project="./WebApplication/WebApplication.csproj" target="Clean;Rebuild">
+            <property name="debug" value="true" />
+            <property name="TargetFrameworkVersion" value="4.5" />
+            <arg value="/tv:Current" />
+        </msbuild>
+    </target>
+</project>
