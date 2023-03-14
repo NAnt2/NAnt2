@@ -105,21 +105,9 @@ namespace NAnt.Contrib.Tasks {
         #endregion Public Instance Properties
 
         #region Override implementation of ExternalProgramBase
-
-        /// <summary>
-        /// Gets a value indicating whether the external program is a managed
-        /// application which should be executed using a runtime engine, if 
-        /// configured. 
-        /// </summary>
-        /// <value>
-        /// <see langword="ManagedExecutionMode.Auto" />.
-        /// </value>
-        /// <remarks>
-        /// Modifying this property has no effect.
-        /// </remarks>
-        public override ManagedExecution Managed {
-            get { return ManagedExecution.Auto; }
-            set { }
+        
+        public override string ProgramFileName { 
+            get { return DetermineFilePath(); }
         }
 
         /// <summary>
@@ -233,5 +221,22 @@ namespace NAnt.Contrib.Tasks {
         }
 
         #endregion Override implementation of ExternalProgramBase
+        
+        #region Private Instance Methods
+
+        private string DetermineFilePath()
+        {
+            if (PlatformHelper.IsMono) 
+            {
+                if (ExeName.Equals("msbuild", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return ExeName;
+                }
+            }
+
+            return base.ProgramFileName;
+        }
+
+        #endregion
     }
 }
