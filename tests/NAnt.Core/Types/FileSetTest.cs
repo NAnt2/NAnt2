@@ -390,6 +390,28 @@ reefer.maddness",
             RunBuild(buildXML);
         }
 
+        [Test]
+        public void Bug_GH46_Fileset_include_wildcard()
+        {
+           // Arrange
+           string subPath = Path.Combine(TempDirName, "issue46");
+           Directory.CreateDirectory(subPath);
+           TempFile.Create(Path.Combine(subPath, "ABCDTOTO.txt"));
+           TempFile.Create(Path.Combine(subPath, "ABCTOTO.txt"));
+           TempFile.Create(Path.Combine(subPath, "TOTO.txt"));
+
+           // Act
+           _fileSet = new FileSet();
+           _fileSet.BaseDirectory = new DirectoryInfo(subPath);
+           _fileSet.Includes.Add("???*TOTO.txt");
+           
+           // Assert
+           AssertMatch("ABCDTOTO.txt");
+           AssertMatch("ABCTOTO.txt");
+           // Expect 2 - not including directory
+           Assert.AreEqual(2, _fileSet.FileNames.Count);
+        }
+
         void AssertMatch(string fileName) {
             AssertMatch(fileName, true);
         }

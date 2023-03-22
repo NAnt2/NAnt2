@@ -676,7 +676,7 @@ namespace NAnt.Core {
             int indexOfFirstDirectoryWildcard = s.IndexOf("**");
             int indexOfLastOriginalDirectorySeparator = s.LastIndexOf(Path.DirectorySeparatorChar);
 
-            // search for the first wildcard character (if any) and exclude the rest of the string beginnning from the character
+            // search for the first wildcard character (if any) and exclude the rest of the string beginning from the character
             char[] wildcards = {'?', '*'};
             int indexOfFirstWildcard = s.IndexOfAny(wildcards);
             if (indexOfFirstWildcard != -1) { // if found any wildcard characters
@@ -1095,35 +1095,35 @@ namespace NAnt.Core {
             pattern.Replace(")", @"\)");
             pattern.Replace("+", @"\+");
 
-            // Special case directory seperator string under Windows.
-            string seperator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
-            if (seperator == @"\")
-                seperator = @"\\";
+            // Special case directory separator string under Windows.
+            string separator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
+            if (separator == @"\")
+                separator = @"\\";
 
             // Convert NAnt pattern characters to regular expression patterns.
 
             // Start with ? - it's used below
-            pattern.Replace("?", "[^" + seperator + "]?");
+            pattern.Replace("?", "[^" + separator + "]?");
 
             // SPECIAL CASE: any *'s directory between slashes or at the end of the
             // path are replaced with a 1..n pattern instead of 0..n: (?<=\\)\*(?=($|\\))
             // This ensures that C:\*foo* matches C:\foo and C:\* won't match C:.
-            pattern = new StringBuilder(Regex.Replace(pattern.ToString(), "(?<=" + seperator + ")\\*(?=($|" + seperator + "))", "[^" + seperator + "]+"));
+            pattern = new StringBuilder(Regex.Replace(pattern.ToString(), "(?<=" + separator + ")\\*(?=($|" + separator + "))", "[^" + separator + "]+"));
             
             // SPECIAL CASE: to match subdirectory OR current directory, If
             // we do this then we can write something like 'src/**/*.cs'
             // to match all the files ending in .cs in the src directory OR
             // subdirectories of src.
-            pattern.Replace(seperator + "**" + seperator, seperator + "(.|?" + seperator + ")?" );
-            pattern.Replace("**" + seperator, ".|(?<=^|" + seperator + ")" );
-            pattern.Replace(seperator + "**", "(?=$|" + seperator + ").|" );
+            pattern.Replace(separator + "**" + separator, separator + "(.|?" + separator + ")?" );
+            pattern.Replace("**" + separator, ".|(?<=^|" + separator + ")" );
+            pattern.Replace(separator + "**", "(?=$|" + separator + ").|" );
 
             // .| is a place holder for .* to prevent it from being replaced in next line
             pattern.Replace("**", ".|");
-            pattern.Replace("*", "[^" + seperator + "]*");
+            pattern.Replace("*", "[^" + separator + "]*");
             pattern.Replace(".|", ".*"); // replace place holder string
 
-            // Help speed up the search
+                // Help speed up the search
             if (pattern.Length > 0) {
                 pattern.Insert(0, '^'); // start of line
                 pattern.Append('$'); // end of line
