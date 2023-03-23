@@ -1103,7 +1103,7 @@ namespace NAnt.Core {
             // Convert NAnt pattern characters to regular expression patterns.
 
             // Start with ? - it's used below
-            pattern.Replace("?", "[^" + separator + "]?");
+            pattern.Replace("?", @"\w{1}");
 
             // SPECIAL CASE: any *'s directory between slashes or at the end of the
             // path are replaced with a 1..n pattern instead of 0..n: (?<=\\)\*(?=($|\\))
