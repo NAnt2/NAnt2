@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -43,6 +44,7 @@ namespace NAnt.Contrib.Tasks {
     [TaskName("msbuild")]
     [ProgramLocation(LocationType.FrameworkDir)]
     public class MsbuildTask : ExternalProgramBase {
+
         #region Private Instance Fields
 
         private string _responseFileName;
@@ -51,10 +53,29 @@ namespace NAnt.Contrib.Tasks {
         private string _target;
         private bool _noautoresponse;
         private VerbosityLevel _verbosity = VerbosityLevel.NotSet;
+        private MSBuildVersion _msBuildVersion = MSBuildVersion.v4;
 
         #endregion Private Instance Fields
 
         #region Public Instance Properties
+        
+        /// <summary>
+        /// Do not auto-include the MSBuild.rsp file.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// From MSBuild official documentation <see href="https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-response-files?view=vs-2022"/>:
+        /// <i>Response (.rsp) files are text files that contain MSBuild.exe command-line switches. Each switch can be on a separate line
+        /// or all switches can be on one line. Comment lines are prefaced with a # symbol.
+        /// The @ switch is used to pass another response file to MSBuild.exe.</i>
+        /// </para>
+        /// </remarks>
+        [TaskAttribute("noautoresponse")]
+        [BooleanValidator()]
+        public bool NoAutoResponse {
+            get { return _noautoresponse; }
+            set { _noautoresponse = value; }
+        }
 
         /// <summary>
         /// The project to build.
@@ -84,22 +105,21 @@ namespace NAnt.Contrib.Tasks {
         }
 
         /// <summary>
-        /// Do not auto-include the MSBuild.rsp file.
-        /// </summary>
-        [TaskAttribute("noautoresponse")]
-        [BooleanValidator()]
-        public bool NoAutoResponse {
-            get { return _noautoresponse; }
-            set { _noautoresponse = value; }
-        }
-
-        /// <summary>
         /// Specifies the amount of information to display in the MSBuild log.
         /// </summary>
         [TaskAttribute("verbosity")]
         public VerbosityLevel Verbosity {
             get { return _verbosity; }
             set { _verbosity = value; }
+        }
+        
+        /// <summary>
+        /// Specifies the version of MSBuild that should be used.
+        /// </summary>
+        [TaskAttribute("version")]
+        public MSBuildVersion Version {
+            get { return _msBuildVersion; }
+            set { _msBuildVersion = value; }
         }
 
         #endregion Public Instance Properties
@@ -128,49 +148,72 @@ namespace NAnt.Contrib.Tasks {
             _responseFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
             try {
-                using (StreamWriter writer = new StreamWriter(_responseFileName)) {
-                    writer.WriteLine("/nologo");
+                using (FileStream fileStream = new FileStream(
+                           _responseFileName,
+                           FileMode.CreateNew, FileAccess.Write, FileShare.None,
+                           4096,
+                           FileOptions.None))
+                {
+                    using (StreamWriter writer = new StreamWriter(fileStream))
+                    {
+                        writer.WriteLine("/nologo");
 
-                    if (!Verbose) {
-                        if (Verbosity != VerbosityLevel.NotSet) {
-                            writer.WriteLine("/verbosity:" + Verbosity.ToString().
-                                ToLower(CultureInfo.InvariantCulture));
-                        }
-                    } else {
-                        writer.WriteLine("/verbosity:detailed");
-                    }
-
-                    foreach (PropertyTask property in Properties) {
-                        string val;
-                        // expand properties in context of current project for non-dynamic properties
-                        if (!property.Dynamic) {
-                            val = Project.ExpandProperties(property.Value, Location);
-                        } else {
-                            val = property.Value;
-                        }
-                        writer.WriteLine("/property:\"{0}\"=\"{1}\"", property.PropertyName, val);
-                    }
-
-                    if (Target != null) {
-                        string[] targets = Target.Split(';');
-                        for (int i = 0; i < targets.Length; i++) {
-                            if (targets[i].IndexOf(" ") >= 0) {
-                                targets[i] = String.Format("\"{0}\"", targets[i]);
+                        if (!Verbose)
+                        {
+                            if (Verbosity != VerbosityLevel.NotSet)
+                            {
+                                writer.WriteLine("/verbosity:" + Verbosity.ToString().ToLower(CultureInfo.InvariantCulture));
                             }
                         }
-                        writer.WriteLine("/target:{0}", String.Join(";",targets));
-                    }
+                        else
+                        {
+                            writer.WriteLine("/verbosity:detailed");
+                        }
 
-                    if (NoAutoResponse) {
-                        writer.WriteLine("/noautoresponse");
-                    }
+                        foreach (PropertyTask property in Properties)
+                        {
+                            string val;
+                            // expand properties in context of current project for non-dynamic properties
+                            if (!property.Dynamic)
+                            {
+                                val = Project.ExpandProperties(property.Value, Location);
+                            }
+                            else
+                            {
+                                val = property.Value;
+                            }
 
-                    if (ProjectFile != null) {
-                        writer.WriteLine("\"{0}\"", ProjectFile.FullName);
-                    }
+                            writer.WriteLine("/property:\"{0}\"=\"{1}\"", property.PropertyName, val);
+                        }
 
-                    Log(Level.Verbose, "Starting MSBuild...");
+                        if (Target != null)
+                        {
+                            string[] targets = Target.Split(';');
+                            for (int i = 0; i < targets.Length; i++)
+                            {
+                                if (targets[i].IndexOf(" ") >= 0)
+                                {
+                                    targets[i] = String.Format("\"{0}\"", targets[i]);
+                                }
+                            }
+
+                            writer.WriteLine("/target:{0}", String.Join(";", targets));
+                        }
+
+                        if (NoAutoResponse)
+                        {
+                            writer.WriteLine("/noautoresponse");
+                        }
+
+                        if (ProjectFile != null)
+                        {
+                            writer.WriteLine("\"{0}\"", ProjectFile.FullName);
+                        }
+
+                        Log(Level.Verbose, "Starting MSBuild...");
+                    }
                 }
+
                 base.ExecuteTask();
             } catch (Exception ex) {
                 throw new BuildException("Failed to start MSBuild.", Location, ex);
@@ -181,6 +224,31 @@ namespace NAnt.Contrib.Tasks {
             }
         }
 
+        #endregion Override implementation of ExternalProgramBase
+        
+        #region Private Instance Methods
+
+        private string DetermineFilePath()
+        {
+            if (PlatformHelper.IsMono) 
+            {
+                if (ExeName.Equals("msbuild", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return ExeName;
+                }
+            }
+            else if (PlatformHelper.IsWindows)
+            {
+                
+            }
+
+            return base.ProgramFileName;
+        }
+
+        #endregion
+        
+        #region Types
+        
         [TypeConverter(typeof (VerbosityLevelConverter))]
         public enum VerbosityLevel {
             NotSet, 
@@ -219,24 +287,75 @@ namespace NAnt.Contrib.Tasks {
                 return base.ConvertFrom(context, culture, value);
             }
         }
-
-        #endregion Override implementation of ExternalProgramBase
         
-        #region Private Instance Methods
-
-        private string DetermineFilePath()
+        [TypeConverter(typeof (MSBuildVersionConverter))]
+        public enum MSBuildVersion 
         {
-            if (PlatformHelper.IsMono) 
-            {
-                if (ExeName.Equals("msbuild", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return ExeName;
-                }
-            }
-
-            return base.ProgramFileName;
+            /// <summary>
+            /// Auto-detect MSBuild version to use.
+            /// </summary>
+            Auto,
+            
+            /// <summary>
+            /// MSBuild v4.0
+            /// </summary>
+            v4,
+            
+            /// <summary>
+            /// MSBuild v12.0
+            /// </summary>
+            v12,
+            
+            /// <summary>
+            /// MSBuild v14.0
+            /// </summary>
+            v14,
+            
+            /// <summary>
+            /// MSBuild v15.0
+            /// </summary>
+            v15,
+            
+            /// <summary>
+            /// MSBuild v16.0
+            /// </summary>
+            v16,
+            
+            /// <summary>
+            /// MSBuild v17.0
+            /// </summary>
+            v17
         }
 
+        public class MSBuildVersionConverter : EnumConverter {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="MSBuildVersionConverter" />.
+            /// class.
+            /// </summary>
+            public MSBuildVersionConverter() : base(typeof(MSBuildVersion)) {
+            }
+
+            /// <summary>
+            /// Converts the given object to the type of this converter, using the 
+            /// specified context and culture information.
+            /// </summary>
+            /// <param name="context">An <see cref="ITypeDescriptorContext"/> that provides a format context.</param>
+            /// <param name="culture">A <see cref="CultureInfo"/> object. If a <see langword="null"/> is passed, the current culture is assumed.</param>
+            /// <param name="value">The <see cref="Object"/> to convert.</param>
+            /// <returns>
+            /// An <see cref="Object"/> that represents the converted value.
+            /// </returns>
+            public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
+                if (value is string) {
+                    string stringValue = (string) value;
+                    return Enum.Parse(typeof(MSBuildVersion), stringValue, true);
+                }
+
+                // default to EnumConverter behavior
+                return base.ConvertFrom(context, culture, value);
+            }
+        }
+        
         #endregion
     }
 }
