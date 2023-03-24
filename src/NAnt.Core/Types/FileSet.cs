@@ -52,12 +52,15 @@ namespace NAnt.Core.Types {
     ///     </item>
     ///     <item>
     ///         <description>
-    ///             <para>'<c>?</c>' matches one character</para>
+    ///             <para>'<c>?</c>' matches <b>one</b> character</para>
     ///             <para>For example:</para>
     ///             <para>
     ///             <c>?.cs</c> matches <c>x.cs</c>, <c>A.cs</c>, but not 
     ///             <c>.cs</c> or <c>xyz.cs</c> (both don't have one character
     ///             before <c>.cs</c>).
+    ///             </para>
+    ///             <para>
+    ///             <c>?TOTO.txt</c> matches <c>aTOTO.txt</c> but does not match <c>TOTO.txt</c>.
     ///             </para>
     ///         </description>
     ///     </item>
@@ -87,6 +90,14 @@ namespace NAnt.Core.Types {
     /// There is one "shorthand" - if a pattern ends with <c>/</c> or <c>\</c>, then 
     /// <c>**</c> is appended. For example, <c>mypackage/test/</c> is interpreted as 
     /// if it were <c>mypackage/test/**</c>.
+    /// </para>
+    /// <para>
+    /// One way to validate that the pattern selects the desired files is by using the
+    /// <c>dir</c> command, available on  Linux and Windows.
+    /// For example:
+    /// <code>
+    ///     dir ??TOTO.txt
+    /// <code>
     /// </para>
     /// <h3>Case-Sensitivity</h3>
     /// <para>

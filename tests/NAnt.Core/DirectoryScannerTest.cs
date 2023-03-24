@@ -180,15 +180,15 @@ namespace Tests.NAnt.Core {
         [Test]
         public void Test_WildcardMatching1() {
             string[] includedFileNames = new string[] {
-                                                          Path.Combine(_folder2, "Foo.txt"),
-                                                          Path.Combine(_folder2, "Foo1.txt"),
-                                                          Path.Combine(_folder2, "Foo2.txt"),
+                Path.Combine(_folder2, "Foo1.txt"),
+                Path.Combine(_folder2, "Foo2.txt"),
             };
             string[] excludedFileNames = new string[] {
-                                                          Path.Combine(_folder2, "Foo3"),
-                                                          Path.Combine(_folder2, "Foo4.bar"),
-                                                          Path.Combine(_folder1, "Foo5.txt"),
-                                                          Path.Combine(_folder3, "Foo6.txt")
+                Path.Combine(_folder2, "Foo.txt"),
+                Path.Combine(_folder2, "Foo3"),
+                Path.Combine(_folder2, "Foo4.bar"),
+                Path.Combine(_folder1, "Foo5.txt"),
+                Path.Combine(_folder3, "Foo6.txt")
                                                       };
             _scanner.Includes.Add("folder2/Foo?.txt");
             CheckScan(includedFileNames, excludedFileNames);
