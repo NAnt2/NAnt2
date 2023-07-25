@@ -27,7 +27,7 @@ namespace Tests.NAnt.Core.Util {
     public sealed class TempFile {
         /// <summary>Creates a small temp file returns the file name.</summary>
         public static string Create() {
-            return Create(Path.GetTempFileName());
+            return Create(Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()));
         }
 
         public static string Create(string fileName) {
@@ -36,7 +36,7 @@ namespace Tests.NAnt.Core.Util {
         }
 
         public static string CreateWithContents(string contents) {
-            return CreateWithContents(contents, Path.GetTempFileName());
+            return CreateWithContents(contents, Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()));
         }
 
         public static string CreateWithContents(string contents, string fileName) {

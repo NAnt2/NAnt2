@@ -1747,7 +1747,7 @@ namespace NAnt.VSNet {
 
             try {
                 // get unique temp file name to write command line of build event to
-                batchFile = Path.GetTempFileName();
+                batchFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
                 // remove temp file
                 File.Delete(batchFile);

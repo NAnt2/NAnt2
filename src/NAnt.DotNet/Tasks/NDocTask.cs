@@ -234,7 +234,7 @@ namespace NAnt.DotNet.Tasks {
             }
 
             // write documenter project settings to temp file
-            string projectFileName = Path.GetTempFileName();
+            string projectFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Log(Level.Verbose, ResourceUtils.GetString("String_WritingProjectSettings"), projectFileName);
 
             XmlTextWriter writer = new XmlTextWriter(projectFileName, Encoding.UTF8);

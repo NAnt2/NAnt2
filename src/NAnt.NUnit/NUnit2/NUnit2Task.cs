@@ -380,7 +380,7 @@ namespace NAnt.NUnit2.Tasks {
 
         private void FormatResult(NUnit2Test testElement, TestResult result) {
             // temp file for storing test results
-            string xmlResultFile = Path.GetTempFileName();
+            string xmlResultFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
             try {
                 XmlResultWriter resultWriter = new XmlResultWriter(xmlResultFile);

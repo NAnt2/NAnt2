@@ -317,7 +317,7 @@ namespace NAnt.Contrib.Tasks {
 
             if (!String.IsNullOrEmpty(AnalysisReportFilename) || FailOnAnalysisError) {
                 if (String.IsNullOrEmpty(AnalysisReportFilename)) {
-                    AnalysisReportFilename = Path.GetTempFileName();
+                    AnalysisReportFilename = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
                 }
                 _programArguments.AppendFormat("/o:\"{0}\" ", AnalysisReportFilename);
             }

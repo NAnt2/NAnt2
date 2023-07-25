@@ -2829,7 +2829,7 @@ namespace NAnt.Contrib.Tasks.Msi {
                 database.Open();
 
                 if (msi.debug) {
-                    errorsTempFile = Path.GetTempFileName();
+                    errorsTempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
                     try {
                         // write errors template to file
                         WriteResourceToFile(ErrorsResourceName, errorsTempFile);

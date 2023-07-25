@@ -227,14 +227,15 @@ namespace Tests.NAnt.Contrib.Util {
 
         private static string CreateFileWithContents(string contents) {
             // get path of new temp file
-            string fileName = Path.GetTempFileName();
+            string fileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
             // write the text into the temp file.
-            using (FileStream f = new FileStream(fileName, FileMode.Create)) {
-                StreamWriter s = new StreamWriter(f);
-                s.Write(contents);
-                s.Close();
-                f.Close();
+            using (FileStream f = new FileStream(fileName, FileMode.Create))
+            {
+                using (StreamWriter s = new StreamWriter(f))
+                {
+                    s.Write(contents);    
+                }
             }
 
             // return path of temp file

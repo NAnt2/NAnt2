@@ -49,7 +49,7 @@ namespace Tests.NAnt.Core.Tasks {
             getTask.HttpProxy = _proxy;
 
             string source = "ftp://ftp.info-zip.org/pub/infozip/zlib/zlib.html";
-            string destination = Path.GetTempFileName() + ".html";
+            string destination = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + ".html";
 
             if (File.Exists(destination)) {
                 File.Delete(destination);
@@ -87,7 +87,7 @@ namespace Tests.NAnt.Core.Tasks {
         [Test]
         public void Test_GetLittleFile() {
             string source = "http://nant.sourceforge.net/arrow.gif";
-            string destination = Path.GetTempFileName() + ".gif";
+            string destination = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + ".gif";
 
             {
                 GetTask getTask = new GetTask();
@@ -175,7 +175,7 @@ namespace Tests.NAnt.Core.Tasks {
             getTask.Project = CreateEmptyProject();
 
             string source = "http://www.tolvanen.com/eraser/eraser52.zip";
-            string destination = Path.GetTempFileName() + ".zip";
+            string destination = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + ".zip";
 
             if (File.Exists(destination)) {
                 File.Delete(destination);
@@ -218,7 +218,7 @@ namespace Tests.NAnt.Core.Tasks {
             getTask.HttpProxy = _proxy;
 
             string source = "http://nant.sourceforge.net/index.html";
-            string destination = Path.GetTempFileName() + ".gif";
+            string destination = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()) + ".gif";
 
             if (File.Exists(destination)) {
                 File.Delete(destination);
@@ -259,7 +259,7 @@ namespace Tests.NAnt.Core.Tasks {
             getTask.Source = source;
             Assert.IsTrue(getTask.Source == source, "Source accessor bug");
 
-            string destination = Path.GetTempFileName();
+            string destination = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             getTask.DestinationFile = new FileInfo(destination);
 
             bool ignoreErrors = true;

@@ -27,6 +27,7 @@ namespace Tests.NAnt.Win32.Tasks {
     /// Tests the ReadRegistryTask.
     /// </summary>
     [TestFixture]
+    [Platform(Exclude="Unix,Linux,MacOsX,XBox")]
     public class ReadRegistryTest : BuildTestBase {
 
         [Test]

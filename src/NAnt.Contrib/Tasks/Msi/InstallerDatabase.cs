@@ -157,8 +157,7 @@ namespace NAnt.Contrib.Tasks.Msi {
          */
 
         public void Import(string tableStructureContents) {
-            string tempFilePath = Path.Combine(Path.GetTempPath(), 
-                Path.GetTempFileName());
+            string tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
             try {
                 using (FileStream tableStream = File.Create(tempFilePath)) {

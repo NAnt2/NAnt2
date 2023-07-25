@@ -26,6 +26,8 @@ using Tests.NAnt.Core;
 using Tests.NAnt.Core.Util;
 
 namespace Tests.NAnt.DotNet.Tasks {
+    
+    [Platform(Exclude="Unix,Linux,MacOsX,XBox")]
     [TestFixture]
     public class JscTaskTest : BuildTestBase {
         #region Private Instance Fields

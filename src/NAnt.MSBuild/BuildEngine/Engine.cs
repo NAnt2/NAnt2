@@ -31,40 +31,13 @@ namespace NAnt.MSBuild.BuildEngine {
         }
 
         public static Engine LoadEngine(NAnt.Core.FrameworkInfo framework) {
-            //System.AppDomainSetup myDomainSetup = new System.AppDomainSetup();
-            //myDomainSetup.ApplicationBase = AppDomain.CurrentDomain.BaseDirectory;
-            //myDomainSetup.ApplicationName = "MSBuild";
-
-            //string tempFile = Path.GetTempFileName();
-            //using (StreamWriter sw = File.CreateText(tempFile))
-            //{
-            //    sw.WriteLine(String.Format(
-            //        "<?xml version='1.0'?><configuration><runtime>"
-            //        + "<assemblyBinding xmlns='urn:schemas-microsoft-com:asm.v1'>"
-            //        + "<dependentAssembly><assemblyIdentity name='Microsoft.Build.Framework' publicKeyToken='b03f5f7f11d50a3a' culture='neutral'/><bindingRedirect oldVersion='0.0.0.0-99.9.9.9' newVersion='{0}'/></dependentAssembly>"
-            //        + "<dependentAssembly><assemblyIdentity name='Microsoft.Build.Engine' publicKeyToken='b03f5f7f11d50a3a' culture='neutral'/><bindingRedirect oldVersion='0.0.0.0-99.9.9.9' newVersion='{0}'/></dependentAssembly>"
-            //        + "</assemblyBinding></runtime></configuration>",
-            //        new Version(framework.Version.Major, framework.Version.Minor, 0, 0)));
-            //}
-
-            //myDomainSetup.ConfigurationFile = tempFile;// AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-
-            //var executionAD = AppDomain.CreateDomain(myDomainSetup.ApplicationName,
-            //    AppDomain.CurrentDomain.Evidence, myDomainSetup);
-            //AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(CurrentDomain_AssemblyLoad);
-            //executionAD.AssemblyLoad += new AssemblyLoadEventHandler(executionAD_AssemblyLoad);
-
-            //File.Delete(tempFile);
-
-            //Loader l = (Loader)executionAD.CreateInstanceAndUnwrap(typeof(Loader).Assembly.FullName, typeof(Loader).FullName);
             Loader l = new Loader();
             l.framework = framework;
-            //executionAD.DoCallBack(new CrossAppDomainDelegate(l.DoLoad));
+            
             l.DoLoad();
             return l.engine;            
         }
 
-        //[Serializable]
         public class Loader : MarshalByRefObject {
             public NAnt.Core.FrameworkInfo framework;
             public Engine engine;

@@ -194,7 +194,7 @@ namespace NDoc.Documenter.NAnt {
 
             try {
                 // determine temporary file name
-                tempFile = Path.GetTempFileName();
+                tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
                 // create the master XML document
                 MakeXmlFile(project, tempFile);

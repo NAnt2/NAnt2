@@ -23,6 +23,7 @@
 
   <PropertyGroup>
     <!-- <LangVersion>8.0</LangVersion> -->
+    <LangVersion>7.3</LangVersion>
     <Platforms>AnyCPU</Platforms>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <!-- <TargetFramework>net45</TargetFramework> -->
@@ -55,6 +56,13 @@
     <DefineConstants>$(DefineConstants);RELEASE;TRACE</DefineConstants>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.5.0.73987">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
   <ItemGroup>
     <None Include="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'web', 'logo.gif'))" Pack="true" PackagePath="logo.gif"/>
   </ItemGroup>

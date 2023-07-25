@@ -387,7 +387,7 @@ namespace NAnt.VSNet {
                     // check if project does not contain any sources
                     if (_sourceFiles.Count == 0) {
                         // create temp file
-                        tempFile = Path.GetTempFileName();
+                        tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
                         // add temp file to collection of sources to compile 
                         // as command line compilers require a least one source

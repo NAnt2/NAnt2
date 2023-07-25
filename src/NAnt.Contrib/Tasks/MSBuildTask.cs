@@ -137,7 +137,7 @@ namespace NAnt.Contrib.Tasks {
         /// </summary>
         protected override void ExecuteTask() {
             // create temp response file to hold compiler options
-            _responseFileName = Path.GetTempFileName();
+            _responseFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
             try {
                 using (StreamWriter writer = new StreamWriter(_responseFileName)) {

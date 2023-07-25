@@ -175,7 +175,7 @@ namespace NAnt.VisualCpp.Tasks {
                 Sources.FileNames.Count, OutputFile.FullName);
 
             // Create temp response file to hold compiler options
-            _responseFileName = Path.GetTempFileName();
+            _responseFileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             StreamWriter writer = new StreamWriter(_responseFileName);
 
             try {

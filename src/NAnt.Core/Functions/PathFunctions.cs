@@ -247,7 +247,7 @@ namespace NAnt.Core.Functions {
         /// </returns>
         [Function("get-temp-file-name")]
         public static string GetTempFileName() {
-            return Path.GetTempFileName();
+            return Path.GetRandomFileName();
         }
 
         /// <summary>

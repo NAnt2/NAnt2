@@ -218,7 +218,7 @@ namespace NAnt.Core.Util
         /// </value>
         public static DirectoryInfo GetTempDirectory() {
             // create a uniquely named zero-byte file
-            string tempFile = Path.GetTempFileName();
+            string tempFile = Path.GetRandomFileName();
             // remove the temporary file
             File.Delete(tempFile);
             // create a directory named after the unique temporary file

@@ -79,8 +79,7 @@ namespace Tests.NAnt.Contrib.Tasks.SourceSafe {
             _normalItem.SetType((int) VSSItemType.VSSITEM_FILE);
             _normalItem.Deleted = false;
             _localNormalItemPath = Path.Combine(localProjectPath, _normalItem.Name);
-            StreamWriter s = File.CreateText(_localNormalItemPath);
-            s.Close();
+            File.Open(_localNormalItemPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read).Close();
 
             //a deleted file item that represents an earlier, deleted version of the normal file item
             _normalItemDeleted = new MockVssItem();
@@ -94,8 +93,7 @@ namespace Tests.NAnt.Contrib.Tasks.SourceSafe {
             _item.SetType((int) VSSItemType.VSSITEM_FILE);
             _item.Deleted = true;
             _localItemPath = Path.Combine(localProjectPath, _item.Name);
-            s = File.CreateText(_localItemPath);
-            s.Close();
+            File.Open(_localItemPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read).Close();
 
             //a deleted file item with *no* local copy
             _alreadyGoneItem = new MockVssItem();
@@ -109,8 +107,7 @@ namespace Tests.NAnt.Contrib.Tasks.SourceSafe {
             _readOnlyItem.SetType((int) VSSItemType.VSSITEM_FILE);
             _readOnlyItem.Deleted = true;
             _localReadOnlyItemPath = Path.Combine(localProjectPath, _readOnlyItem.Name);
-            s = File.CreateText(_localReadOnlyItemPath);
-            s.Close();
+            File.Open(_localReadOnlyItemPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read).Close();
             File.SetAttributes(_localReadOnlyItemPath, FileAttributes.ReadOnly);
 
             //a deleted project item whose local copy is located under the base project's local folder and read-only
@@ -120,7 +117,6 @@ namespace Tests.NAnt.Contrib.Tasks.SourceSafe {
             _readOnlySubProject.Deleted = true;
             _localReadOnlySubProjectPath = Path.Combine(localProjectPath, _readOnlySubProject.Name);
             Directory.CreateDirectory(_localReadOnlySubProjectPath);
-            File.SetAttributes(_localReadOnlySubProjectPath, FileAttributes.ReadOnly);
 
             //a deleted file item whose local copy is located under the read-only sub project's local folder 
             //is itself read-only
@@ -129,9 +125,10 @@ namespace Tests.NAnt.Contrib.Tasks.SourceSafe {
             _readOnlySubItem.SetType((int) VSSItemType.VSSITEM_FILE);
             _readOnlySubItem.Deleted = true;
             _localReadOnlySubItemPath = Path.Combine(_localReadOnlySubProjectPath, _readOnlySubItem.Name);
-            s = File.CreateText(_localReadOnlySubItemPath);
-            s.Close();
+            File.Open(_localReadOnlySubItemPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read).Close();
+            
             File.SetAttributes(_localReadOnlySubItemPath, FileAttributes.ReadOnly);
+            File.SetAttributes(_localReadOnlySubProjectPath, FileAttributes.ReadOnly);
 
             //a deleted project item whose local copy is in the base project's local folder
             _subProject = new MockVssItem();
@@ -147,8 +144,7 @@ namespace Tests.NAnt.Contrib.Tasks.SourceSafe {
             _subItem.SetType((int) VSSItemType.VSSITEM_FILE);
             _subItem.Deleted = true;
             _localSubItemPath = Path.Combine(_localSubProjectPath, _subItem.Name);
-            s = File.CreateText(_localSubItemPath);
-            s.Close();
+            File.Open(_localSubItemPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read).Close();
 
             //add the sub file item to the sub project's items collection
             MockVssItems items = new MockVssItems();
