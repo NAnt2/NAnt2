@@ -15,6 +15,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
+
 // Ian MacLean (imaclean@gmail.com)
 // Gerry Shaw (gerry_shaw@yahoo.com)
 // Simona Avornicesei (simona@avornicesei.com)
@@ -239,16 +240,13 @@ namespace NAnt.Core {
 
                 string thisNode = "child::node()[" + index.ToString(CultureInfo.InvariantCulture) + "]";
 
-                if (xpath.Length == 0) {
-                    xpath = thisNode;
-                } else {
-                    // build xpath string
-                    xpath = thisNode + "/" + xpath;
-                }
+                xpath = xpath.Length == 0 
+                    ? thisNode
+                    : $"{thisNode}/{xpath}"; // build xpath string
             }
 
             // prepend slash to ...
-            xpath = "/" + xpath;
+            xpath = $"/{xpath}";
 
             return xpath;
         }
