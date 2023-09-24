@@ -242,11 +242,11 @@ namespace NAnt.Core {
 
                 xpath = xpath.Length == 0 
                     ? thisNode
-                    : $"{thisNode}/{xpath}"; // build xpath string
+                    : thisNode + "/" + xpath; // build xpath string
             }
 
             // prepend slash to ...
-            xpath = $"/{xpath}";
+            xpath = "/" + xpath;
 
             return xpath;
         }
