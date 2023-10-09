@@ -15,8 +15,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
+
 // Martin Aliger (martin_aliger@myrealbox.com)
 // Gert Driesen  (drieseng@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -30,7 +32,7 @@ using NAnt.Core.Tasks;
 using NAnt.Core.Attributes;
 using NAnt.Core.Types;
 
-namespace NAnt.Contrib.Tasks {
+namespace NAnt.Contrib.Tasks.MSBuild {
     /// <summary>
     /// Builds the specified targets in the project file using <c>MSBuild</c>.
     /// </summary>
@@ -247,115 +249,7 @@ namespace NAnt.Contrib.Tasks {
 
         #endregion
         
-        #region Types
-        
-        [TypeConverter(typeof (VerbosityLevelConverter))]
-        public enum VerbosityLevel {
-            NotSet, 
-            Quiet,
-            Minimal,
-            Normal,
-            Detailed,
-            Diagnostic
-        }
-
-        public class VerbosityLevelConverter : EnumConverter {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="VerbosityLevelConverter" />
-            /// class.
-            /// </summary>
-            public VerbosityLevelConverter() : base(typeof(VerbosityLevel)) {
-            }
-
-            /// <summary>
-            /// Converts the given object to the type of this converter, using the 
-            /// specified context and culture information.
-            /// </summary>
-            /// <param name="context">An <see cref="ITypeDescriptorContext"/> that provides a format context.</param>
-            /// <param name="culture">A <see cref="CultureInfo"/> object. If a <see langword="null"/> is passed, the current culture is assumed.</param>
-            /// <param name="value">The <see cref="Object"/> to convert.</param>
-            /// <returns>
-            /// An <see cref="Object"/> that represents the converted value.
-            /// </returns>
-            public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
-                if (value is string) {
-                    string stringValue = (string) value;
-                    return Enum.Parse(typeof(VerbosityLevel), stringValue, true);
-                }
-
-                // default to EnumConverter behavior
-                return base.ConvertFrom(context, culture, value);
-            }
-        }
-        
-        [TypeConverter(typeof (MSBuildVersionConverter))]
-        public enum MSBuildVersion 
-        {
-            /// <summary>
-            /// Auto-detect MSBuild version to use.
-            /// </summary>
-            Auto,
-            
-            /// <summary>
-            /// MSBuild v4.0
-            /// </summary>
-            v4,
-            
-            /// <summary>
-            /// MSBuild v12.0
-            /// </summary>
-            v12,
-            
-            /// <summary>
-            /// MSBuild v14.0
-            /// </summary>
-            v14,
-            
-            /// <summary>
-            /// MSBuild v15.0
-            /// </summary>
-            v15,
-            
-            /// <summary>
-            /// MSBuild v16.0
-            /// </summary>
-            v16,
-            
-            /// <summary>
-            /// MSBuild v17.0
-            /// </summary>
-            v17
-        }
-
-        public class MSBuildVersionConverter : EnumConverter {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="MSBuildVersionConverter" />.
-            /// class.
-            /// </summary>
-            public MSBuildVersionConverter() : base(typeof(MSBuildVersion)) {
-            }
-
-            /// <summary>
-            /// Converts the given object to the type of this converter, using the 
-            /// specified context and culture information.
-            /// </summary>
-            /// <param name="context">An <see cref="ITypeDescriptorContext"/> that provides a format context.</param>
-            /// <param name="culture">A <see cref="CultureInfo"/> object. If a <see langword="null"/> is passed, the current culture is assumed.</param>
-            /// <param name="value">The <see cref="Object"/> to convert.</param>
-            /// <returns>
-            /// An <see cref="Object"/> that represents the converted value.
-            /// </returns>
-            public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
-                if (value is string) {
-                    string stringValue = (string) value;
-                    return Enum.Parse(typeof(MSBuildVersion), stringValue, true);
-                }
-
-                // default to EnumConverter behavior
-                return base.ConvertFrom(context, culture, value);
-            }
-        }
-        
+        #region MSBuild detection
         #endregion
     }
 }

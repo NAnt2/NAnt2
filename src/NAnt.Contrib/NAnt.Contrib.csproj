@@ -242,6 +242,10 @@
     <Compile Include="Tasks\MSBuildTask.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Tasks\MSBuild\EnumGenericConverter.cs" />
+    <Compile Include="Tasks\MSBuild\MSBuildTask.cs" />
+    <Compile Include="Tasks\MSBuild\MSBuildVersion.cs" />
+    <Compile Include="Tasks\MSBuild\VerbosityLevel.cs" />
     <Compile Include="Tasks\Msi\InstallerCreationCommand.cs">
       <SubType>Code</SubType>
     </Compile>
