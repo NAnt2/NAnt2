@@ -15,9 +15,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
+
 // Gerry Shaw (gerry_shaw@yahoo.com)
 // Scott Hernandez (ScottHernandez@hotmail.com)
 // Gert Driesen (drieseng@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Configuration;
@@ -90,12 +92,12 @@ namespace NAnt.Core.Tasks {
         /// <summary>
         /// The app.config app settings key to get the output timeout value from.
         /// </summary>
-        private const string outputTimeoutKey = "nant.externalprogram.output.timeout";
+        private const string OutputTimeoutKey = "nant.externalprogram.output.timeout";
 
         /// <summary>
         /// Will be used to ensure thread-safe operations.
         /// </summary>
-        private static object _lockObject = new object();
+        private static readonly object LockObject = new object();
 
         #endregion Private Static Fields
 
@@ -112,7 +114,7 @@ namespace NAnt.Core.Tasks {
             const int defaultTimeout = 2000;
 
             string appSettingStage = 
-                ConfigurationManager.AppSettings.Get(outputTimeoutKey);
+                ConfigurationManager.AppSettings.Get(OutputTimeoutKey);
 
             if (!String.IsNullOrEmpty(appSettingStage))
             {
@@ -512,7 +514,7 @@ namespace NAnt.Core.Tasks {
             ManagedExecutionMode executionMode = ManagedExecutionMode;
 
             // create process (redirect standard output to temp buffer)
-            if (executionMode != null && executionMode.Engine != null) {
+            if (executionMode?.Engine != null) {
                 process.StartInfo.FileName = executionMode.Engine.Program.FullName;
                 StringBuilder arguments = new StringBuilder();
                 executionMode.Engine.Arguments.ToString (arguments);
@@ -597,7 +599,7 @@ namespace NAnt.Core.Tasks {
                 }
 
                 // ensure only one thread writes to the log at any time
-                lock (_lockObject) {
+                lock (LockObject) {
                     if (Output != null) {
                         StreamWriter writer = new StreamWriter(Output.FullName, doAppend);
                         writer.WriteLine(logContents);
@@ -609,7 +611,7 @@ namespace NAnt.Core.Tasks {
                 }
             }
 
-            lock (_lockObject) {
+            lock (LockObject) {
                 OutputWriter.Flush();
             }
         }
@@ -628,7 +630,7 @@ namespace NAnt.Core.Tasks {
                 }
 
                 // ensure only one thread writes to the log at any time
-                lock (_lockObject) {
+                lock (LockObject) {
                     ErrorWriter.WriteLine(logContents);
                     if (Output != null) {
                         StreamWriter writer = new StreamWriter(Output.FullName, doAppend);
@@ -639,7 +641,7 @@ namespace NAnt.Core.Tasks {
                 }
             }
 
-            lock (_lockObject) {
+            lock (LockObject) {
                 ErrorWriter.Flush();
             }
         }
@@ -652,7 +654,7 @@ namespace NAnt.Core.Tasks {
         /// </returns>
         /// <exception cref="BuildException">The task is not available or not configured for the current framework.</exception>
         private string DetermineFilePath() {
-            string fullPath = "";
+            string fullPath = string.Empty;
             
             // if the Exename is already specified as a full path then just use that.
             if (ExeName != null && Path.IsPathRooted(ExeName)) {
@@ -718,10 +720,7 @@ namespace NAnt.Core.Tasks {
                 }
 
                 Runtime runtime = Project.TargetFramework.Runtime;
-                if (runtime != null) {
-                    return runtime.Modes.GetExecutionMode (Managed);
-                }
-                return null;
+                return runtime?.Modes.GetExecutionMode (Managed);
             }
         }
 
