@@ -15,8 +15,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
+
 // Scott Hernandez (ScottHernandez@hotmail.com)
 // Jaroslaw Kowalski (jkowalski@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Globalization;
@@ -196,7 +198,7 @@ namespace NAnt.Core.Tasks {
         /// The file to compare if uptodate.
         /// </summary>
         [TaskAttribute("uptodatefile")]
-        [System.Obsolete("Use <if test=\"${file::up-to-date(comparefile, uptodatefile)}\"> instead.", false)]
+        [Obsolete("Use <if test=\"${file::up-to-date(comparefile, uptodatefile)}\"> instead.", false)]
         public string UpToDateFile {
             set {
                 if (_uptodateFiles == null) {
@@ -296,10 +298,8 @@ namespace NAnt.Core.Tasks {
             get {
                 bool ret = true;
 
-                if (Test != null) {
-                    if (!Convert.ToBoolean(Test, CultureInfo.InvariantCulture)) {
-                        return false;
-                    }
+                if (Test != null && !Convert.ToBoolean(Test, CultureInfo.InvariantCulture)) {
+                    return false;
                 }
 
                 // check if target exists
@@ -326,8 +326,10 @@ namespace NAnt.Core.Tasks {
                             return false;
                         }
                     } catch (Exception ex) {
-                        throw new BuildException(string.Format(CultureInfo.InvariantCulture, 
-                            ResourceUtils.GetString("NA1126"), PropertyNameTrue), Location, ex);
+                        throw new BuildException(
+                            string.Format(CultureInfo.InvariantCulture, ResourceUtils.GetString("NA1126"), PropertyNameTrue),
+                            Location,
+                            ex);
                     }
                 }
 
