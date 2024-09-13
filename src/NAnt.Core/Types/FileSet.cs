@@ -15,8 +15,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
+
 // Gerry Shaw (gerry_shaw@yahoo.com)
 // Ian MacLean (ian@maclean.ms)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections.Specialized;
@@ -97,7 +99,7 @@ namespace NAnt.Core.Types {
     /// For example:
     /// <code>
     ///     dir ??TOTO.txt
-    /// <code>
+    /// </code>
     /// </para>
     /// <h3>Case-Sensitivity</h3>
     /// <para>
