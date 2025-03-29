@@ -15,11 +15,6 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// John R. Hicks (angryjohn69@nc.rr.com)
-// Gerry Shaw (gerry_shaw@yahoo.com)
-// William E. Caputo (wecaputo@thoughtworks.com | logosity@yahoo.com)
-// Gert Driesen (drieseng@users.sourceforge.net)
-//
 // Some of this class was based on code from the Mono class library.
 // Copyright (C) 2002 John R. Hicks <angryjohn69@nc.rr.com>
 //
@@ -27,10 +22,18 @@
 // structure of Ant.
 // Copyright (C) Copyright (c) 2000,2002 The Apache Software Foundation.
 // All rights reserved.
+//
+
+// John R. Hicks (angryjohn69@nc.rr.com)
+// Gerry Shaw (gerry_shaw@yahoo.com)
+// William E. Caputo (wecaputo@thoughtworks.com | logosity@yahoo.com)
+// Gert Driesen (drieseng@users.sourceforge.net)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Runtime.Remoting.Lifetime;
@@ -895,8 +898,9 @@ namespace NAnt.Core {
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">A <see cref="BuildEventArgs" /> object that contains the event data.</param>
+        [SuppressMessage("Minor Code Smell", "S1075:URIs should not be hardcoded")]
         public override void BuildFinished(object sender, BuildEventArgs e) {
-            const string cdoNamespaceURI = "http://schemas.microsoft.com/cdo/configuration/";
+            const string cdoNamespaceUri = "http://schemas.microsoft.com/cdo/configuration/";
 
             base.BuildFinished(sender, e);
 
@@ -958,25 +962,25 @@ namespace NAnt.Core {
                 // SSL is enabled, then send the message must be sent using the 
                 // network (instead of using the local SMTP pickup directory)
                 if (smtpUsername != null || smtpPort != null || IsSSLEnabled(properties)) {
-                    mailMessage.Fields[cdoNamespaceURI + "sendusing"] = 2; // cdoSendUsingPort
+                    mailMessage.Fields[cdoNamespaceUri + "sendusing"] = 2; // cdoSendUsingPort
                 }
 
                 if (smtpUsername != null) {
-                    mailMessage.Fields[cdoNamespaceURI + "smtpauthenticate"] = 1;
-                    mailMessage.Fields[cdoNamespaceURI + "sendusername"] = smtpUsername;
+                    mailMessage.Fields[cdoNamespaceUri + "smtpauthenticate"] = 1;
+                    mailMessage.Fields[cdoNamespaceUri + "sendusername"] = smtpUsername;
                 }
 
                 string smtpPassword = GetPropertyValue(properties, "smtp.password", null, false);
                 if (smtpPassword != null) {
-                    mailMessage.Fields[cdoNamespaceURI + "sendpassword"] = smtpPassword;
+                    mailMessage.Fields[cdoNamespaceUri + "sendpassword"] = smtpPassword;
                 }
 
                 if (smtpPort != null) {
-                    mailMessage.Fields[cdoNamespaceURI + "smtpserverport"] = smtpPort;
+                    mailMessage.Fields[cdoNamespaceUri + "smtpserverport"] = smtpPort;
                 }
 
                 if (smtpEnableSSL != null) {
-                    mailMessage.Fields[cdoNamespaceURI + "smtpusessl"] = smtpEnableSSL;
+                    mailMessage.Fields[cdoNamespaceUri + "smtpusessl"] = smtpEnableSSL;
                 }
                 
                 // attach files in fileset to message
@@ -1050,29 +1054,33 @@ namespace NAnt.Core {
             return false;
         }
 
-        private void AttachFiles(MailMessage mail, Project project, string filesetID) {
-            if (String.IsNullOrEmpty(filesetID)) {
+        private void AttachFiles(MailMessage mail, Project project, string filesetID)
+        {
+            if (string.IsNullOrEmpty(filesetID))
+            {
                 return;
             }
 
             // lookup fileset
             FileSet fileset = project.DataTypeReferences[filesetID] as FileSet;
-            if (fileset == null) {
+            if (fileset == null)
+            {
                 Console.Error.WriteLine("[MailLogger] Fileset \"{0}\" is not"
                     + " defined. No files have been attached.", filesetID);
                 return;
             }
 
-            foreach (string fileName in fileset.FileNames) {
-                if (!File.Exists(fileName)) {
+            foreach (string fileName in fileset.FileNames)
+            {
+                if (!File.Exists(fileName))
+                {
                     Console.Error.WriteLine("[MailLogger] Attachment \"{0}\""
                         + " does not exist. Skipping.", filesetID);
                     continue;
                 }
 
                 // create attachment
-                MailAttachment attachment = new MailAttachment(fileName, 
-                    MailEncoding.UUEncode);
+                MailAttachment attachment = new MailAttachment(fileName, MailEncoding.UUEncode);
                 // add attachment to mail
                 mail.Attachments.Add(attachment);
             }
