@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+// Simona Avornicesei (simona@avornicesei.com)
+
 using System;
 using System.Collections;
 using System.IO;
@@ -22,42 +24,47 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.XPath;
 
-namespace SLiNgshoT.Core {
+namespace SLiNgshoT.Core
+{
     /// <summary>Represents a VS.NET solution.</summary>
-    public class Solution {
-        private string _SolutionDirectory;
+    public class Solution
+    {
+        private string _solutionDirectory;
 
         /// <summary>Gets the SolutionDirectory property.</summary>
         /// <remarks>This is the directory that contains the VS.NET
         /// solution file.</remarks>
-        public string SolutionDirectory {
-            get { return _SolutionDirectory; }
+        public string SolutionDirectory
+        {
+            get { return _solutionDirectory; }
         }
 
-        private string _SolutionName;
+        private string _solutionName;
 
         /// <summary>Gets the SolutionName property.</summary>
         /// <remarks>This is the name of the VS.NET solution file
         /// without the .sln extension.</remarks>
-        public string SolutionName {
-            get { return _SolutionName; }
+        public string SolutionName
+        {
+            get { return _solutionName; }
         }
 
-        private Hashtable _UriMap;
+        private Hashtable _uriMap;
 
         /// <summary>Reads a .sln file.</summary>
         /// <param name="path">The path to the .sln file.</param>
         /// <param name="uriPrefix"></param>
         /// <param name="filePrefix"></param>
-        public void Read(string path, Hashtable uriMap) {
-            _UriMap = uriMap;
+        public void Read(string path, Hashtable uriMap)
+        {
+            _uriMap = uriMap;
 
             path = Path.GetFullPath(path);
-            _SolutionDirectory = Path.GetDirectoryName(path);
-            _SolutionName = Path.GetFileNameWithoutExtension(path);
+            _solutionDirectory = Path.GetDirectoryName(path);
+            _solutionName = Path.GetFileNameWithoutExtension(path);
 
-            if ( ! System.IO.File.Exists( path ) )
-                throw new ApplicationException( string.Concat( "file not found: ", path ) );
+            if (!System.IO.File.Exists(path))
+                throw new ApplicationException(string.Concat("file not found: ", path));
 
             StreamReader streamReader = null;
 
@@ -66,125 +73,143 @@ namespace SLiNgshoT.Core {
 
                 string line = streamReader.ReadLine();
 
-                if (!line.StartsWith("Microsoft Visual Studio Solution File, Format Version")) {
+                if (!line.StartsWith("Microsoft Visual Studio Solution File, Format Version"))
+                {
                     throw new ApplicationException("this is not a 'Microsoft Visual Studio Solution File' file");
                 }
 
                 bool projectDependencies = false;
 
-                while ((line = streamReader.ReadLine()) != null) {
-                    if (line.StartsWith("Project")) {
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    if (line.StartsWith("Project"))
+                    {
                         AddProject(line);
                     }
-                    else if (line.StartsWith("\tGlobalSection(ProjectDependencies)")) {
+                    else if (line.StartsWith("\tGlobalSection(ProjectDependencies)"))
+                    {
                         projectDependencies = true;
                     }
-                    else if (projectDependencies && line.StartsWith("\tEndGlobalSection")) {
+                    else if (projectDependencies && line.StartsWith("\tEndGlobalSection"))
+                    {
                         projectDependencies = false;
                     }
-                    else if (projectDependencies) {
+                    else if (projectDependencies)
+                    {
                         AddDependency(line);
                     }
                 }
             }
-            finally {
-                if (streamReader != null) {
-                    streamReader.Close();
-                }
+            finally
+            {
+                streamReader?.Close();
             }
         }
 
         private Hashtable _Projects = new Hashtable();
 
-        string commonProjectId = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
-        string enterproseProjectId = "{FE3BBBB6-72D5-11D2-9ACE-00C04F79A2A4}";
+        private const string CommonProjectId = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
+        private const string EnterpriseProjectId = "{FE3BBBB6-72D5-11D2-9ACE-00C04F79A2A4}";
 
-        private void AddProject(string projectLine) {
+        private void AddProject(string projectLine)
+        {
             string pattern = @"^Project\(""(?<unknown>\S+)""\) = ""(?<name>\S+)"", ""(?<path>\S+)"", ""(?<id>\S+)""";
             Regex regex = new Regex(pattern);
             Match match = regex.Match(projectLine);
 
-            if (match.Success) {
-                string unknown = match.Groups["unknown"].Value;
-                string name = match.Groups["name"].Value;
-                string path = match.Groups["path"].Value;
-                string id = match.Groups["id"].Value;
+            if (!match.Success) return;
+            
+            string unknown = match.Groups["unknown"].Value;
+            string name = match.Groups["name"].Value;
+            string path = match.Groups["path"].Value;
+            string id = match.Groups["id"].Value;
 
-                path = ResolvePath(path);
+            path = ResolvePath(path);
 
-                if (unknown == commonProjectId) {
-                    Project project = new Project(this, new Guid(id), name);
+            if (unknown == CommonProjectId)
+            {
+                Project project = new Project(this, new Guid(id), name);
 
-                    string absoluteProjectPath = Path.Combine(SolutionDirectory, path);
-                    project.Read(absoluteProjectPath);
+                string absoluteProjectPath = Path.Combine(SolutionDirectory, path);
+                project.Read(absoluteProjectPath);
 
-                    string relativeProjectPath = Path.GetDirectoryName(path);
-                    project.RelativePath = relativeProjectPath;
+                string relativeProjectPath = Path.GetDirectoryName(path);
+                project.RelativePath = relativeProjectPath;
 
-                    if (project.ProjectType == "C# Local" ||
-                        project.ProjectType == "C# Web" ||
-                        project.ProjectType == "VB Local" ||
-                        project.ProjectType == "VB Web") {
-                        _Projects.Add(project.ID, project);
-                    }
-                } 
-                else if (unknown == enterproseProjectId) {
-                    EnterpriseProject etpProject = new EnterpriseProject(this, new Guid(id), name);
-                    string absoluteProjectPath = Path.Combine(SolutionDirectory, path);
-                    etpProject.Read(absoluteProjectPath);
+                if (project.ProjectType == "C# Local" ||
+                    project.ProjectType == "C# Web" ||
+                    project.ProjectType == "VB Local" ||
+                    project.ProjectType == "VB Web")
+                {
+                    _Projects.Add(project.ID, project);
+                }
+            } 
+            else if (unknown == EnterpriseProjectId)
+            {
+                EnterpriseProject etpProject = new EnterpriseProject(this, new Guid(id), name);
+                string absoluteProjectPath = Path.Combine(SolutionDirectory, path);
+                etpProject.Read(absoluteProjectPath);
 
-                    // get the list of projects from enterprise projects
-                    foreach(Project project in etpProject.GetProjects()) {
-                        _Projects.Add(project.ID, project);
-                    }
+                // get the list of projects from enterprise projects
+                foreach(Project project in etpProject.GetProjects())
+                {
+                    _Projects.Add(project.ID, project);
                 }
             }
         }
 
-        public string ResolvePath(string path) {
-            if (path.StartsWith("http:")) {
-                if (_UriMap != null) {
-                    foreach (DictionaryEntry entry in _UriMap) {
-                        if (path.ToLower().StartsWith(((string)entry.Key).ToLower())) {
-                            return entry.Value + path.Substring(((string)entry.Key).Length);
-                        }
-                    }
-                }
-
+        public string ResolvePath(string path)
+        {
+            if (!path.StartsWith("http:"))
+                return path;
+            if (_uriMap == null)
                 throw new ApplicationException("a prefix mapping needs to be specified for " + path);
+            
+            foreach (DictionaryEntry entry in _uriMap)
+            {
+                if (path.ToLower().StartsWith(((string)entry.Key).ToLower()))
+                {
+                    return entry.Value + path.Substring(((string)entry.Key).Length);
+                }
             }
 
-            return path;
+            throw new ApplicationException("a prefix mapping needs to be specified for " + path);
+
         }
 
-        private void AddDependency(string dependencyLine) {
+        private void AddDependency(string dependencyLine)
+        {
             string pattern = @"^\t\t(?<source>\{\S+}).\d+ = (?<target>\S+)";
             Regex regex = new Regex(pattern);
             Match match = regex.Match(dependencyLine);
 
-            if (match.Success) {
-                string source = match.Groups["source"].Value;
-                string target = match.Groups["target"].Value;
+            if (!match.Success) return;
+            
+            string source = match.Groups["source"].Value;
+            string target = match.Groups["target"].Value;
 
-                Project sourceProject = _Projects[new Guid(source)] as Project;
-                Project targetProject = _Projects[new Guid(target)] as Project;
+            Project sourceProject = _Projects[new Guid(source)] as Project;
+            Project targetProject = _Projects[new Guid(target)] as Project;
 
-                if (sourceProject != null && targetProject != null) {
-                    AddDependency(sourceProject, targetProject);
-                }
+            if (sourceProject != null && targetProject != null)
+            {
+                AddDependency(sourceProject, targetProject);
             }
         }
 
         private Hashtable _Dependencies = new Hashtable();
 
-        private void AddDependency(Project source, Project target) {
+        private void AddDependency(Project source, Project target)
+        {
             ArrayList dependencies = _Dependencies[source.ID] as ArrayList;
 
-            if (dependencies == null) {
+            if (dependencies == null)
+            {
                 dependencies = new ArrayList();
                 _Dependencies.Add(source.ID, dependencies);
             }
-            else if (!dependencies.Contains(target)) {
+            else if (!dependencies.Contains(target))
+            {
                 dependencies.Add(target);
             }
         }
@@ -192,16 +217,20 @@ namespace SLiNgshoT.Core {
         /// <summary>Gets the project with the specified GUID.</summary>
         /// <param name="id">The GUID used to identify the project in the .sln file.</param>
         /// <returns>The project.</returns>
-        public Project GetProject(Guid id) {
+        public Project GetProject(Guid id)
+        {
             return (Project)_Projects[id];
         }
 
         /// <summary>Gets the project with the specified name.</summary>
         /// <param name="name">The project name.</param>
         /// <returns>The project.</returns>
-        public Project GetProject(string name) {
-            foreach (Project project in _Projects.Values) {
-                if (project.Name == name) {
+        public Project GetProject(string name)
+        {
+            foreach (Project project in _Projects.Values)
+            {
+                if (project.Name == name)
+                {
                     return project;
                 }
             }
@@ -212,7 +241,8 @@ namespace SLiNgshoT.Core {
         /// <summary>Allows you to enumerate (using foreach) over the
         /// solution's projects.</summary>
         /// <returns>An enumerable list of projects.</returns>
-        public IEnumerable GetProjects() {
+        public IEnumerable GetProjects()
+        {
             return _Projects.Values;
         }
 
@@ -222,17 +252,22 @@ namespace SLiNgshoT.Core {
         /// <param name="source">The source project.</param>
         /// <param name="target">The target project.</param>
         /// <returns><see langword="true"/> or <see langword="false"/>.</returns>
-        public bool IsDependant(Project source, Project target) {
+        public bool IsDependant(Project source, Project target)
+        {
             bool result = false;
 
             ArrayList dependencies = _Dependencies[source.ID] as ArrayList;
 
-            if (dependencies != null && dependencies.Contains(target)) {
+            if (dependencies != null && dependencies.Contains(target))
+            {
                 result = true;
             }
-            else if (dependencies != null) {
-                foreach (Project project in dependencies) {
-                    if (IsDependant(source, project)) {
+            else if (dependencies != null)
+            {
+                foreach (Project project in dependencies)
+                {
+                    if (IsDependant(source, project))
+                    {
                         result = true;
                         break;
                     }
@@ -246,15 +281,18 @@ namespace SLiNgshoT.Core {
         /// <paramref name="source"/> project depends on.</summary>
         /// <param name="source">The source project.</param>
         /// <returns>An ArrayList of projects.</returns>
-        public ArrayList GetDependencies(Project source) {
+        public ArrayList GetDependencies(Project source)
+        {
             ArrayList result = null;
 
             ArrayList dependencies = _Dependencies[source.ID] as ArrayList;
 
-            if (dependencies == null) {
+            if (dependencies == null)
+            {
                 result = new ArrayList();
             }
-            else {
+            else
+            {
                 result = dependencies;
             }
 
@@ -266,14 +304,18 @@ namespace SLiNgshoT.Core {
         /// projects.</summary>
         /// <param name="source">The source project.</param>
         /// <returns>An ArrayList of projects.</returns>
-        public ArrayList GetAllDependencies(Project source) {
+        public ArrayList GetAllDependencies(Project source)
+        {
             ArrayList dependencies = GetDependencies(source);
 
-            foreach (Reference reference in source.GetReferences()) {
-                if (reference.Type == "Project") {
+            foreach (Reference reference in source.GetReferences())
+            {
+                if (reference.Type == "Project")
+                {
                     Project target = GetProject(reference.Value);
 
-                    if (!dependencies.Contains(target)) {
+                    if (!dependencies.Contains(target))
+                    {
                         dependencies.Add(target);
                     }
                 }
@@ -282,12 +324,16 @@ namespace SLiNgshoT.Core {
             return dependencies;
         }
 
-        public ArrayList GetConfigurationNames() {
+        public ArrayList GetConfigurationNames()
+        {
             ArrayList configurationNames = new ArrayList();
 
-            foreach (Project project in _Projects.Values) {
-                foreach (Configuration configuration in project.GetConfigurations()) {
-                    if (!configurationNames.Contains(configuration.Name)) {
+            foreach (Project project in _Projects.Values)
+            {
+                foreach (Configuration configuration in project.GetConfigurations())
+                {
+                    if (!configurationNames.Contains(configuration.Name))
+                    {
                         configurationNames.Add(configuration.Name);
                     }
                 }
