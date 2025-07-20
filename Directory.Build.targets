@@ -8,7 +8,7 @@
     <!-- Removes /bin/Configuration and /obj folders to make sure no strange/previous artifacts are left before build -->
     <!-- Should be called on demand, and not executed automatically after Clean target (adding 'AfterTargets="Clean"' attribute to Target element)-->
   <Target Name="DeepClean">
-    <Message Text=" MSBuild target: DeepClean" Importance="high"/>
+    <Message Text=" MSBuild target: DeepClean" Importance="high" />
     <RemoveDir Directories="$(TargetDir)" /> <!-- bin -->
     <RemoveDir Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- obj -->
   </Target>
