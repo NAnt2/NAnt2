@@ -57,13 +57,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.13.0.120203">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.14.0.120626">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'web', 'logo.gif'))" Pack="true" PackagePath="logo.gif"/>
+    <None Include="$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'web', 'logo.gif'))" Pack="true" PackagePath="logo.gif" />
   </ItemGroup>
 </Project>
