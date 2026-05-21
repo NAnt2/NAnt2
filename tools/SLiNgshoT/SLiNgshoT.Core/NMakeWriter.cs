@@ -21,7 +21,7 @@ using System.IO;
 
 namespace SLiNgshoT.Core {
     [OutputFormat("nmake")]
-    public class NMakeWriter : SolutionWriter {
+    public class NMakeWriter : ISolutionWriter {
         public NMakeWriter() {
         }
 
