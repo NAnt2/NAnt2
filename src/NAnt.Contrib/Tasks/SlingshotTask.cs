@@ -139,7 +139,7 @@ namespace NAnt.Contrib.Tasks {
                 Solution, Output, Format);
 
             // get a SLiNgshoT SolutionWriter for the specified format.
-            SolutionWriter solutionWriter = CreateSolutionWriter(Format);
+            ISolutionWriter solutionWriter = CreateSolutionWriter(Format);
 
             // make sure the specified format is supported
             if (solutionWriter == null) {
@@ -178,14 +178,14 @@ namespace NAnt.Contrib.Tasks {
         #region Private Instance Methods
 
         /// <summary>
-        /// Creates the <see cref="SolutionWriter" /> for the specified format.
+        /// Creates the <see cref="ISolutionWriter" /> for the specified format.
         /// </summary>
         /// <returns>
-        /// The <see cref="SolutionWriter" /> for the specified format, or 
+        /// The <see cref="ISolutionWriter" /> for the specified format, or 
         /// <see langword="null" /> if an unknown format was specified.
         /// </returns>
-        private SolutionWriter CreateSolutionWriter(string format) {
-            SolutionWriter writer = null;
+        private ISolutionWriter CreateSolutionWriter(string format) {
+            ISolutionWriter writer = null;
 
             switch (format) {
                 case "nant":

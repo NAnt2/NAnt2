@@ -15,10 +15,12 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
+
 // Ian MacLean (ian@maclean.ms)
 // Scott Hernandez (ScottHernandez@hotmail.com)
 // Gert Driesen (drieseng@users.sourceforge.net)
 // Giuseppe Greco (giuseppe.greco@agamura.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -1592,37 +1594,44 @@ namespace NAnt.Core {
 
             #endregion Private Static Fields
 
-            private class EnumAttributeSetter : IAttributeSetter {
-                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value) {
-                    try {
+            private class EnumAttributeSetter : IAttributeSetter
+            {
+                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value)
+                {
+                    try
+                    {
                         object propertyValue;
 
                         // check for more specific type converter
                         TypeConverter tc = TypeDescriptor.GetConverter(property.PropertyType);
-                        if (!(tc.GetType() == typeof(EnumConverter))) {
-                            propertyValue = tc.ConvertFrom(value);
-                        } else {
-                            propertyValue = Enum.Parse(property.PropertyType, value);
-                        }
+                        propertyValue = tc.GetType() != typeof(EnumConverter)
+                            ? tc.ConvertFrom(value)
+                            : Enum.Parse(property.PropertyType, value);
 
                         property.SetValue(parent, propertyValue, BindingFlags.Public | BindingFlags.Instance, null, null, CultureInfo.InvariantCulture);
-                    } catch (FormatException) {
+                    }
+                    catch (FormatException)
+                    {
                         throw CreateBuildException(attributeNode, parent, 
                             property, value);
-                    } catch (ArgumentException) {
+                    }
+                    catch (ArgumentException)
+                    {
                         throw CreateBuildException(attributeNode, parent, 
                             property, value);
                     }
                 }
 
-                private BuildException CreateBuildException(XmlNode attributeNode, Element parent, PropertyInfo property, string value) {
+                private BuildException CreateBuildException(XmlNode attributeNode, Element parent, PropertyInfo property, string value)
+                {
                     StringBuilder sb = new StringBuilder();
 
-                    foreach (object field in Enum.GetValues(property.PropertyType)) {
+                    foreach (object field in Enum.GetValues(property.PropertyType))
+                    {
                         if (sb.Length > 0) {
                             sb.Append(", ");
                         }
-                        sb.Append(field.ToString());
+                        sb.Append(field);
                     }
 
                     string message = string.Format(CultureInfo.InvariantCulture, 
@@ -1633,32 +1642,42 @@ namespace NAnt.Core {
                 }
             }
 
-            private class EncodingAttributeSetter : IAttributeSetter {
-                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value) {
+            private class EncodingAttributeSetter : IAttributeSetter
+            {
+                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value)
+                {
                     string encodingName = StringUtils.ConvertEmptyToNull(value);
-                    if (encodingName == null) {
+                    if (encodingName == null)
+                    {
                         return;
                     }
 
                     Encoding encoding = null;
 
-                    try {
-                        encoding = System.Text.Encoding.GetEncoding(
-                            encodingName);
-                    } catch (ArgumentException) {
+                    try
+                    {
+                        encoding = Encoding.GetEncoding(encodingName);
+                    }
+                    catch (ArgumentException)
+                    {
                         throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                             ResourceUtils.GetString("NA1191"),
                             encodingName), parent.Location);
-                    } catch (NotSupportedException) {
+                    }
+                    catch (NotSupportedException)
+                    {
                         throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                             ResourceUtils.GetString("NA1192"),
                             encodingName), parent.Location);
                     }
 
-                    try {
+                    try
+                    {
                         property.SetValue(parent, encoding, BindingFlags.Public | 
                             BindingFlags.Instance, null, null, CultureInfo.InvariantCulture);
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                             ResourceUtils.GetString("NA1022"), 
                             value, attributeNode.Name, parent.Name), parent.Location, ex);
@@ -1666,28 +1685,39 @@ namespace NAnt.Core {
                 }
             }
 
-            private class FileAttributeSetter : IAttributeSetter {
-                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value) {
+            private class FileAttributeSetter : IAttributeSetter
+            {
+                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value)
+                {
                     string path = StringUtils.ConvertEmptyToNull(value);
-                    if (path != null) {
+                    if (path != null)
+                    {
                         object propertyValue;
 
-                        try {
+                        try
+                        {
                             propertyValue = new FileInfo(parent.Project.GetFullPath(value));
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex)
+                        {
                             throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                                 ResourceUtils.GetString("NA1022"), 
                                 value, attributeNode.Name, parent.Name), parent.Location, ex);
                         }
 
-                        try {
+                        try
+                        {
                             property.SetValue(parent, propertyValue, BindingFlags.Public | BindingFlags.Instance, null, null, CultureInfo.InvariantCulture);
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex)
+                        {
                             throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                                 ResourceUtils.GetString("NA1022"), 
                                 value, attributeNode.Name, parent.Name), parent.Location, ex);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                             ResourceUtils.GetString("NA1193"), 
                             attributeNode.Name, parent.Name), parent.Location);
@@ -1695,22 +1725,29 @@ namespace NAnt.Core {
                 }
             }
 
-            private class DirectoryAttributeSetter : IAttributeSetter {
-                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value) {
+            private class DirectoryAttributeSetter : IAttributeSetter
+            {
+                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value)
+                {
                     string path = StringUtils.ConvertEmptyToNull(value);
-                    if (path != null) {
-                        try {
-                            object propertyValue = new DirectoryInfo(
-                                parent.Project.GetFullPath(value));
+                    if (path != null)
+                    {
+                        try
+                        {
+                            object propertyValue = new DirectoryInfo(parent.Project.GetFullPath(value));
                             property.SetValue(parent, propertyValue, 
                                 BindingFlags.Public | BindingFlags.Instance, 
                                 null, null, CultureInfo.InvariantCulture);
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex)
+                        {
                             throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                                 ResourceUtils.GetString("NA1022"), 
                                 value, attributeNode.Name, parent.Name), parent.Location, ex);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                            ResourceUtils.GetString("NA1193"), 
                             attributeNode.Name, parent.Name), parent.Location);
@@ -1718,12 +1755,17 @@ namespace NAnt.Core {
                 }
             }
 
-            private class PathSetAttributeSetter : IAttributeSetter {
-                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value) {
-                    try {
+            private class PathSetAttributeSetter : IAttributeSetter
+            {
+                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value)
+                {
+                    try
+                    {
                         PathSet propertyValue = new PathSet(parent.Project, value);
                         property.SetValue(parent, propertyValue, BindingFlags.Public | BindingFlags.Instance, null, null, CultureInfo.InvariantCulture);
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                             ResourceUtils.GetString("NA1022"), 
                             value, attributeNode.Name, parent.Name), parent.Location, ex);
@@ -1731,10 +1773,13 @@ namespace NAnt.Core {
                 }
             }
 
-            private class UriAttributeSetter : IAttributeSetter {
-                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value) {
+            private class UriAttributeSetter : IAttributeSetter
+            {
+                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value)
+                {
                     string uri = StringUtils.ConvertEmptyToNull(value);
-                    if (uri != null) {
+                    if (uri != null)
+                    {
                         Uri propertyValue;
 
                         // if uri does not contain a scheme, we'll consider it
@@ -1745,22 +1790,30 @@ namespace NAnt.Core {
                             uri = parent.Project.GetFullPath(value);
                         }
 
-                        try {
+                        try
+                        {
                             propertyValue = new Uri(uri);
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex)
+                        {
                             throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                                 ResourceUtils.GetString("NA1022"), 
                                 value, attributeNode.Name, parent.Name), parent.Location, ex);
                         }
 
-                        try {
+                        try
+                        {
                             property.SetValue(parent, propertyValue, BindingFlags.Public | BindingFlags.Instance, null, null, CultureInfo.InvariantCulture);
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex)
+                        {
                             throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                                 ResourceUtils.GetString("NA1022"), 
                                 value, attributeNode.Name, parent.Name), parent.Location, ex);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                             ResourceUtils.GetString("NA1193"), 
                             attributeNode.Name, parent.Name), parent.Location);
@@ -1768,12 +1821,17 @@ namespace NAnt.Core {
                 }
             }
 
-            private class ConvertableAttributeSetter : IAttributeSetter {
-                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value) {
-                    try {
+            private class ConvertableAttributeSetter : IAttributeSetter
+            {
+                public void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value)
+                {
+                    try
+                    {
                         object propertyValue = Convert.ChangeType(value, property.PropertyType, CultureInfo.InvariantCulture);
                         property.SetValue(parent, propertyValue, BindingFlags.Public | BindingFlags.Instance, null, null, CultureInfo.InvariantCulture);
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         throw new BuildException(string.Format(CultureInfo.InvariantCulture,
                             ResourceUtils.GetString("NA1022"), 
                             value, attributeNode.Name, parent.Name), parent.Location, ex);
@@ -1784,7 +1842,8 @@ namespace NAnt.Core {
             /// <summary>
             /// Internal interface used for setting element attributes. 
             /// </summary>
-            private interface IAttributeSetter {
+            private interface IAttributeSetter
+            {
                 void Set(XmlNode attributeNode, Element parent, PropertyInfo property, string value);
             }
         }

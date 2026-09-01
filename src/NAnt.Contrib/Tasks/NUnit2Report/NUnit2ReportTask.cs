@@ -23,6 +23,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
+
 // Gilles Bayon (gilles.bayon@laposte.net)
 // Ian Maclean (imaclean@gmail.com)
 // Gert Driesen (drieseng@users.sourceforge.net)
@@ -253,9 +254,9 @@ namespace NAnt.Contrib.Tasks.NUnit2Report {
 
                     xmlReader.Close();
                     writerFinal.Close();
-                } else {
-                    XmlTextReader reader = null;
-
+                }
+                else 
+                {
                     try {
                         // create the index.html
                         StringReader stream = new StringReader("<xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0' >" +
@@ -315,24 +316,25 @@ namespace NAnt.Contrib.Tasks.NUnit2Report {
                         XPathNodeIterator iterator = xpathNavigator.Select(expr);
                         while (iterator.MoveNext()) {
                             // output directory
-                            string path = "";
+                            string path = string.Empty;
 
                             XPathNavigator xpathNavigator2 = iterator.Current;
-                            string testSuiteName = iterator.Current.GetAttribute("name", "");
+                            string testSuiteName = iterator.Current.GetAttribute("name", string.Empty);
                                
                             // Get get the path for the current test-suite.
-                            XPathNodeIterator iterator2 = xpathNavigator2.SelectAncestors("", "", true);
-                            string parent = "";
+                            XPathNodeIterator iterator2 = xpathNavigator2.SelectAncestors(string.Empty, string.Empty, true);
+                            string parent = string.Empty;
                             int parentIndex = -1;
 
                             while (iterator2.MoveNext()) {
                                 string directory = iterator2.Current.GetAttribute("name","");
-                                if (directory != "" && directory.IndexOf(".dll") < 0) {
-                                    path = directory + "/" + path;
+                                if (!string.IsNullOrEmpty(directory) && directory.IndexOf(".dll", StringComparison.OrdinalIgnoreCase) < 0) {
+                                    path = $"{directory}/{path}";
                                 }
                                 if (parentIndex == 1) {
                                     parent = directory;
                                 }
+                                
                                 parentIndex++;
                             }
 
@@ -352,9 +354,9 @@ namespace NAnt.Contrib.Tasks.NUnit2Report {
                                 "<xsl:output method='html' indent='yes' encoding='ISO-8859-1'/>" +
                                 "<xsl:include href=\"NUnit-Frame.xsl\"/>" +
                                 "<xsl:template match=\"/\">" +
-                                "    <xsl:for-each select=\"//test-suite[@name='"+testSuiteName+"' and ancestor::test-suite[@name='"+parent+"'][position()=last()]]\">" +
+                                "    <xsl:for-each select=\"//test-suite[@name='"+ testSuiteName+"' and ancestor::test-suite[@name='"+parent+"'][position()=last()]]\">" +
                                 "        <xsl:call-template name=\"test-case\">" +
-                                "            <xsl:with-param name=\"dir.test\">"+String.Join(".", path.Split('/'))+"</xsl:with-param>" +
+                                "            <xsl:with-param name=\"dir.test\">"+string.Join(".", path.Split('/'))+"</xsl:with-param>" +
                                 "        </xsl:call-template>" +
                                 "    </xsl:for-each>" +
                                 " </xsl:template>" +
@@ -363,16 +365,15 @@ namespace NAnt.Contrib.Tasks.NUnit2Report {
 
                             Log(Level.Debug,"dir={0} Generating {1}.html", path, testSuiteName);
                         }
-                    } finally {
+                    }
+                    finally
+                    {
                         Log(Level.Debug, "Processing of stream complete.");
-
-                        // Finished with XmlTextReader
-                        if (reader != null) {
-                            reader.Close();
-                        }
                     }
                 }
-            } catch (Exception ex) {
+            } 
+            catch (Exception ex)
+            {
                 throw new BuildException("Failure generating report.", Location, ex);
             }
         }
