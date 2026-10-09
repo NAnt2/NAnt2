@@ -134,6 +134,7 @@
     <Compile Include="NAnt.DotNet\Tasks\LicenseTaskTest.cs" />
     <Compile Include="NAnt.DotNet\Tasks\ScriptTest.cs" />
     <Compile Include="NAnt.DotNet\Tasks\VbcTaskTest.cs" />
+    <Compile Include="NAnt.DotNet\Tasks\VjcTaskTest.cs" />
     <Compile Include="NAnt.DotNet\Types\ResourceFileSetTest.cs" />
     <None Include="NAnt.MSNet\NAnt.MSNet.build" />
     <None Include="NAnt.SourceControl\NAnt.SourceControl.build" />

@@ -32,12 +32,20 @@ function Invoke-NAnt {
 
     assert(Test-Path -LiteralPath $BuildFile) "Provided NAnt build file $BuildFile does not exist"
 
+    # Leave build.number to the build file when none was given. Its default is
+    # the number of days since 2000, which keeps the assembly version usable by
+    # tooling that checks it - TeamCity's NAnt listener rejects a NAnt whose
+    # NAnt.Core version has a Build field below 2311. Forcing a low number here
+    # would override that default and produce a NAnt such tooling refuses.
+    $buildNumberArg = [string]::IsNullOrWhiteSpace($PrjBuildNumber) ?
+        @() : @("-D:build.number=$PrjBuildNumber")
+
     if($IsWindows) {
         & $(Join-Path $BOOTSTRAP_DIR 'NAnt.exe') `
             -j $(($BuildMode -eq 'Debug') ? '-debug+' : '') `
             -t:$Framework `
             -D:project.version=$PrjVersion `
-            -D:build.number=$PrjBuildNumber `
+            @buildNumberArg `
             -D:project.config=$($BuildMode.ToLower()) `
             -verbose `
             -f:$BuildFile `
@@ -48,7 +56,7 @@ function Invoke-NAnt {
             -j $(($BuildMode -eq 'Debug') ? '-debug+' : '') `
             -t:$Framework `
             -D:project.version=$PrjVersion `
-            -D:build.number=$PrjBuildNumber `
+            @buildNumberArg `
             -D:project.config=$($BuildMode.ToLower()) `
             -verbose `
             -f:$BuildFile `

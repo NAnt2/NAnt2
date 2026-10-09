@@ -298,13 +298,35 @@ namespace NAnt.Core.Functions {
         /// </example>
         [Function("get-tool-path")]
         public string GetToolPath(string tool) {
-            string toolPath = Project.TargetFramework.GetToolPath (tool);
+            FrameworkInfo framework = Project.TargetFramework;
+            string toolPath = framework.GetToolPath (tool);
             if (toolPath == null) {
                 throw new FileNotFoundException (string.Format (CultureInfo.InvariantCulture,
-                    "\"{0}\" could not be found in any of the configured " +
-                    "tool paths.", tool));
+                    "\"{0}\" could not be found in any of the tool paths that" +
+                    " are configured for the \"{1}\" framework:{2}{3}", tool,
+                    framework.Name, Environment.NewLine,
+                    FormatToolPaths (framework).TrimEnd ()));
             }
+
+            // report which tool was selected, as the tool paths are scanned in
+            // order and a build that silently resolves a tool it did not expect
+            // tends to fail much later, in a way that does not point back here
+            Project.Log(Level.Info, "\"{0}\" resolved to \"{1}\".", tool, toolPath);
             return toolPath;
+        }
+
+        /// <summary>
+        /// Returns the tool paths of the specified framework, one per line,
+        /// for use in diagnostic messages.
+        /// </summary>
+        /// <param name="framework">The framework whose tool paths should be listed.</param>
+        private static string FormatToolPaths(FrameworkInfo framework) {
+            StringBuilder toolPaths = new StringBuilder();
+            foreach (string toolPath in framework.ToolPaths) {
+                toolPaths.AppendFormat(CultureInfo.InvariantCulture, "    {0}{1}",
+                    toolPath, Environment.NewLine);
+            }
+            return toolPaths.ToString();
         }
 
         /// <summary>

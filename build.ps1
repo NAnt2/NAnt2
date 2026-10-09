@@ -56,7 +56,7 @@ param(
     [string] $Version = '0.93',
 
     [Parameter(HelpMessage = 'CI build number')]
-    [string] $BuildNumber = '0'
+    [string] $BuildNumber = ''
 )
 
 Set-StrictMode -Version latest
@@ -109,7 +109,7 @@ if(-not $PublishDir) {
 }
 if(-not (Test-Path -LiteralPath $PublishDir))
 {
-    New-Item $PublishDir -ItemType Directory -Force
+    New-Item $PublishDir -ItemType Directory -Force | Out-Null
 }
 
 $SRC_DIR = Join-Path $BuildRoot "src"

@@ -18,6 +18,7 @@
 // Gerry Shaw (gerry_shaw@yahoo.com)
 // Gert Driesen (drieseng@users.sourceforge.net)
 
+using System;
 using System.Globalization;
 using System.IO;
 
@@ -145,6 +146,63 @@ namespace Tests.NAnt.DotNet.Tasks {
             TempFile.CreateWithContents(sourceCode, _sourceFileName);
 
             RunBuild(FormatBuildFile("define='CONSOLE,ABC'"));
+        }
+
+        /// <summary>
+        /// Ensures the <c>langversion</c> attribute is passed on to the
+        /// compiler.
+        /// </summary>
+        [Test]
+        public void Test_LangVersion() {
+            // generics are not part of the C# 1.0 language specification, so
+            // restricting the compiler to that specification should cause the
+            // build to fail
+            string sourceCode = @"
+                using System.Collections.Generic;
+
+                public class HelloWorld {
+                    static void Main() {
+                        List<string> messages = new List<string>();
+                        messages.Add(""Hello World using C#"");
+                        System.Console.WriteLine(messages[0]);
+                    }
+                }";
+
+            TempFile.CreateWithContents(sourceCode, _sourceFileName);
+
+            try {
+                RunBuild(FormatBuildFile("langversion='ISO-1'"));
+                Assert.Fail("Compilation of C# 2.0 sources should have failed"
+                    + " when the compiler is restricted to the C# 1.0 language"
+                    + " specification.");
+            } catch (TestBuildException ex) {
+                Assert.IsTrue(ex.ToString().IndexOf("CS1644") != -1,
+                    "Compiler should have reported that a language feature is"
+                    + " not available." + Environment.NewLine + ex);
+            }
+        }
+
+        /// <summary>
+        /// Ensures the <c>exename</c> attribute is used to determine the
+        /// compiler that is launched.
+        /// </summary>
+        [Test]
+        public void Test_ExeName() {
+            TempFile.CreateWithContents(_sourceCode, _sourceFileName);
+
+            // an absolute path is used as is, meaning that the build should
+            // fail while reporting the compiler that was configured
+            string compiler = Path.Combine(TempDirName, "no-such-compiler.exe");
+
+            try {
+                RunBuild(FormatBuildFile("exename='" + compiler + "'"));
+                Assert.Fail("Build should have failed as the configured"
+                    + " compiler does not exist.");
+            } catch (TestBuildException ex) {
+                Assert.IsTrue(ex.ToString().IndexOf("no-such-compiler") != -1,
+                    "Build failure should mention the configured compiler."
+                    + Environment.NewLine + ex);
+            }
         }
 
         [Test]

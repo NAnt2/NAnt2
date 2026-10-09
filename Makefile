@@ -68,6 +68,29 @@ ifeq ($(findstring 4.5,$(SELECTED_TARGET)),4.5)
 DEFINE := $(DEFINE),NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,NET_4_5,ONLY_4_5
 endif
 
+# The framework version symbols that the sources themselves test. These mirror
+# what Constants.props derives for an MSBuild build. Without them the bootstrap
+# compiles a different NAnt than the full build does - it drops the XML
+# hardening that is conditioned on NET451_OR_LESSER, and it takes the pre-4.0
+# path in PlatformHelper.
+DEFINE := $(DEFINE),NET11_OR_GREATER,NET20_OR_GREATER
+
+ifneq ($(findstring 3.5,$(SELECTED_TARGET)),)
+DEFINE := $(DEFINE),NET35_OR_GREATER
+endif
+ifneq ($(findstring 4.,$(SELECTED_TARGET)),)
+DEFINE := $(DEFINE),NET35_OR_GREATER,NET40_OR_GREATER
+endif
+ifneq ($(findstring 4.5,$(SELECTED_TARGET)),)
+DEFINE := $(DEFINE),NET45_OR_GREATER
+endif
+ifeq ($(findstring 4.,$(SELECTED_TARGET)),)
+DEFINE := $(DEFINE),NET35_OR_LESSER
+endif
+
+# every target that can be bootstrapped here predates .NET 4.5.2
+DEFINE := $(DEFINE),NET451_OR_LESSER
+
 # If TARGET var is invalid, throw an error
 else
 $(error Specified target "$(TARGET)" is not valid)
