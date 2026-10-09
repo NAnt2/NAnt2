@@ -47,6 +47,26 @@ DEFINE = $(DEFINE),NET_3_5,NET_4_0,NET_4_5,ONLY_4_5_x,NET_4_6,ONLY_4_6_x,NET_4_7
 !error Specified target "$(TARGET)" is not valid
 !endif
 
+# The framework version symbols that the sources themselves test. These mirror
+# what Constants.props derives for an MSBuild build. Without them the bootstrap
+# compiles a different NAnt than the full build does - it drops the XML
+# hardening that is conditioned on NET451_OR_LESSER, and it takes the pre-4.0
+# path in PlatformHelper.
+DEFINE = $(DEFINE),NET11_OR_GREATER,NET20_OR_GREATER
+
+!if "$(TARGET)" == "net-2.0" || "$(TARGET)" == "mono-2.0"
+DEFINE = $(DEFINE),NET35_OR_LESSER
+!else if "$(TARGET)" == "net-3.5" || "$(TARGET)" == "mono-3.5"
+DEFINE = $(DEFINE),NET35_OR_GREATER,NET35_OR_LESSER
+!else if "$(TARGET)" == "net-4.0" || "$(TARGET)" == "mono-4.0"
+DEFINE = $(DEFINE),NET35_OR_GREATER,NET40_OR_GREATER
+!else
+DEFINE = $(DEFINE),NET35_OR_GREATER,NET40_OR_GREATER,NET45_OR_GREATER
+!endif
+
+# every target that can be bootstrapped here predates .NET 4.5.2
+DEFINE = $(DEFINE),NET451_OR_LESSER
+
 !ifdef DEBUG
 NANT_DEBUG = -debug+
 !endif

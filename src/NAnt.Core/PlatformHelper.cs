@@ -21,7 +21,7 @@
 using System;
 using System.Diagnostics;
 
-#if NET35_OR_LESSER
+#if !NET40_OR_GREATER
 using System.Runtime.InteropServices;
 #endif
 
@@ -196,10 +196,16 @@ namespace NAnt.Core
             return false;
         }
 
-#if NET35_OR_LESSER
+#if !NET40_OR_GREATER
 
         // This section should be removed as soon as the NAnt releases switch to
         // 4.0+ by default (i.e.:net-4.0/mono-4.0).
+        //
+        // Note that this must be conditioned on the same symbol as the call
+        // site in the static constructor: NET35_OR_LESSER is only defined when
+        // the build supplies it (see Constants.props), while the bootstrap
+        // builds define neither symbol - which used to leave the call without
+        // a definition.
 
         delegate bool IsWow64ProcDel([In] IntPtr handle, [Out] out bool isWow64Proc);
         const string _lib = "kernel32";
