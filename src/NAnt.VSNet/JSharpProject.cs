@@ -26,6 +26,8 @@ using System.Xml;
 using NAnt.Core;
 using NAnt.Core.Util;
 
+using NAnt.DotNet.Tasks;
+
 using NAnt.VSNet.Tasks;
 
 namespace NAnt.VSNet {
@@ -120,8 +122,8 @@ namespace NAnt.VSNet {
         /// this project.
         /// </returns>
         protected override ProcessStartInfo GetProcessStartInfo(ConfigurationBase config, string responseFile) {
-            ProcessStartInfo psi = new ProcessStartInfo(FileUtils.CombinePaths(SolutionTask.
-                Project.TargetFramework.FrameworkDirectory.FullName, "vjc.exe"),
+            ProcessStartInfo psi = new ProcessStartInfo(GetCompilerPath(
+                new VjcTask(), "vjc.exe"),
                 "@\"" + responseFile + "\"");
 
             // to resolve the path to the file specified in the AssemblyKeyFile 

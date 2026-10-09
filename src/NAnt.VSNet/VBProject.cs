@@ -27,6 +27,8 @@ using System.Xml;
 using NAnt.Core;
 using NAnt.Core.Util;
 
+using NAnt.DotNet.Tasks;
+
 using NAnt.DotNet.Types;
 
 using NAnt.VSNet.Tasks;
@@ -160,8 +162,8 @@ namespace NAnt.VSNet {
         /// this project.
         /// </returns>
         protected override ProcessStartInfo GetProcessStartInfo(ConfigurationBase config, string responseFile) {
-            ProcessStartInfo psi = new ProcessStartInfo(FileUtils.CombinePaths(SolutionTask.
-                Project.TargetFramework.FrameworkDirectory.FullName, "vbc.exe"), 
+            ProcessStartInfo psi = new ProcessStartInfo(GetCompilerPath(
+                new VbcTask(), "vbc.exe"), 
                 "@\"" + responseFile + "\"");
 
             // Visual Basic.NET uses the directory from which VS.NET 

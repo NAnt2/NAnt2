@@ -28,6 +28,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Text;
 
 using NAnt.Core;
 using NAnt.Core.Attributes;
@@ -243,6 +244,8 @@ namespace NAnt.DotNet.Tasks {
         private string _prefix = "script";
         private NamespaceImportCollection _imports = new NamespaceImportCollection();
         private RawXml _code;
+        private string _langVersion;
+        private string _compilerOptions;
 
         #endregion Private Instance Fields
 
@@ -269,6 +272,38 @@ namespace NAnt.DotNet.Tasks {
         public string Language {
             get { return _language; }
             set { _language = StringUtils.ConvertEmptyToNull(value); }
+        }
+
+        /// <summary>
+        /// Causes the compiler to only accept syntax that is included in a
+        /// given specification.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The value is passed to the compiler as a <c>/langversion</c> option,
+        /// meaning that the versions that are accepted depend on the code
+        /// provider that is used. Note that the code providers that ship with
+        /// the .NET Framework only support up to C# 5. To use C# 6 or a later
+        /// version of the language in a script block, specify a code provider
+        /// that is backed by the Roslyn compiler - such as
+        /// <c>Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider</c> -
+        /// using the <see cref="Language" /> attribute.
+        /// </para>
+        /// </remarks>
+        [TaskAttribute("langversion", Required=false)]
+        public string LangVersion {
+            get { return _langVersion; }
+            set { _langVersion = StringUtils.ConvertEmptyToNull(value); }
+        }
+
+        /// <summary>
+        /// Additional options to pass to the compiler that compiles the script
+        /// block.
+        /// </summary>
+        [TaskAttribute("compileroptions", Required=false)]
+        public string CompilerOptions {
+            get { return _compilerOptions; }
+            set { _compilerOptions = StringUtils.ConvertEmptyToNull(value); }
         }
 
         /// <summary>
@@ -343,11 +378,27 @@ namespace NAnt.DotNet.Tasks {
                 References.BaseDirectory = new DirectoryInfo(Project.BaseDirectory);
             }
 
-            ICodeCompiler compiler = compilerInfo.Compiler;
             CompilerParameters options = new CompilerParameters();
             options.GenerateExecutable = false;
             options.GenerateInMemory = true;
             options.MainClass = MainClass;
+
+            // pass the language version and any additional compiler options
+            // on to the compiler that backs the code provider
+            StringBuilder compilerOptions = new StringBuilder();
+            if (LangVersion != null) {
+                compilerOptions.AppendFormat(CultureInfo.InvariantCulture,
+                    "/langversion:{0}", LangVersion);
+            }
+            if (CompilerOptions != null) {
+                if (compilerOptions.Length > 0) {
+                    compilerOptions.Append(' ');
+                }
+                compilerOptions.Append(CompilerOptions);
+            }
+            if (compilerOptions.Length > 0) {
+                options.CompilerOptions = compilerOptions.ToString();
+            }
 
             // implicitly reference the NAnt.Core assembly
             options.ReferencedAssemblies.Add (typeof (Project).Assembly.Location);
@@ -389,12 +440,12 @@ namespace NAnt.DotNet.Tasks {
             
             StringWriter sw = new StringWriter(CultureInfo.InvariantCulture);
             
-            compilerInfo.CodeGen.GenerateCodeFromCompileUnit(compileUnit, sw, null);
+            compilerInfo.GenerateCodeFromCompileUnit(compileUnit, sw);
             string code = sw.ToString();
             
             Log(Level.Debug, ResourceUtils.GetString("String_GeneratedCodeLooksLike") + "\n{0}", code);
 
-            CompilerResults results = compiler.CompileAssemblyFromDom(options, compileUnit);
+            CompilerResults results = compilerInfo.CompileAssemblyFromDom(options, compileUnit);
 
             Assembly compiled = null;
             if (results.Errors.Count > 0) {
@@ -544,12 +595,32 @@ namespace NAnt.DotNet.Tasks {
         #endregion Private Static Methods
 
         internal class CompilerInfo {
-            public readonly ICodeCompiler Compiler;
-            public readonly ICodeGenerator CodeGen;
+            private readonly CodeDomProvider _provider;
 
             public CompilerInfo(CodeDomProvider provider) {
-                Compiler = provider.CreateCompiler();
-                CodeGen = provider.CreateGenerator();
+                _provider = provider;
+            }
+
+            /// <summary>
+            /// Compiles the specified compile unit.
+            /// </summary>
+            /// <remarks>
+            /// The compilation is performed by the code provider itself, rather
+            /// than by the <see cref="ICodeCompiler" /> that it exposes, as
+            /// code providers that are not part of the .NET Framework - such as
+            /// the Roslyn backed providers - are not required to implement the
+            /// obsolete <see cref="CodeDomProvider.CreateCompiler()" /> method.
+            /// </remarks>
+            public CompilerResults CompileAssemblyFromDom(CompilerParameters options, CodeCompileUnit compileUnit) {
+                return _provider.CompileAssemblyFromDom(options, compileUnit);
+            }
+
+            /// <summary>
+            /// Generates code for the specified compile unit and writes it to
+            /// the specified text writer.
+            /// </summary>
+            public void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer) {
+                _provider.GenerateCodeFromCompileUnit(compileUnit, writer, null);
             }
 
             public CodeCompileUnit GenerateCode(string typeName, string codeBody,
