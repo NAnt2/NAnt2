@@ -17,6 +17,7 @@
 
 // Jay Turpin (jayturpin@hotmail.com)
 // Gerry Shaw (gerry_shaw@yahoo.com)
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Globalization;
@@ -234,14 +235,16 @@ namespace NAnt.Core.Tasks {
                     try {
                         responseStream = webResponse.GetResponseStream();
                         break;
-                    } catch (IOException ex) {
+                    } 
+                    catch (IOException ex)
+                    {
                         if (tryCount > 3) {
                             throw new BuildException(string.Format(CultureInfo.InvariantCulture, 
                                 ResourceUtils.GetString("NA1125"), Source, 
                                 DestinationFile.FullName), Location);
-                        } else {
-                            Log(Level.Warning, "Unable to open connection to '{0}' (try {1} of 3): " + ex.Message, Source, tryCount);
                         }
+                        
+                        Log(Level.Warning, "Unable to open connection to '{0}' (try {1} of 3): " + ex.Message, Source, tryCount);
                     }
                 
                     // increment try count

@@ -49,7 +49,7 @@ class SLiNgshoT_Console
                     solution = Driver.FindSolution(Environment.CurrentDirectory);
                 }
 
-                SolutionWriter writer = null;
+                ISolutionWriter writer = null;
 
                 switch (format)
                 {
