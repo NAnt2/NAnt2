@@ -91,6 +91,13 @@ function Get-BuildConfiguration {
         $result = @{
             Platform = $matches.platform
             Version = [System.Version]$matches.version
+            # the build script reads each of these unconditionally and runs
+            # under Set-StrictMode, so none of them may be left unset
+            CompilationFlags = ''
+            CompilerLanguage = ''
+            Compiler = 'csc'
+            ResgenExe = $IsWindows ? 'resgen.exe' : 'resgen'
+            CompilerDebug = ''
         }        
     }
     else{
@@ -179,10 +186,11 @@ function Get-BuildConfiguration {
         $result.ResgenExe = $IsWindows ? "resgen.exe" : "resgen"
     }
 
-    if($IsDebug)
-    {
-        $result.CompilerDebug = "/debug"
-    }
+    # /debug- is passed for a release build rather than an empty value: the
+    # setting is expanded straight into the compiler invocation, and PowerShell
+    # forwards an empty string as a real - empty - argument rather than
+    # dropping it, which leaves it to the compiler whether to ignore it
+    $result.CompilerDebug = $IsDebug ? "/debug" : "/debug-"
 
     return $result
 }

@@ -491,6 +491,58 @@ namespace NAnt.DotNet.Tasks {
         #region Override implementation of ExternalProgramBase
 
         /// <summary>
+        /// The name of the compiler executable that should be used to compile
+        /// the sources.
+        /// </summary>
+        /// <value>
+        /// The name of the compiler executable, or <see langword="null" /> if
+        /// no name is specified.
+        /// </value>
+        /// <remarks>
+        /// <para>
+        /// If the value is an absolute path, then that executable is launched
+        /// as is. Otherwise, the executable is looked up in the framework
+        /// directory of the target framework, and - if it is not found there -
+        /// in the tool paths of that framework.
+        /// </para>
+        /// <para>
+        /// This allows a compiler other than the one that ships with the
+        /// target framework to be used. Pointing this at the Roslyn compiler,
+        /// for example, allows sources that use C# 6 (or a later version of
+        /// the language) to be compiled while still targeting the .NET
+        /// Framework, as the compiler that ships with the .NET Framework
+        /// itself only supports up to C# 5.
+        /// </para>
+        /// <para>
+        /// If not specified, the value configured in the NAnt configuration
+        /// file for the target framework is used.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        ///   <para>
+        ///   Compile sources that use C# 7 language features while targeting
+        ///   the .NET Framework, using the Roslyn compiler that ships with
+        ///   Visual Studio 2022.
+        ///   </para>
+        ///   <code>
+        ///     <![CDATA[
+        /// <csc target="library" output="Example.dll" langversion="7.3"
+        ///     exename="C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\Roslyn\csc.exe">
+        ///     <sources>
+        ///         <include name="**/*.cs" />
+        ///     </sources>
+        /// </csc>
+        ///     ]]>
+        ///   </code>
+        /// </example>
+        [TaskAttribute("exename")]
+        [FrameworkConfigurable("exename")]
+        public override string ExeName {
+            get { return base.ExeName; }
+            set { base.ExeName = value; }
+        }
+
+        /// <summary>
         /// Gets the command-line arguments for the external program.
         /// </summary>
         /// <value>

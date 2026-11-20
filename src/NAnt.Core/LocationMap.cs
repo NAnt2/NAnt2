@@ -93,9 +93,11 @@ namespace NAnt.Core {
 
             // Load text reader.
             XmlTextReader reader = new XmlTextReader(fileName);
-//#if NET40_OR_GREATER && NET451_OR_LESSER
+#if NET40_OR_GREATER
+            // DtdProcessing is new in .NET 4.0; before that, XmlTextReader
+            // parses DTDs by default
             reader.DtdProcessing = DtdProcessing.Parse;
-//#endif
+#endif
             try {
                 map.Add((object) "/", (object) new TextPosition(1, 1));
 

@@ -28,6 +28,16 @@ using NAnt.DotNet.Tasks;
 
 namespace Tests.NAnt.DotNet.Tasks 
 {
+    /// <summary>
+    /// Tests for the &lt;vjc&gt; task.
+    /// </summary>
+    /// <remarks>
+    /// The J# compiler is not part of the .NET Framework and its redistributable
+    /// has long been discontinued, so these tests only run when they are asked
+    /// for explicitly.
+    /// </remarks>
+    [Platform(Exclude="Unix,Linux,MacOsX,XBox")]
+    [Explicit]
     [TestFixture]
     public class VjcTaskTest : BuildTestBase {
         #region Private Instance Fields
@@ -75,8 +85,8 @@ namespace Tests.NAnt.DotNet.Tasks
         [Test]
         public void Test_DebugBuild() {
             string result = RunBuild(FormatBuildFile("debug='true'"));
-            Assertion.Assert(_sourceFileName + ".exe does not exists, program did compile.", File.Exists(_sourceFileName + ".exe"));
-            Assertion.Assert(_sourceFileName + ".pdb does not exists, program did compile with debug switch.", File.Exists(_sourceFileName + ".pdb"));
+            Assert.IsTrue(File.Exists(_sourceFileName + ".exe"), _sourceFileName + ".exe does not exists, program did compile.");
+            Assert.IsTrue(File.Exists(_sourceFileName + ".pdb"), _sourceFileName + ".pdb does not exists, program did compile with debug switch.");
         }
 
         /// <summary>
@@ -85,8 +95,8 @@ namespace Tests.NAnt.DotNet.Tasks
         [Test]
         public void Test_ReleaseBuild() {
             string result = RunBuild(FormatBuildFile("debug='false'"));
-            Assertion.Assert(_sourceFileName + ".exe does not exists, program did compile.", File.Exists(_sourceFileName + ".exe"));
-            Assertion.Assert(_sourceFileName + ".pdb does exists, program did compiled with debug switch.", !File.Exists(_sourceFileName + ".pdb"));
+            Assert.IsTrue(File.Exists(_sourceFileName + ".exe"), _sourceFileName + ".exe does not exists, program did compile.");
+            Assert.IsFalse(File.Exists(_sourceFileName + ".pdb"), _sourceFileName + ".pdb does exists, program did compiled with debug switch.");
         }
 
         /// <summary>
@@ -100,7 +110,7 @@ namespace Tests.NAnt.DotNet.Tasks
 
             RunBuild(FormatBuildFile(
                 Path.Combine("bin", "HelloWorld.jsl"), null, null, null));
-            Assertion.Assert(_sourceFileName + ".exe does not exists, program did compile.", File.Exists(_sourceFileName + ".exe"));
+            Assert.IsTrue(File.Exists(_sourceFileName + ".exe"), _sourceFileName + ".exe does not exists, program did compile.");
         }
          
         #endregion Public Instance Methods
@@ -167,9 +177,9 @@ namespace Tests.NAnt.DotNet.Tasks
                 StringReader reader = new StringReader( input );
                 CompilerBase.ResourceLinkage linkage = vjcTask.PerformSearchForResourceLinkage( reader );
                 
-                Assertion.AssertNotNull("no resourcelinkage found for " + input, linkage);
+                Assert.IsNotNull(linkage, "no resourcelinkage found for " + input);
                 string message = string.Format( "Failed to find expected class name {0}. Found {1} instead.", linkage.ClassName, expectedClassname ); 
-                Assertion.Assert( message, (expectedClassname == linkage.ClassName ) );
+                Assert.AreEqual(expectedClassname, linkage.ClassName, message);
             }
         }
     }

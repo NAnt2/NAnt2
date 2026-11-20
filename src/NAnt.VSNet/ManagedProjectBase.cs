@@ -29,6 +29,7 @@ using System.Text;
 using System.Xml;
 
 using NAnt.Core;
+using NAnt.Core.Tasks;
 using NAnt.Core.Types;
 using NAnt.Core.Util;
 
@@ -596,6 +597,61 @@ namespace NAnt.VSNet {
         /// this project.
         /// </returns>
         protected abstract ProcessStartInfo GetProcessStartInfo(ConfigurationBase config, string responseFile);
+
+        /// <summary>
+        /// Determines the path of the compiler to launch for this project.
+        /// </summary>
+        /// <param name="compiler">A task representing the compiler to launch.</param>
+        /// <param name="compilerFileName">The file name of the compiler that ships with the target framework.</param>
+        /// <returns>
+        /// The path of the compiler to launch.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// The compiler is resolved using the settings that are configured for
+        /// the corresponding task in the NAnt configuration file, meaning that
+        /// an "exename" that is configured for the target framework - or a
+        /// compiler that is available on the tool paths of that framework - 
+        /// takes precedence over the compiler that ships with the target
+        /// framework.
+        /// </para>
+        /// <para>
+        /// This allows a solution to be built with a compiler that supports a
+        /// more recent version of the language than the compiler that ships
+        /// with the target framework.
+        /// </para>
+        /// </remarks>
+        protected string GetCompilerPath(ExternalProgramBase compiler, string compilerFileName) {
+            try {
+                // parent is solution task
+                compiler.Parent = SolutionTask;
+
+                // inherit project from solution task
+                compiler.Project = SolutionTask.Project;
+
+                // inherit namespace manager from solution task
+                compiler.NamespaceManager = SolutionTask.NamespaceManager;
+
+                // inherit verbose setting from solution task
+                compiler.Verbose = SolutionTask.Verbose;
+
+                // make sure framework specific information is set
+                compiler.InitializeTaskConfiguration();
+
+                string compilerPath = compiler.ProgramFileName;
+                if (!String.IsNullOrEmpty(compilerPath)) {
+                    return compilerPath;
+                }
+            } catch (Exception ex) {
+                // fall back on the compiler that ships with the target
+                // framework if the configured compiler cannot be determined
+                Log(Level.Debug, "Failed to determine the configured location"
+                    + " of \"{0}\": {1}", compilerFileName, ex.Message);
+            }
+
+            return FileUtils.CombinePaths(SolutionTask.Project.TargetFramework.
+                FrameworkDirectory.FullName, compilerFileName);
+        }
 
         protected virtual ReferenceBase CreateReference(SolutionBase solution, XmlElement xmlDefinition) {
             if (solution == null) {

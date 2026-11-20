@@ -247,8 +247,21 @@ namespace NAnt.DotNet.Tasks {
         /// <para>
         /// Corresponds with the <c>/langversion</c> flag.
         /// </para>
+        /// <para>
+        /// The value is passed to the compiler as is, meaning that the
+        /// versions that are accepted depend on the compiler that is used.
+        /// Note that the compiler that ships with the .NET Framework only
+        /// supports up to C# 5. To compile sources that use C# 6 or a later
+        /// version of the language, combine this with <see cref="CompilerBase.ExeName" />
+        /// to point the task at a Roslyn compiler.
+        /// </para>
+        /// <para>
+        /// If not specified, the value configured in the NAnt configuration
+        /// file for the target framework is used.
+        /// </para>
         /// </remarks>
         [TaskAttribute("langversion")]
+        [FrameworkConfigurable("langversion")]
         public string LangVersion {
             get { return _langVersion; }
             set { _langVersion = StringUtils.ConvertEmptyToNull(value); }
@@ -396,9 +409,13 @@ namespace NAnt.DotNet.Tasks {
 
             // If mcs is the compiler and the specified McsSdk version is specified, append the new
             // -sdk: option to the argument list.
+            //
+            // The compiler is compared on its file name, as it can be configured
+            // - or specified on the task - as a path rather than as a bare name.
             if (PlatformHelper.IsMono) 
             {
-                if (ExeName.Equals("mcs", StringComparison.InvariantCultureIgnoreCase) && _mcsSdk > 0)
+                string compilerName = Path.GetFileNameWithoutExtension(ExeName);
+                if (compilerName.Equals("mcs", StringComparison.InvariantCultureIgnoreCase) && _mcsSdk > 0)
                 {
                     WriteOption(writer, "sdk", _mcsSdk.ToString(CultureInfo.InvariantCulture));
                 }
