@@ -24,6 +24,7 @@
     <Compile Include="Functions\CygpathFunctions.cs" />
     <Compile Include="Tasks\AxImpTask.cs" />
     <Compile Include="Tasks\LocateSdkTask.cs" />
+    <Compile Include="Tasks\LocateVisualStudioTask.cs" />
     <Compile Include="Tasks\ReadRegistryTask.cs" />
     <Compile Include="Tasks\MonoRegistryTask.cs" />
     <Compile Include="Tasks\RegAsmTask.cs" />

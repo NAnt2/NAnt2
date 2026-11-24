@@ -68,6 +68,73 @@ namespace Tests.NAnt.Core.Tasks {
             Assert.IsTrue(result.IndexOf("Hello") != -1, "CSharp script should written something." + Environment.NewLine + result);
             Assert.IsTrue(result.IndexOf("script.me") != -1, "CSharp script should have updated prop." + Environment.NewLine + result);
         }
+
+        /// <summary>
+        /// Ensures the langversion attribute is passed on to the compiler that
+        /// backs the code provider.
+        /// </summary>
+        [Test]
+        public void Test_CSharp_LangVersion() {
+            // generics are not part of the C# 1.0 language specification, so
+            // restricting the compiler to that specification should cause the
+            // build to fail
+            string _xml = @"
+            <project>
+                <script language='C#' langversion='ISO-1'>
+                    <code>
+                        <![CDATA[
+                            public static void ScriptMain(Project project) {
+                                System.Collections.Generic.List<string> messages =
+                                    new System.Collections.Generic.List<string>();
+                                messages.Add(""generics"");
+                                project.Properties[""from.script""] = messages[0];
+                            }
+                        ]]>
+                    </code>
+                </script>
+            </project>";
+
+            try {
+                RunBuild(_xml);
+                Assert.Fail("Script using C# 2.0 features should not have"
+                    + " compiled when the compiler is restricted to the C# 1.0"
+                    + " language specification.");
+            } catch (TestBuildException ex) {
+                Assert.IsTrue(ex.ToString().IndexOf("CS1644") != -1,
+                    "Compiler should have reported that a language feature is"
+                    + " not available." + Environment.NewLine + ex);
+            }
+        }
+
+        /// <summary>
+        /// Ensures the compileroptions attribute is passed on to the compiler
+        /// that backs the code provider.
+        /// </summary>
+        [Test]
+        public void Test_CSharp_CompilerOptions() {
+            string _xml = @"
+            <project>
+                <script language='C#' compileroptions='/define:SCRIPT_PROBE'>
+                    <code>
+                        <![CDATA[
+                            public static void ScriptMain(Project project) {
+                            #if SCRIPT_PROBE
+                                project.Properties[""from.script""] = ""options.passed"";
+                            #else
+                                project.Properties[""from.script""] = ""options.dropped"";
+                            #endif
+                            }
+                        ]]>
+                    </code>
+                </script>
+                <echo message='result=${from.script}'/>
+            </project>";
+
+            string result = RunBuild(_xml);
+            Assert.IsTrue(result.IndexOf("result=options.passed") != -1,
+                "compileroptions should have been passed on to the compiler."
+                + Environment.NewLine + result);
+        }
         
         /// <summary>
         /// Test for bug #1187957.

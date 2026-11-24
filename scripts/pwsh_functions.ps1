@@ -28,6 +28,7 @@ function Set-PSModules {
                 Install-Module $module `
                     -Scope CurrentUser `
                     -Force `
+                    -AllowClobber `
                     -Repository PSGallery `
                     -AcceptLicense `
                     -SkipPublisherCheck `

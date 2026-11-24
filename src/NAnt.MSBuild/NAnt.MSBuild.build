@@ -13,11 +13,11 @@
 
         <!-- modify target framework to .NET 2.0 or Mono 2.0 -->
         <if test="${framework::exists('net-4.0')}">
-            <!-- modify target framework to .NET 2.0 -->
+            <!-- modify target framework to .NET 4.0 -->
             <property name="nant.settings.currentframework" value="net-4.0" />
         </if>
-        <if test="${not(framework::exists('net-2.0'))}">
-            <!-- modify target framework to Mono 2.0 -->
+        <if test="${not(framework::exists('net-4.0')) and framework::exists('mono-2.0')}">
+            <!-- modify target framework to Mono 2.0 only if .NET 4.0 is not available -->
             <property name="nant.settings.currentframework" value="mono-2.0" />
         </if>
 
