@@ -18,7 +18,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // Based on original work by Jayme C. Edwards (jcedwards@users.sourceforge.net)
-//
+
+// Simona Avornicesei (simona@avornicesei.com)
 
 using System;
 using System.Collections;
@@ -645,71 +646,63 @@ namespace NAnt.Contrib.Tasks.Msi {
         /// <summary>
         /// Retrieves a DOS 8.3 filename for a directory.
         /// </summary>
-        /// <param name="LongPath">The path to shorten.</param>
+        /// <param name="longPath">The path to shorten.</param>
         /// <returns>The new shortened path.</returns>
-        private string GetShortPath(string LongPath) {
-            if (LongPath.Length <= 8) {
-                return LongPath;
+        private string GetShortPath(string longPath) {
+            if (longPath.Length <= 8) {
+                return longPath;
             }
 
             StringBuilder shortPath = new StringBuilder(255);
-            int result = GetShortPathName(LongPath, shortPath, shortPath.Capacity);
+            int result = GetShortPathName(longPath, shortPath, shortPath.Capacity);
             if (result == 0) {
                 throw new BuildException (string.Format (CultureInfo.InvariantCulture,
                     "The short path for '{0}' could not be determined.",
-                    LongPath), Location);
+                    longPath), Location);
             }
 
-            Uri shortPathUri = null;
-            try {
-                shortPathUri = new Uri("file://" + shortPath.ToString());
-                if (shortPathUri == null) {
-                    // done to prevent CS0219 warning, variable is assigned but
-                    // its value is never used
-                }
-            }
-            catch (Exception) {
-                throw new BuildException(String.Format(CultureInfo.InvariantCulture, "Directory {0} not found.", LongPath), Location);
+            if(!Uri.TryCreate($"file://{shortPath}", UriKind.RelativeOrAbsolute, out Uri shortPathUri))
+            {
+                throw new BuildException(
+                    string.Format(CultureInfo.InvariantCulture, "Directory {0} not found.", longPath),
+                    Location);
             }
 
             string[] shortPathSegments = shortPathUri.Segments;
-            if (shortPathSegments.Length == 0) {
-                return LongPath;
+            switch (shortPathSegments.Length)
+            {
+                case 0:
+                    return longPath;
+                case 1:
+                    return shortPathSegments[0];
+                default:
+                    return shortPathSegments[shortPathSegments.Length-1];
             }
-            if (shortPathSegments.Length == 1) {
-                return shortPathSegments[0];
-            }
-            return shortPathSegments[shortPathSegments.Length-1];
         }
 
         /// <summary>
         /// Retrieves a DOS 8.3 filename for a complete directory.
         /// </summary>
-        /// <param name="LongPath">The path to shorten.</param>
+        /// <param name="longPath">The path to shorten.</param>
         /// <returns>The new shortened path.</returns>
-        private string GetShortDir(string LongPath) {
-            if (LongPath.Length <= 8) {
-                return LongPath;
+        private string GetShortDir(string longPath) {
+            if (longPath.Length <= 8) {
+                return longPath;
             }
 
             StringBuilder shortPath = new StringBuilder(255);
-            int result = GetShortPathName(LongPath, shortPath, shortPath.Capacity);
+            int result = GetShortPathName(longPath, shortPath, shortPath.Capacity);
             if (result == 0) {
                 throw new BuildException (string.Format (CultureInfo.InvariantCulture,
                     "The short path for '{0}' could not be determined.",
-                    LongPath), Location);
+                    longPath), Location);
             }
 
-            Uri shortPathUri = null;
-            try {
-                shortPathUri = new Uri("file://" + shortPath.ToString());
-                if (shortPathUri == null) {
-                    // done to prevent CS0219 warning, variable is assigned but
-                    // its value is never used
-                }
-            }
-            catch (Exception) {
-                throw new BuildException(String.Format(CultureInfo.InvariantCulture, "Directory {0} not found.", LongPath), Location);
+            if(!Uri.TryCreate($"file://{shortPath}", UriKind.RelativeOrAbsolute, out Uri _))
+            {
+                throw new BuildException(
+                    string.Format(CultureInfo.InvariantCulture, "Directory {0} not found.", longPath),
+                    Location);
             }
 
             return shortPath.ToString();
@@ -719,16 +712,16 @@ namespace NAnt.Contrib.Tasks.Msi {
         /// Recursively expands properties of all attributes of
         /// a nodelist and their children.
         /// </summary>
-        /// <param name="Nodes">The nodes to recurse.</param>
-        private void ExpandPropertiesInNodes(XmlNodeList Nodes) {
-            foreach (XmlNode node in Nodes) {
-                if (node.ChildNodes != null) {
-                    ExpandPropertiesInNodes(node.ChildNodes);
-                    if (node.Attributes != null) {
-                        foreach (XmlAttribute attr in node.Attributes) {
-                            attr.Value = Properties.ExpandProperties(attr.Value, Location);
-                        }
-                    }
+        /// <param name="nodes">The nodes to recurse.</param>
+        private void ExpandPropertiesInNodes(XmlNodeList nodes) {
+            foreach (XmlNode node in nodes)
+            {
+                if (!node.HasChildNodes) continue;
+                ExpandPropertiesInNodes(node.ChildNodes);
+                
+                if (node.Attributes == null) continue;
+                foreach (XmlAttribute attr in node.Attributes) {
+                    attr.Value = Properties.ExpandProperties(attr.Value, Location);
                 }
             }
         }
@@ -737,16 +730,18 @@ namespace NAnt.Contrib.Tasks.Msi {
         /// Converts the Byte array in a public key
         /// token of an assembly to a string MSI expects.
         /// </summary>
-        /// <param name="ByteArray">The array of bytes.</param>
+        /// <param name="byteArray">The array of bytes.</param>
         /// <returns>The string containing the array.</returns>
-        private string ByteArrayToString(Byte[] ByteArray) {
-            if (ByteArray == null || ByteArray.Length == 0)
+        private string ByteArrayToString(byte[] byteArray) {
+            if (byteArray == null || byteArray.Length == 0)
                 return string.Empty;
-            StringBuilder sb = new StringBuilder ();
-            sb.Append (ByteArray[0].ToString("x2"));
-            for (int i = 1; i < ByteArray.Length; i++) {
-                sb.Append(ByteArray[i].ToString("x2"));
+            
+            StringBuilder sb = new StringBuilder();
+            sb.Append (byteArray[0].ToString("x2"));
+            for (int i = 1; i < byteArray.Length; i++) {
+                sb.Append(byteArray[i].ToString("x2"));
             }
+            
             return sb.ToString().ToUpper();
         }
 
